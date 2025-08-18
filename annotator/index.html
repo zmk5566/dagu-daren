@@ -24,11 +24,27 @@
         #annotations-list { list-style-type: none; padding: 0; max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; }
         #annotations-list li { padding: 0.8em; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .delete-btn { background-color: #dc3545; color: white; padding: 0.3em 0.8em; border-radius: 4px; cursor: pointer; }
+        #selection-arrow {
+            position: absolute;
+            top: 0; /* Position it at the top of the waveform container */
+            left: 50%; /* Will be dynamically updated */
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #0d6efd; /* Arrow color */
+            z-index: 11; /* Above the selected region highlight */
+            pointer-events: none; /* Make it non-interactive */
+            transition: opacity 0.1s ease-in-out, left 0.05s linear;
+            opacity: 0;
+            transform: translateX(-50%); /* Center the arrow precisely */
+        }
         [data-id].selected-region {
-            /* A stronger outline and a glow effect for better visibility */
-            outline: 4px solid rgba(13, 110, 253, 0.75);
-            box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
-            z-index: 10 !important; /* Ensure the selected region is visually on top */
+            /* Blue side borders for selection highlight */
+            border-left: 3px solid rgba(13, 110, 253, 0.85);
+            border-right: 3px solid rgba(13, 110, 253, 0.85);
+            box-sizing: border-box; /* Ensure borders don't increase region width */
+            z-index: 10 !important;
         }
         #annotations-list li.selected-annotation {
             background-color: #e7f1ff;
@@ -39,7 +55,6 @@
 <body>
     <div id="app">
         <h1>音频标注工具 V2.4</h1>
-        <!-- HTML structure remains the same -->
         <div class="section-box">
              <h3>1. 加载文件</h3>
             <p><strong>步骤 1.1:</strong> 选择要标注的音频文件 (例如 `drums.mp3`):</p>
@@ -47,7 +62,10 @@
             <p style="margin-top: 1em;"><strong>步骤 1.2:</strong> 输入该音频所在的项目文件夹路径:</p>
             <input type="text" id="project-path" placeholder="例如: data/xwx-backtrack-n-drum/generated_audio">
         </div>
-        <div id="waveform"></div>
+        <div id="waveform-container" style="position: relative;">
+            <div id="selection-arrow"></div>
+            <div id="waveform"></div>
+        </div>
         <div id="loading">正在加载并绘制波形...</div>
         <div class="controls">
             <button id="play-btn" disabled>播放/暂停</button>
@@ -93,6 +111,7 @@
             const waveformDiv = document.getElementById('waveform');
             const loadingIndicator = document.getElementById('loading');
             const annotationsList = document.getElementById('annotations-list');
+            const selectionArrow = document.getElementById('selection-arrow');
 
             let annotations = [];
             let originalAudioFileName = '';
@@ -103,18 +122,38 @@
             const wavesurfer = WaveSurfer.create({ container: waveformDiv, waveColor: 'rgb(200, 200, 200)', progressColor: 'rgb(100, 100, 100)', cursorWidth: 2, barWidth: 3, barRadius: 3, responsive: true, height: 150, barGap: 3 });
             const wsRegions = wavesurfer.registerPlugin(WaveSurfer.Regions.create());
 
-            // --- Wheel Zoom Logic ---
+            // --- Arrow Position Logic ---
+            const updateArrowPosition = () => {
+                if (!selectedRegion || !selectedRegion.element) {
+                    selectionArrow.style.opacity = '0';
+                    return;
+                }
+                const regionEl = selectedRegion.element;
+                const regionRect = regionEl.getBoundingClientRect();
+                const waveformRect = waveformDiv.getBoundingClientRect();
+
+                const arrowLeft = (regionRect.left - waveformRect.left) + (regionRect.width / 2);
+                
+                if (regionRect.right > waveformRect.left && regionRect.left < waveformRect.right) {
+                    selectionArrow.style.left = `${arrowLeft}px`;
+                    selectionArrow.style.opacity = '1';
+                } else {
+                    selectionArrow.style.opacity = '0';
+                }
+            };
+
+            // --- Wheel Zoom & Pan Logic ---
             waveformDiv.addEventListener('wheel', (event) => {
                 if (wavesurfer.getDuration() === 0) return;
                 event.preventDefault();
 
-                // Differentiate between horizontal and vertical scroll for pan vs. zoom
-                if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-                    // Horizontal scroll (panning) with sensitivity adjustment
-                    const scrollSensitivity = 5;
-                    wavesurfer.scroll(event.deltaX * scrollSensitivity);
+                const scrollSensitivity = 5;
+                const isHorizontalScroll = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+
+                if (isHorizontalScroll || event.shiftKey) {
+                    const panDelta = event.shiftKey ? event.deltaY : event.deltaX;
+                    wavesurfer.getWrapper().scrollLeft += panDelta * scrollSensitivity;
                 } else {
-                    // Vertical scroll (zooming)
                     const zoomFactor = event.deltaY < 0 ? 1.2 : 0.8;
                     currentZoomLevel *= zoomFactor;
                     wavesurfer.zoom(currentZoomLevel);
@@ -123,28 +162,26 @@
             
             // --- Selection Logic ---
             const clearSelection = () => {
-                // Remove selection from waveform regions
                 wsRegions.getRegions().forEach(region => {
                     if (region.element) region.element.classList.remove('selected-region');
                 });
-                // Remove selection from list items
                 document.querySelectorAll('#annotations-list li').forEach(li => {
                     li.classList.remove('selected-annotation');
                 });
                 selectedRegion = null;
+                updateArrowPosition(); // Hide the arrow
             };
             const selectRegion = (region) => {
                 clearSelection();
                 selectedRegion = region;
                 if (region && region.element) {
-                    // Highlight waveform region
                     region.element.classList.add('selected-region');
-                    // Highlight corresponding list item
                     const correspondingLi = document.querySelector(`#annotations-list li[data-id="${region.id}"]`);
                     if (correspondingLi) {
                         correspondingLi.classList.add('selected-annotation');
                     }
                 }
+                updateArrowPosition(); // Show and position the arrow
             };
             wsRegions.on('region-clicked', (region, e) => { e.stopPropagation(); selectRegion(region); });
             wavesurfer.on('interaction', () => clearSelection());
@@ -170,12 +207,18 @@
             zoomOutBtn.addEventListener('click', () => { currentZoomLevel /= 1.5; wavesurfer.zoom(currentZoomLevel); });
 
             wavesurfer.on('ready', () => {
-                loadingIndicator.style.display = 'none'; waveformDiv.style.display = 'block';
-                playBtn.disabled = false; zoomInBtn.disabled = false; zoomOutBtn.disabled = false;
+                wavesurfer.getWrapper().addEventListener('scroll', updateArrowPosition);
+                loadingIndicator.style.display = 'none'; 
+                waveformDiv.style.display = 'block';
+                playBtn.disabled = false; 
+                zoomInBtn.disabled = false; 
+                zoomOutBtn.disabled = false;
                 const duration = wavesurfer.getDuration();
                 currentZoomLevel = waveformDiv.clientWidth / duration;
                 wavesurfer.zoom(currentZoomLevel);
             });
+            wavesurfer.on('zoom', updateArrowPosition);
+            wavesurfer.on('redraw', updateArrowPosition);
 
             const addAnnotation = (type) => {
                 if (wavesurfer.getDuration() === 0) return;
@@ -198,12 +241,17 @@
 
             wsRegions.on('region-updated', (region) => {
                 const ann = annotations.find(a => a.id === region.id);
-                if (ann) { ann.time = region.start; ann.duration = region.end - region.start; renderAnnotationsList(); }
+                if (ann) { 
+                    ann.time = region.start; 
+                    ann.duration = region.end - region.start; 
+                    renderAnnotationsList(); 
+                    updateArrowPosition(); // Keep arrow in sync while dragging/resizing
+                }
             });
 
             // --- Playback Control Logic ---
             wavesurfer.on('pause', () => {
-                isRegionPlayback = false; // Reset flag on any pause
+                isRegionPlayback = false; 
             });
 
             wavesurfer.on('audioprocess', (currentTime) => {
@@ -213,12 +261,12 @@
                     // Ensure cursor is visually at the end of the region
                     wavesurfer.seekTo(selectedRegion.end / wavesurfer.getDuration());
                 }
+                updateArrowPosition(); // Continuously update arrow during playback
             });
 
             document.addEventListener('keydown', (e) => {
                  if (e.target.tagName === 'INPUT') return;
-                 
-                 e.preventDefault(); // Prevent default browser actions for shortcuts
+                 e.preventDefault(); 
 
                  const key = e.key.toLowerCase();
 
@@ -231,7 +279,6 @@
                  } else if (key === 's') {
                      if (selectedRegion) {
                          isRegionPlayback = true;
-                         // Start playback from the beginning of the region
                          wavesurfer.play(selectedRegion.start);
                      }
                  } else if (key === 'backspace' || key === 'delete') {
@@ -242,21 +289,18 @@
             });
             
             annotationsList.addEventListener('click', (e) => {
-                // Handle delete button click
                 if (e.target.classList.contains('delete-btn')) {
                     const idToDelete = e.target.getAttribute('data-id');
                     const region = wsRegions.getRegions().find(r => r.id === idToDelete);
                     if (region) region.remove();
-                    return; // Stop further processing
+                    return; 
                 }
 
-                // Handle selection by clicking the list item itself
                 const li = e.target.closest('li');
                 if (li && li.dataset.id) {
                     const regionToSelect = wsRegions.getRegions().find(r => r.id === li.dataset.id);
                     if (regionToSelect) {
                         selectRegion(regionToSelect);
-                        // Move cursor to the start of the region
                         wavesurfer.seekTo(regionToSelect.start / wavesurfer.getDuration());
                     }
                 }
@@ -264,7 +308,9 @@
 
              wsRegions.on('region-removed', (region) => {
                 annotations = annotations.filter(ann => ann.id !== region.id);
-                if (selectedRegion && selectedRegion.id === region.id) selectedRegion = null;
+                if (selectedRegion && selectedRegion.id === region.id) {
+                    clearSelection();
+                }
                 renderAnnotationsList();
             });
 
@@ -276,9 +322,8 @@
                 annotations.sort((a, b) => a.time - b.time);
                 annotations.forEach(ann => {
                     const li = document.createElement('li');
-                    li.dataset.id = ann.id; // Link list item to region for selection
+                    li.dataset.id = ann.id; 
                     li.innerHTML = `<span><strong>${ann.type.toUpperCase()}</strong> @ ${ann.time.toFixed(3)}s (持续 ${ann.duration.toFixed(3)}s)</span> <button class="delete-btn" data-id="${ann.id}">删除</button>`;
-                    // Preserve selection highlight on re-render
                     if (selectedRegion && ann.id === selectedRegion.id) {
                         li.classList.add('selected-annotation');
                     }
