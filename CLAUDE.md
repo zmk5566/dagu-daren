@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This project is a web-based rhythm game inspired by "Taiko no Tatsujin". The goal is to automatically generate beatmaps from audio files and create an interactive game experience in the browser.
+大鼓达人 (Da Gu Da Ren) is a web-based rhythm game inspired by "Taiko no Tatsujin" and the philosophical concept of authentic creation versus imitation from Han Byung-chul's "The Burnout Society". The goal is to automatically generate beatmaps from audio files using machine learning and provide professional-grade DAW-style annotation tools for manual refinement.
 
 ## High-level Code Architecture
 
@@ -36,9 +36,25 @@ The next core task is to build a system that can:
 - Analyze the generated `drums.mp3` file to detect hit timings and types (`don`/`ka`).
 - Automatically generate a `.json` beatmap file based on this analysis.
 
-### 3. Frontend Development
+### 3. DAW-Style Annotation Tool (Current Priority)
 
-Once beatmaps are available, development will focus on:
+The next major development phase focuses on rebuilding the annotation interface as a professional DAW-style tool:
+- **BPM Detection & Beat Grid**: Automatically detect BPM and display beat alignment grid
+- **Auto-Alignment**: Snap existing annotations to detected beat positions
+- **Professional Timeline**: DAW-style track layout with precise time navigation
+- **Measure Detection**: Find the first measure's starting position based on drum patterns
+- **Visual Beat Representation**: Clear visual indication of don/ka positions within measures
+
+### 4. Frontend Development
+
+Once the DAW-style annotation tool is complete, development will focus on:
 - Building the game interface.
 - Synchronizing audio with the scrolling beatmap.
 - Implementing player input and the scoring/judgment system.
+
+## Current Status
+
+- ✅ **Classic ML Beatmap Generation**: Achieved 80% F1-Score using SVM with MFCC features
+- ✅ **Manual Annotation Complete**: All don/ka hits manually annotated for training data
+- 🚧 **DAW-Style Annotation Tool**: Planning phase - requires BPM detection and auto-alignment
+- ⏳ **Game Interface**: Pending completion of annotation tools

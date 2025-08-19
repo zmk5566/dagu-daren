@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼓谱可视化工具</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 2em; background-color: #f4f4f9; color: #333; }
+        #app { max-width: 900px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #4a4a4a; }
+        .controls, .file-loader, .section-box { text-align: center; margin-bottom: 1.5em; }
+        button { font-size: 1em; padding: 0.6em 1.2em; margin: 0 0.5em; border: none; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #cccccc; cursor: not-allowed; }
+        #waveform { border: 1px solid #ddd; border-radius: 5px; }
+        .section-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5em; text-align: left; margin-top: 2em; }
+        .section-box h3 { margin-top: 0; }
+        input[type="file"] { font-size: 1em; padding: 0.5em; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>鼓谱可视化工具</h1>
+        <div class="section-box">
+            <h3>1. 加载鼓谱文件</h3>
+            <p>选择一个由生成器创建的 <code>beatmap_generated.json</code> 文件来查看结果。</p>
+            <div class="file-loader">
+                <input type="file" id="beatmap-file-input" accept=".json">
+            </div>
+            <p id="load-status" style="margin-top: 1em; color: #555;"></p>
+        </div>
+        <div id="waveform-container" style="position: relative;">
+            <div id="waveform"></div>
+        </div>
+        <div class="controls">
+            <button id="play-btn" disabled>播放/暂停</button>
+            <button id="zoom-in-btn" disabled>放大 (+)</button>
+            <button id="zoom-out-btn" disabled>缩小 (-)</button>
+        </div>
+         <div class="section-box">
+            <h3>图例</h3>
+            <p>
+                <span style="color: #ff6347;">■</span> Don (咚)
+                <span style="color: #4169e1; margin-left: 20px;">■</span> Ka (咔)
+            </p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('beatmap-file-input');
+            const loadStatus = document.getElementById('load-status');
+            const playBtn = document.getElementById('play-btn');
+            const zoomInBtn = document.getElementById('zoom-in-btn');
+            const zoomOutBtn = document.getElementById('zoom-out-btn');
+            const waveformDiv = document.getElementById('waveform');
+            
+            let currentZoomLevel = 100;
+
+            const wavesurfer = WaveSurfer.create({ container: waveformDiv, waveColor: 'rgb(200, 200, 200)', progressColor: 'rgb(100, 100, 100)', cursorWidth: 2, barWidth: 3, barRadius: 3, responsive: true, height: 150, barGap: 3 });
+            const wsRegions = wavesurfer.registerPlugin(WaveSurfer.Regions.create());
+
+            // --- UI Controls ---
+            playBtn.addEventListener('click', () => wavesurfer.playPause());
+            zoomInBtn.addEventListener('click', () => { currentZoomLevel *= 1.5; wavesurfer.zoom(currentZoomLevel); });
+            zoomOutBtn.addEventListener('click', () => { currentZoomLevel /= 1.5; wavesurfer.zoom(currentZoomLevel); });
+            
+            waveformDiv.addEventListener('wheel', (event) => {
+                if (wavesurfer.getDuration() === 0) return;
+                event.preventDefault();
+                wavesurfer.zoom(wavesurfer.getScroll() * (1 - event.deltaY * 0.01));
+            });
+
+            // --- File Loading Logic ---
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const beatmap = JSON.parse(e.target.result);
+                        loadBeatmap(beatmap);
+                    } catch (error) {
+                        loadStatus.textContent = `加载失败: 无效的JSON文件。 (${error.message})`;
+                        loadStatus.style.color = '#dc3545';
+                    }
+                };
+                reader.readAsText(file);
+            });
+
+            async function loadBeatmap(beatmap) {
+                if (!beatmap.metadata || !beatmap.metadata.audioFile || !beatmap.notes) {
+                    loadStatus.textContent = '加载失败: JSON文件格式不正确。';
+                    loadStatus.style.color = '#dc3545';
+                    return;
+                }
+
+                const audioFilePath = `/${beatmap.metadata.audioFile}`; // Prepend '/' to make it a root-relative path
+                loadStatus.textContent = `正在加载音频: ${audioFilePath}...`;
+                loadStatus.style.color = '#555';
+
+                try {
+                    const response = await fetch(audioFilePath);
+                    if (!response.ok) throw new Error(`无法找到音频文件 (${response.status})`);
+                    const audioBlob = await response.blob();
+                    
+                    wavesurfer.load(URL.createObjectURL(audioBlob));
+                    wavesurfer.once('ready', () => {
+                        renderBeatmapNotes(beatmap.notes);
+                    });
+                    
+                } catch (error) {
+                    loadStatus.textContent = `加载音频失败: ${error.message}`;
+                    loadStatus.style.color = '#dc3545';
+                }
+            }
+
+            wavesurfer.on('ready', () => {
+                playBtn.disabled = false;
+                zoomInBtn.disabled = false;
+                zoomOutBtn.disabled = false;
+                loadStatus.textContent = '音频加载成功。准备渲染鼓点...';
+                loadStatus.style.color = '#28a745';
+                
+                // Beatmap rendering is now triggered from loadBeatmap after loading audio
+            });
+
+            function renderBeatmapNotes(notes) {
+                wsRegions.clearRegions();
+                notes.forEach(note => {
+                    wsRegions.addRegion({
+                        start: note.time,
+                        end: note.time + 0.02, // A very short region to act as a marker
+                        color: note.type === 'don' ? 'rgba(255, 99, 71, 0.7)' : 'rgba(65, 105, 225, 0.7)',
+                        drag: false,
+                        resize: false,
+                    });
+                });
+                loadStatus.textContent += ` 已成功渲染 ${notes.length} 个鼓点。`;
+            }
+        });
+    </script>
+</body>
+</html>

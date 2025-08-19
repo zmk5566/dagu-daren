@@ -112,29 +112,23 @@ def detect_onsets(audio_path):
         y, sr = librosa.load(audio_path, sr=None)
         
         # Using a sensitive onset detection suitable for percussive tracks
+        # backtrack=True helps to find the energy rise leading to the peak, which is a more robust onset definition.
         onset_frames = librosa.onset.onset_detect(
             y=y, 
             sr=sr, 
             units='frames',
-            hop_length=512, # Standard hop length
-            backtrack=False, # Simpler onset definition
-            pre_max=5,     # Look for a peak in a small window
-            post_max=6,
-            pre_avg=5,     # Compare with average energy in a small window
-            post_avg=6,
-            delta=0.05,    # Sensitivity threshold
-            wait=1         # Minimum frames between onsets
+            hop_length=512,
+            backtrack=True # Use backtracking to find the start of the percussive event
         )
-        
+        print(f" -> Detected {len(onset_frames)} onsets using backtracking.")
         onset_times = librosa.frames_to_time(onset_frames, sr=sr, hop_length=512)
-        print(f" -> Detected {len(onset_times)} potential onsets.")
         return onset_times, y, sr
         
     except Exception as e:
         print(f"  [Error] Failed during onset detection: {e}")
         return None, None, None
 
-def classify_onsets(onset_times, y, sr, model, scaler, confidence_threshold=0.8):
+def classify_onsets(onset_times, y, sr, model, scaler, confidence_threshold=0.955):
     """
     Classifies each onset as 'don', 'ka', or None based on a confidence threshold.
     """
@@ -144,7 +138,7 @@ def classify_onsets(onset_times, y, sr, model, scaler, confidence_threshold=0.8)
     
     # Define a small window around each onset to extract features from
     # A window of 50ms is common for percussive hits
-    frame_length = int(sr * 0.05) 
+    frame_length = int(sr * 0.1) 
 
     for i, t in enumerate(onset_times):
         # Get the audio frame for this onset
@@ -228,6 +222,85 @@ def generate_beatmap_json(classified_notes, project_path):
     except Exception as e:
         print(f"  [Error] Failed to write JSON file: {e}")
 
+def evaluate_beatmap(predicted_notes, ground_truth_path, time_windows, tolerance=0.15):
+    """
+    Evaluates the generated beatmap against the ground truth annotations.
+    """
+    print(f"\n--- Phase 5: Evaluating beatmap against ground truth ---")
+
+    # 1. Load ground truth
+    try:
+        with open(ground_truth_path, 'r') as f:
+            ground_truth_data = json.load(f)
+        # The annotator saves a list of dicts, not a nested structure
+        ground_truth_notes = [{"time": note['time'], "type": note['type']} for note in ground_truth_data]
+    except Exception as e:
+        print(f"  [Error] Could not load or parse ground truth file: {e}")
+        return
+
+    # 2. Filter both lists by the specified time windows
+    filter_notes = lambda notes: [
+        note for note in notes
+        if any(start <= note['time'] <= end for start, end in time_windows)
+    ]
+    
+    predicted_filtered = sorted(filter_notes(predicted_notes), key=lambda x: x['time'])
+    ground_truth_filtered = sorted(filter_notes(ground_truth_notes), key=lambda x: x['time'])
+
+    print(f" -> Evaluating within time windows: {time_windows}")
+    print(f" -> Found {len(ground_truth_filtered)} ground truth notes and {len(predicted_filtered)} predicted notes in these windows.")
+
+    if not ground_truth_filtered:
+        print("  [Warning] No ground truth notes found in the specified time windows. Cannot evaluate.")
+        return
+
+    # 3. Match notes and calculate metrics
+    true_positives = 0
+    false_positives = 0
+    
+    # Keep track of which ground truth notes have been matched to prevent double counting
+    matched_gt_indices = set()
+
+    for p_note in predicted_filtered:
+        best_match_gt_idx = -1
+        min_time_diff = float('inf')
+
+        # Find the closest ground truth note within the tolerance
+        for i, gt_note in enumerate(ground_truth_filtered):
+            if i in matched_gt_indices:
+                continue
+            
+            time_diff = abs(p_note['time'] - gt_note['time'])
+            if time_diff <= tolerance and time_diff < min_time_diff:
+                min_time_diff = time_diff
+                best_match_gt_idx = i
+
+        if best_match_gt_idx != -1:
+            # We found a time match. Now check if the type is also correct.
+            if p_note['type'] == ground_truth_filtered[best_match_gt_idx]['type']:
+                true_positives += 1
+                matched_gt_indices.add(best_match_gt_idx)
+            else:
+                # Time match but wrong type: counts as a false positive
+                false_positives += 1
+        else:
+            # No time match found within tolerance: it's a false positive
+            false_positives += 1
+            
+    false_negatives = len(ground_truth_filtered) - len(matched_gt_indices)
+
+    # 4. Calculate Precision, Recall, and F1-Score
+    # Avoid division by zero
+    precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
+    recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
+    f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+    print("\n--- Evaluation Report ---")
+    print(f"  - Precision: {precision:.2%}")
+    print(f"  - Recall:    {recall:.2%}")
+    print(f"  - F1-Score:  {f1_score:.2%}")
+    print("-------------------------")
+
 def main(project_path):
     """
     Main function to drive the beatmap generation process.
@@ -255,6 +328,18 @@ def main(project_path):
 
     # --- Step 4: Generate final beatmap ---
     generate_beatmap_json(classified_notes, project_path)
+
+    # --- Step 5: Evaluate the generated beatmap ---
+    ground_truth_file = os.path.join(project_path, 'annotation', 'annotations.json')
+    if os.path.exists(ground_truth_file):
+        evaluate_beatmap(
+            predicted_notes=classified_notes,
+            ground_truth_path=ground_truth_file,
+            time_windows=[(0, 72), (110, 170)]
+        )
+    else:
+        print("\n--- Phase 5: Evaluation ---")
+        print(f"  [Warning] Ground truth file not found at '{ground_truth_file}'. Skipping evaluation.")
 
     print("\nBeatmap generation process finished successfully!")
 

@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大鼓达人 - DAW 专业标注工具</title>
+    <style>
+        /* Modern DAW-style CSS */
+        :root {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3d3d3d;
+            --accent-primary: #0078d4;
+            --accent-secondary: #106ebe;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #999999;
+            --border-color: #444444;
+            --success-color: #107c10;
+            --warning-color: #ff8c00;
+            --error-color: #d13438;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .daw-header {
+            height: 60px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .daw-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .daw-version {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: 10px;
+        }
+
+        /* Main Layout */
+        .daw-layout {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .daw-sidebar {
+            width: 300px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar for sidebar */
+        .daw-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .daw-sidebar::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .daw-sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .daw-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .daw-panel {
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .daw-panel-header {
+            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .daw-panel-content {
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .daw-panel.collapsed .daw-panel-content {
+            display: none;
+        }
+
+        /* Individual panel max heights to prevent any one panel from taking all space */
+        #project-panel .daw-panel-content {
+            max-height: 150px;
+        }
+
+        #bpm-panel .daw-panel-content {
+            max-height: 250px;
+        }
+
+        #align-panel .daw-panel-content {
+            max-height: 350px;
+        }
+
+        #annotations-panel .daw-panel-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Make panels more compact when needed */
+        .daw-panel-content .form-group {
+            margin-bottom: 12px;
+        }
+
+        .daw-panel-content .btn {
+            margin-bottom: 8px;
+        }
+
+        /* Ensure content is always accessible */
+        .daw-panel-content {
+            min-height: 0; /* Allow flexbox to shrink */
+        }
+
+        /* Add visual hint when content is scrollable */
+        .daw-panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .daw-panel-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .daw-panel-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .daw-panel-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .panel-toggle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .daw-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Toolbar */
+        .daw-toolbar {
+            height: 50px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 10px;
+        }
+
+        /* Transport Controls */
+        .transport-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 20px;
+            padding-right: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .transport-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .transport-btn:hover {
+            background: var(--accent-primary);
+        }
+
+        .transport-btn:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* BPM Display */
+        .bpm-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 15px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .bpm-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .bpm-confidence {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Timeline Container */
+        .timeline-container {
+            flex: 1;
+            background: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Timeline Header */
+        .timeline-header {
+            height: 40px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-ruler {
+            height: 100%;
+            position: relative;
+            background: linear-gradient(to right, var(--border-color) 0px, transparent 1px);
+            background-size: 50px 100%;
+        }
+
+        /* Waveform Area */
+        .waveform-area {
+            height: 150px;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #waveform {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Beat Grid Overlay */
+        .beat-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .beat-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: var(--accent-primary);
+            opacity: 0.3;
+        }
+
+        .beat-line.downbeat {
+            background: var(--warning-color);
+            opacity: 0.6;
+            width: 2px;
+        }
+
+        .beat-line.subdivision {
+            opacity: 0.15;
+        }
+
+        /* Annotation Track */
+        .annotation-track {
+            height: 60px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .annotation-marker {
+            position: absolute;
+            top: 5px;
+            height: 50px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .annotation-marker.don {
+            background: #ff6347;
+        }
+
+        .annotation-marker.ka {
+            background: #4169e1;
+        }
+
+        .annotation-marker:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .annotation-marker.selected {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Status Display */
+        .status-message {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .status-success {
+            background: rgba(16, 124, 16, 0.2);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status-warning {
+            background: rgba(255, 140, 0, 0.2);
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .status-error {
+            background: rgba(209, 52, 56, 0.2);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        /* Annotations List */
+        .annotations-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-primary);
+        }
+
+        .annotation-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .annotation-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .annotation-item.selected {
+            background: var(--accent-primary);
+        }
+
+        .annotation-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .annotation-type {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .annotation-type.don {
+            color: #ff6347;
+        }
+
+        .annotation-type.ka {
+            color: #4169e1;
+        }
+
+        .annotation-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 30, 30, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Quantization Panel */
+        .quantize-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quantize-btn {
+            padding: 6px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quantize-btn:hover {
+            background: var(--border-color);
+        }
+
+        .quantize-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        /* Range Slider */
+        .range-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .range-input {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--bg-tertiary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+        }
+
+        .range-input::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .daw-sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .daw-sidebar {
+                position: absolute;
+                left: -300px;
+                top: 0;
+                height: 100%;
+                z-index: 1000;
+                transition: left 0.3s;
+            }
+
+            .daw-sidebar.open {
+                left: 0;
+            }
+
+            .daw-header {
+                padding: 0 10px;
+            }
+
+            .daw-toolbar {
+                padding: 0 10px;
+                flex-wrap: wrap;
+                height: auto;
+                min-height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="daw-header">
+        <div>
+            <span class="daw-title">大鼓达人</span>
+            <span class="daw-version">DAW 专业标注工具 v1.0</span>
+        </div>
+        <div>
+            <button class="btn btn-secondary btn-small" id="sidebar-toggle">
+                <span>☰</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="daw-layout">
+        <!-- Sidebar -->
+        <div class="daw-sidebar" id="sidebar">
+            <!-- Project Panel -->
+            <div class="daw-panel" id="project-panel">
+                <div class="daw-panel-header" onclick="togglePanel('project-panel')">
+                    <span>项目</span>
+                    <span class="panel-toggle">▼</span>
+                </div>
+                <div class="daw-panel-content">
+                    <div class="form-group">
+                        <label class="form-label">选择项目</label>
+                        <select class="form-select" id="project-selector">
+                            <option value="">-- 请选择项目 --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="load-project-btn">
+                        加载项目
+                    </button>
+                    <div id="project-status"></div>
+                </div>
+            </div>
+
+            <!-- BPM Analysis Panel -->
+            <div class="daw-panel" id="bpm-panel">
+                <div class="daw-panel-header" onclick="togglePanel('bpm-panel')">
+                    <span>BPM 分析</span>
+                    <span class="panel-toggle">▼</span>
+                </div>
+                <div class="daw-panel-content">
+                    <button class="btn btn-secondary btn-block" id="detect-bpm-btn" disabled>
+                        检测 BPM
+                    </button>
+                    <div class="form-group">
+                        <label class="form-label">手动 BPM</label>
+                        <input type="number" class="form-input" id="manual-bpm" placeholder="120.0" step="0.1" min="60" max="200">
+                    </div>
+                    <button class="btn btn-secondary btn-block" id="generate-beats-btn" disabled>
+                        生成节拍网格
+                    </button>
+                    <div id="bpm-status"></div>
+                </div>
+            </div>
+
+            <!-- Auto-Alignment Panel -->
+            <div class="daw-panel" id="align-panel">
+                <div class="daw-panel-header" onclick="togglePanel('align-panel')">
+                    <span>自动对齐</span>
+                    <span class="panel-toggle">▼</span>
+                </div>
+                <div class="daw-panel-content">
+                    <div class="form-group">
+                        <label class="form-label">量化模式</label>
+                        <div class="quantize-options" id="quantize-options">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Swing 量</label>
+                        <select class="form-select" id="swing-amount">
+                            <option value="light">轻微 Swing (55%)</option>
+                            <option value="medium" selected>中等 Swing (60%)</option>
+                            <option value="heavy">重度 Swing (67%)</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="custom-swing-group" style="display: none;">
+                        <label class="form-label">自定义 Swing 比例</label>
+                        <div class="range-slider">
+                            <input type="range" class="range-input" id="custom-swing" min="0.5" max="0.8" step="0.01" value="0.6">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+                                <span>直拍 (50%)</span>
+                                <span id="swing-value">60%</span>
+                                <span>重摆 (80%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">容差 (节拍比例)</label>
+                        <input type="number" class="form-input" id="tolerance" value="0.25" step="0.05" min="0.05" max="0.5">
+                    </div>
+                    <button class="btn btn-success btn-block" id="auto-align-btn" disabled>
+                        自动对齐标注
+                    </button>
+                    <div id="align-status"></div>
+                </div>
+            </div>
+
+            <!-- Annotations Panel -->
+            <div class="daw-panel" id="annotations-panel">
+                <div class="daw-panel-header" onclick="togglePanel('annotations-panel')">
+                    <span>标注列表</span>
+                    <span class="panel-toggle">▼</span>
+                </div>
+                <div class="daw-panel-content">
+                    <div class="annotations-list" id="annotations-list">
+                        <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                            暂无标注
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-warning btn-block" id="save-annotations-btn" disabled>
+                            保存标注
+                        </button>
+                        <button class="btn btn-secondary btn-block" id="export-annotations-btn" disabled style="margin-top: 8px;">
+                            导出音频样本
+                        </button>
+                    </div>
+                    <div id="save-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="daw-main">
+            <!-- Toolbar -->
+            <div class="daw-toolbar">
+                <!-- Transport Controls -->
+                <div class="transport-controls">
+                    <button class="transport-btn" id="play-btn" disabled title="播放/暂停 (空格键)">
+                        <span>▶</span>
+                    </button>
+                    <button class="transport-btn" id="stop-btn" disabled title="停止">
+                        <span>⏹</span>
+                    </button>
+                    <button class="transport-btn" id="loop-btn" disabled title="循环播放">
+                        <span>🔁</span>
+                    </button>
+                </div>
+
+                <!-- BPM Display -->
+                <div class="bpm-display">
+                    <div>
+                        <div class="bpm-value" id="bpm-value">--</div>
+                        <div class="bpm-confidence" id="bpm-confidence">BPM</div>
+                    </div>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div class="transport-controls">
+                    <button class="transport-btn" id="zoom-out-btn" disabled title="缩小 (Ctrl+滚轮)">
+                        <span>-</span>
+                    </button>
+                    <button class="transport-btn" id="zoom-in-btn" disabled title="放大 (Ctrl+滚轮)">
+                        <span>+</span>
+                    </button>
+                    <button class="transport-btn" id="zoom-fit-btn" disabled title="适应窗口">
+                        <span>⊟</span>
+                    </button>
+                </div>
+
+                <!-- Tool Selection -->
+                <div class="transport-controls">
+                    <button class="transport-btn" id="tool-select" title="选择工具">
+                        <span>🔍</span>
+                    </button>
+                    <button class="transport-btn" id="tool-don" title="Don 工具 (D键)">
+                        <span>咚</span>
+                    </button>
+                    <button class="transport-btn" id="tool-ka" title="Ka 工具 (K键)">
+                        <span>咔</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timeline Container -->
+            <div class="timeline-container" id="timeline-container">
+                <!-- Timeline Header with Ruler -->
+                <div class="timeline-header">
+                    <div class="timeline-ruler" id="timeline-ruler"></div>
+                </div>
+
+                <!-- Waveform Area -->
+                <div class="waveform-area">
+                    <div class="beat-grid-overlay" id="beat-grid-overlay"></div>
+                    <div id="waveform"></div>
+                </div>
+
+                <!-- Annotation Track -->
+                <div class="annotation-track" id="annotation-track">
+                    <!-- Annotation markers will be placed here -->
+                </div>
+
+                <!-- Loading Overlay -->
+                <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text" id="loading-text">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include WaveSurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
+
+    <script>
+        // DAW Interface JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            // Global state
+            let currentProject = '';
+            let annotations = [];
+            let beatGrid = null;
+            let bpmData = null;
+            let selectedAnnotation = null;
+            let currentTool = 'select';
+            let isLooping = false;
+            let quantizeMode = '1/16';
+
+            // DOM elements
+            const elements = {
+                projectSelector: document.getElementById('project-selector'),
+                loadProjectBtn: document.getElementById('load-project-btn'),
+                projectStatus: document.getElementById('project-status'),
+                detectBpmBtn: document.getElementById('detect-bpm-btn'),
+                manualBpm: document.getElementById('manual-bpm'),
+                generateBeatsBtn: document.getElementById('generate-beats-btn'),
+                bpmStatus: document.getElementById('bpm-status'),
+                quantizeOptions: document.getElementById('quantize-options'),
+                swingAmount: document.getElementById('swing-amount'),
+                customSwingGroup: document.getElementById('custom-swing-group'),
+                customSwing: document.getElementById('custom-swing'),
+                swingValue: document.getElementById('swing-value'),
+                tolerance: document.getElementById('tolerance'),
+                autoAlignBtn: document.getElementById('auto-align-btn'),
+                alignStatus: document.getElementById('align-status'),
+                annotationsList: document.getElementById('annotations-list'),
+                saveAnnotationsBtn: document.getElementById('save-annotations-btn'),
+                exportAnnotationsBtn: document.getElementById('export-annotations-btn'),
+                saveStatus: document.getElementById('save-status'),
+                playBtn: document.getElementById('play-btn'),
+                stopBtn: document.getElementById('stop-btn'),
+                loopBtn: document.getElementById('loop-btn'),
+                zoomInBtn: document.getElementById('zoom-in-btn'),
+                zoomOutBtn: document.getElementById('zoom-out-btn'),
+                zoomFitBtn: document.getElementById('zoom-fit-btn'),
+                toolSelect: document.getElementById('tool-select'),
+                toolDon: document.getElementById('tool-don'),
+                toolKa: document.getElementById('tool-ka'),
+                bpmValue: document.getElementById('bpm-value'),
+                bpmConfidence: document.getElementById('bpm-confidence'),
+                beatGridOverlay: document.getElementById('beat-grid-overlay'),
+                annotationTrack: document.getElementById('annotation-track'),
+                loadingOverlay: document.getElementById('loading-overlay'),
+                loadingText: document.getElementById('loading-text'),
+                sidebarToggle: document.getElementById('sidebar-toggle'),
+                sidebar: document.getElementById('sidebar')
+            };
+
+
+            // Initialize WaveSurfer
+            const wavesurfer = WaveSurfer.create({
+                container: document.getElementById('waveform'),
+                waveColor: '#4a4a4a',
+                progressColor: '#0078d4',
+                cursorWidth: 2,
+                cursorColor: '#ffffff',
+                barWidth: 2,
+                barGap: 1,
+                responsive: true,
+                height: 150,
+                backend: 'WebAudio'
+            });
+
+            // Initialize regions plugin
+            const wsRegions = wavesurfer.registerPlugin(WaveSurfer.Regions.create());
+
+            // Utility functions
+            function showLoading(text) {
+                elements.loadingText.textContent = text;
+                elements.loadingOverlay.style.display = 'flex';
+            }
+
+            function hideLoading() {
+                elements.loadingOverlay.style.display = 'none';
+            }
+
+            function showStatus(element, message, type = 'info') {
+                element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            }
+
+            // Make togglePanel globally accessible
+            window.togglePanel = function(panelId) {
+                const panel = document.getElementById(panelId);
+                const toggle = panel.querySelector('.panel-toggle');
+                panel.classList.toggle('collapsed');
+                toggle.textContent = panel.classList.contains('collapsed') ? '▶' : '▼';
+            };
+
+            // Load projects
+            async function loadProjects() {
+                try {
+                    const response = await fetch('/api/projects');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        elements.projectSelector.innerHTML = '<option value="">-- 请选择项目 --</option>';
+                        data.projects.forEach(project => {
+                            const option = document.createElement('option');
+                            option.value = project;
+                            option.textContent = project;
+                            elements.projectSelector.appendChild(option);
+                        });
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.projectStatus, `加载项目列表失败: ${error.message}`, 'error');
+                }
+            }
+
+            // Load project
+            async function loadProject(projectName) {
+                currentProject = projectName;
+                showLoading('加载项目音频...');
+
+                try {
+                    const audioPath = `data/${projectName}/generated_audio/drums.mp3`;
+                    const response = await fetch(audioPath);
+                    
+                    if (!response.ok) {
+                        throw new Error(`音频文件不存在: ${audioPath}`);
+                    }
+
+                    const audioBlob = await response.blob();
+                    await wavesurfer.load(URL.createObjectURL(audioBlob));
+                    
+                    // Load existing annotations
+                    await loadAnnotations(projectName);
+                    
+                    // Enable controls
+                    enableControls();
+                    
+                    showStatus(elements.projectStatus, `项目 "${projectName}" 加载成功`, 'success');
+                    
+                } catch (error) {
+                    showStatus(elements.projectStatus, `加载项目失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Load annotations
+            async function loadAnnotations(projectName) {
+                try {
+                    const response = await fetch(`/api/annotations/${projectName}`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        annotations = data.annotations || [];
+                        renderAnnotations();
+                        updateAnnotationsList();
+                        
+                        if (annotations.length > 0) {
+                            showStatus(elements.projectStatus, `加载了 ${annotations.length} 个已有标注`, 'success');
+                        }
+                    }
+                } catch (error) {
+                    console.warn('加载标注失败:', error);
+                }
+            }
+
+            // Detect BPM
+            async function detectBPM() {
+                if (!currentProject) return;
+
+                showLoading('检测 BPM...');
+                
+                try {
+                    const response = await fetch('/api/detect_bpm', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectName: currentProject,
+                            audioFile: 'drums.mp3'
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log('BPM detection response:', data); // 调试信息
+                    
+                    if (data.status === 'success') {
+                        bmpData = data.bpm_data;  // 修复：后端返回的是 bpm_data 不是 bmp_data
+                        
+                        // 验证数据结构
+                        if (!bmpData || typeof bmpData.bpm === 'undefined') {
+                            throw new Error('无效的BPM数据结构');
+                        }
+                        
+                        elements.bpmValue.textContent = bmpData.bpm;
+                        elements.bpmConfidence.textContent = `置信度: ${(bmpData.confidence * 100).toFixed(1)}%`;
+                        elements.manualBpm.value = bmpData.bpm;
+                        
+                        showStatus(elements.bpmStatus, `BPM 检测成功: ${bmpData.bpm} (${bmpData.method_used})`, 'success');
+                        elements.generateBeatsBtn.disabled = false;
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.bpmStatus, `BPM 检测失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Generate beat grid
+            async function generateBeatGrid() {
+                if (!currentProject) return;
+
+                const bpm = elements.manualBpm.value || (bmpData && bmpData.bpm);
+                if (!bpm) {
+                    showStatus(elements.bpmStatus, '请先检测 BPM 或输入手动 BPM', 'warning');
+                    return;
+                }
+
+                showLoading('生成节拍网格...');
+
+                try {
+                    const response = await fetch('/api/analyze_beats', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectName: currentProject,
+                            audioFile: 'drums.mp3',
+                            bpmOverride: parseFloat(bpm)
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        beatGrid = data.beat_grid;
+                        renderBeatGrid();
+                        
+                        showStatus(elements.bpmStatus, 
+                            `节拍网格生成成功: ${beatGrid.grid_metadata.total_beats} 个节拍, ${beatGrid.grid_metadata.total_measures} 个小节`, 
+                            'success'
+                        );
+                        
+                        elements.autoAlignBtn.disabled = false;
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.bpmStatus, `节拍网格生成失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Render beat grid overlay
+            function renderBeatGrid() {
+                if (!beatGrid) return;
+
+                const overlay = elements.beatGridOverlay;
+                overlay.innerHTML = '';
+
+                const duration = wavesurfer.getDuration();
+                if (!duration) return;
+
+                const containerWidth = overlay.offsetWidth;
+
+                // Render downbeats
+                beatGrid.downbeats.forEach(time => {
+                    const position = (time / duration) * containerWidth;
+                    const line = document.createElement('div');
+                    line.className = 'beat-line downbeat';
+                    line.style.left = `${position}px`;
+                    overlay.appendChild(line);
+                });
+
+                // Render regular beats
+                beatGrid.beats.forEach(time => {
+                    const position = (time / duration) * containerWidth;
+                    const line = document.createElement('div');
+                    line.className = 'beat-line';
+                    line.style.left = `${position}px`;
+                    overlay.appendChild(line);
+                });
+
+                // Render subdivisions based on quantize mode
+                if (beatGrid.subdivisions) {
+                    const subdivisions = beatGrid.subdivisions.sixteenth_notes || [];
+                    subdivisions.forEach(time => {
+                        if (time <= duration) {
+                            const position = (time / duration) * containerWidth;
+                            const line = document.createElement('div');
+                            line.className = 'beat-line subdivision';
+                            line.style.left = `${position}px`;
+                            overlay.appendChild(line);
+                        }
+                    });
+                }
+            }
+
+            // Auto-align annotations
+            async function autoAlignAnnotations() {
+                if (!currentProject || !beatGrid || annotations.length === 0) {
+                    showStatus(elements.alignStatus, '请先加载项目、生成节拍网格并添加标注', 'warning');
+                    return;
+                }
+
+                showLoading('自动对齐标注...');
+
+                try {
+                    const swingAmount = elements.swingAmount.value;
+                    const customSwing = parseFloat(elements.customSwing.value);
+                    const tolerance = parseFloat(elements.tolerance.value);
+
+                    const response = await fetch('/api/auto_align', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectName: currentProject,
+                            quantizeMode: quantizeMode,
+                            swingAmount: swingAmount,
+                            customSwing: customSwing,
+                            tolerance: tolerance,
+                            preserveOffBeat: true
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        annotations = data.alignment_result.aligned_annotations;
+                        renderAnnotations();
+                        updateAnnotationsList();
+                        
+                        const stats = data.alignment_result.alignment_stats;
+                        showStatus(elements.alignStatus, 
+                            `对齐完成: ${stats.aligned_count} 个对齐, ${stats.preserved_count} 个保留, 平均调整 ${(stats.average_adjustment * 1000).toFixed(1)}ms`, 
+                            'success'
+                        );
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.alignStatus, `自动对齐失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Render annotations
+            function renderAnnotations() {
+                // Clear existing regions
+                wsRegions.clearRegions();
+                
+                // Clear annotation track
+                elements.annotationTrack.innerHTML = '';
+                
+                if (!wavesurfer.getDuration()) return;
+
+                const duration = wavesurfer.getDuration();
+                const trackWidth = elements.annotationTrack.offsetWidth;
+
+                annotations.forEach((annotation, index) => {
+                    // Create region for waveform
+                    const region = wsRegions.addRegion({
+                        id: annotation.id || `ann-${index}`,
+                        start: annotation.time,
+                        end: annotation.time + (annotation.duration || 0.1),
+                        color: annotation.type === 'don' ? 'rgba(255, 99, 71, 0.3)' : 'rgba(65, 105, 225, 0.3)',
+                        drag: true,
+                        resize: true
+                    });
+
+                    // Create marker for annotation track
+                    const marker = document.createElement('div');
+                    marker.className = `annotation-marker ${annotation.type}`;
+                    marker.dataset.id = annotation.id || `ann-${index}`;
+                    marker.textContent = annotation.type.toUpperCase();
+                    
+                    const position = (annotation.time / duration) * trackWidth;
+                    const width = Math.max(20, (annotation.duration || 0.1) / duration * trackWidth);
+                    
+                    marker.style.left = `${position}px`;
+                    marker.style.width = `${width}px`;
+                    
+                    marker.addEventListener('click', () => selectAnnotation(annotation, marker, region));
+                    
+                    elements.annotationTrack.appendChild(marker);
+                });
+            }
+
+            // Select annotation
+            function selectAnnotation(annotation, marker, region) {
+                // Clear previous selection
+                document.querySelectorAll('.annotation-marker.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                document.querySelectorAll('.annotation-item.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+
+                // Select new annotation
+                selectedAnnotation = annotation;
+                marker.classList.add('selected');
+                
+                // Highlight in list
+                const listItem = document.querySelector(`[data-id="${annotation.id}"]`);
+                if (listItem) {
+                    listItem.classList.add('selected');
+                }
+
+                // Seek to annotation
+                wavesurfer.seekTo(annotation.time / wavesurfer.getDuration());
+            }
+
+            // Update annotations list
+            function updateAnnotationsList() {
+                const list = elements.annotationsList;
+                
+                if (annotations.length === 0) {
+                    list.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">暂无标注</div>';
+                    elements.saveAnnotationsBtn.disabled = true;
+                    elements.exportAnnotationsBtn.disabled = true;
+                    return;
+                }
+
+                // Sort annotations by time
+                const sortedAnnotations = [...annotations].sort((a, b) => a.time - b.time);
+                
+                list.innerHTML = '';
+                sortedAnnotations.forEach(annotation => {
+                    const item = document.createElement('div');
+                    item.className = 'annotation-item';
+                    item.dataset.id = annotation.id;
+                    
+                    item.innerHTML = `
+                        <div class="annotation-info">
+                            <div class="annotation-type ${annotation.type}">${annotation.type.toUpperCase()}</div>
+                            <div class="annotation-time">${annotation.time.toFixed(3)}s (${(annotation.duration || 0.1).toFixed(3)}s)</div>
+                        </div>
+                        <button class="btn btn-error btn-small" onclick="deleteAnnotation('${annotation.id}')">删除</button>
+                    `;
+                    
+                    item.addEventListener('click', (e) => {
+                        if (e.target.tagName !== 'BUTTON') {
+                            const marker = document.querySelector(`.annotation-marker[data-id="${annotation.id}"]`);
+                            const region = wsRegions.getRegions().find(r => r.id === annotation.id);
+                            if (marker && region) {
+                                selectAnnotation(annotation, marker, region);
+                            }
+                        }
+                    });
+                    
+                    list.appendChild(item);
+                });
+
+                elements.saveAnnotationsBtn.disabled = false;
+                elements.exportAnnotationsBtn.disabled = false;
+            }
+
+            // Delete annotation
+            window.deleteAnnotation = function(annotationId) {
+                annotations = annotations.filter(ann => ann.id !== annotationId);
+                
+                // Remove region
+                const region = wsRegions.getRegions().find(r => r.id === annotationId);
+                if (region) {
+                    region.remove();
+                }
+                
+                // Remove marker
+                const marker = document.querySelector(`.annotation-marker[data-id="${annotationId}"]`);
+                if (marker) {
+                    marker.remove();
+                }
+                
+                updateAnnotationsList();
+                
+                if (selectedAnnotation && selectedAnnotation.id === annotationId) {
+                    selectedAnnotation = null;
+                }
+            };
+
+            // Add annotation at current time
+            function addAnnotation(type) {
+                if (!wavesurfer.getDuration()) return;
+
+                const currentTime = wavesurfer.getCurrentTime();
+                const newAnnotation = {
+                    id: `ann-${Date.now()}`,
+                    time: currentTime,
+                    duration: 0.1,
+                    type: type
+                };
+
+                annotations.push(newAnnotation);
+                renderAnnotations();
+                updateAnnotationsList();
+            }
+
+            // Save annotations
+            async function saveAnnotations() {
+                if (!currentProject) return;
+
+                showLoading('保存标注...');
+
+                try {
+                    const response = await fetch(`/api/annotations/${currentProject}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ annotations: annotations })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showStatus(elements.saveStatus, `保存成功: ${data.message}`, 'success');
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.saveStatus, `保存失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Export audio samples
+            async function exportAudioSamples() {
+                if (!currentProject) return;
+
+                showLoading('导出音频样本...');
+
+                try {
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectName: currentProject,
+                            audioFile: 'drums.mp3',
+                            annotations: annotations
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showStatus(elements.saveStatus, `导出成功: ${data.message}`, 'success');
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(elements.saveStatus, `导出失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Enable controls after project loads
+            function enableControls() {
+                elements.playBtn.disabled = false;
+                elements.stopBtn.disabled = false;
+                elements.loopBtn.disabled = false;
+                elements.zoomInBtn.disabled = false;
+                elements.zoomOutBtn.disabled = false;
+                elements.zoomFitBtn.disabled = false;
+                elements.detectBpmBtn.disabled = false;
+            }
+
+            // Initialize quantization options
+            function initQuantizeOptions() {
+                const options = [
+                    { value: '1/4', label: '1/4' },
+                    { value: '1/8', label: '1/8' },
+                    { value: '1/16', label: '1/16' },
+                    { value: '1/4+swing', label: '1/4+Swing' },
+                    { value: '1/8+swing', label: '1/8+Swing' },
+                    { value: '1/16+swing', label: '1/16+Swing' },
+                    { value: '1/4T', label: '1/4T' },
+                    { value: '1/8T', label: '1/8T' }
+                ];
+
+                elements.quantizeOptions.innerHTML = '';
+                options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quantize-btn';
+                    btn.textContent = option.label;
+                    btn.dataset.value = option.value;
+                    
+                    if (option.value === quantizeMode) {
+                        btn.classList.add('active');
+                    }
+                    
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.quantize-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        quantizeMode = option.value;
+                    });
+                    
+                    elements.quantizeOptions.appendChild(btn);
+                });
+            }
+
+            // Event listeners
+            elements.loadProjectBtn.addEventListener('click', () => {
+                const project = elements.projectSelector.value;
+                if (project) {
+                    loadProject(project);
+                }
+            });
+
+            elements.detectBpmBtn.addEventListener('click', detectBPM);
+            elements.generateBeatsBtn.addEventListener('click', generateBeatGrid);
+            elements.autoAlignBtn.addEventListener('click', autoAlignAnnotations);
+            elements.saveAnnotationsBtn.addEventListener('click', saveAnnotations);
+            elements.exportAnnotationsBtn.addEventListener('click', exportAudioSamples);
+
+            // Transport controls
+            elements.playBtn.addEventListener('click', () => wavesurfer.playPause());
+            elements.stopBtn.addEventListener('click', () => wavesurfer.stop());
+            elements.loopBtn.addEventListener('click', () => {
+                isLooping = !isLooping;
+                elements.loopBtn.style.background = isLooping ? 'var(--accent-primary)' : 'var(--bg-tertiary)';
+            });
+
+            // Zoom controls - WaveSurfer v7 API
+            let minPxPerSec = 50;   // 最小像素每秒
+            let maxPxPerSec = 2000; // 最大像素每秒
+            let currentPxPerSec = 100; // 当前像素每秒
+            
+            elements.zoomInBtn.addEventListener('click', () => {
+                currentPxPerSec = Math.min(currentPxPerSec * 1.5, maxPxPerSec);
+                wavesurfer.zoom(currentPxPerSec);
+            });
+            
+            elements.zoomOutBtn.addEventListener('click', () => {
+                currentPxPerSec = Math.max(currentPxPerSec / 1.5, minPxPerSec);
+                wavesurfer.zoom(currentPxPerSec);
+            });
+            
+            elements.zoomFitBtn.addEventListener('click', () => {
+                // 适应窗口：计算能显示整个音频的像素每秒
+                const duration = wavesurfer.getDuration();
+                const containerWidth = wavesurfer.getWrapper().clientWidth;
+                if (duration > 0) {
+                    currentPxPerSec = Math.max(containerWidth / duration, minPxPerSec);
+                    wavesurfer.zoom(currentPxPerSec);
+                }
+            });
+
+            // Tool selection
+            elements.toolSelect.addEventListener('click', () => {
+                currentTool = 'select';
+                updateToolSelection();
+            });
+            elements.toolDon.addEventListener('click', () => {
+                currentTool = 'don';
+                updateToolSelection();
+            });
+            elements.toolKa.addEventListener('click', () => {
+                currentTool = 'ka';
+                updateToolSelection();
+            });
+
+            function updateToolSelection() {
+                document.querySelectorAll('[id^="tool-"]').forEach(btn => {
+                    btn.style.background = 'var(--bg-tertiary)';
+                });
+                
+                const selectedTool = document.getElementById(`tool-${currentTool}`);
+                if (selectedTool) {
+                    selectedTool.style.background = 'var(--accent-primary)';
+                }
+            }
+
+            // Swing amount change
+            elements.swingAmount.addEventListener('change', () => {
+                const isCustom = elements.swingAmount.value === 'custom';
+                elements.customSwingGroup.style.display = isCustom ? 'block' : 'none';
+            });
+
+            elements.customSwing.addEventListener('input', () => {
+                const value = parseFloat(elements.customSwing.value);
+                elements.swingValue.textContent = `${Math.round(value * 100)}%`;
+            });
+
+            // Timeline click to add annotations
+            elements.annotationTrack.addEventListener('click', (e) => {
+                if (currentTool !== 'select' && wavesurfer.getDuration()) {
+                    const rect = elements.annotationTrack.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const timePosition = (x / rect.width) * wavesurfer.getDuration();
+                    
+                    wavesurfer.seekTo(timePosition / wavesurfer.getDuration());
+                    addAnnotation(currentTool);
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+                    return;
+                }
+
+                switch (e.key.toLowerCase()) {
+                    case ' ':
+                        e.preventDefault();
+                        wavesurfer.playPause();
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        addAnnotation('don');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        addAnnotation('ka');
+                        break;
+                    case 'backspace':
+                    case 'delete':
+                        e.preventDefault();
+                        if (selectedAnnotation) {
+                            deleteAnnotation(selectedAnnotation.id);
+                        }
+                        break;
+                    case 's':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            saveAnnotations();
+                        }
+                        break;
+                }
+            });
+
+            // Sidebar toggle for mobile
+            elements.sidebarToggle.addEventListener('click', () => {
+                elements.sidebar.classList.toggle('open');
+            });
+
+            // WaveSurfer events
+            wavesurfer.on('ready', () => {
+                hideLoading();
+                
+                // 设置初始缩放 - 显示大约10-15秒的音频
+                const duration = wavesurfer.getDuration();
+                const containerWidth = wavesurfer.getWrapper().clientWidth;
+                if (duration > 0) {
+                    const targetViewDuration = Math.min(duration, 15); // 显示最多15秒
+                    currentPxPerSec = Math.max(containerWidth / targetViewDuration, minPxPerSec);
+                    wavesurfer.zoom(currentPxPerSec);
+                }
+                
+                renderBeatGrid();
+                renderAnnotations();
+            });
+
+            wavesurfer.on('finish', () => {
+                if (isLooping) {
+                    wavesurfer.seekTo(0);
+                    wavesurfer.play();
+                }
+            });
+
+            // Region events
+            wsRegions.on('region-updated', (region) => {
+                const annotation = annotations.find(ann => ann.id === region.id);
+                if (annotation) {
+                    annotation.time = region.start;
+                    annotation.duration = region.end - region.start;
+                    updateAnnotationsList();
+                    renderAnnotations(); // Re-render to update track markers
+                }
+            });
+
+            // Mouse wheel zoom (like in professional DAWs)
+            document.getElementById('waveform').addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) { // Ctrl/Cmd + wheel for zoom
+                    e.preventDefault();
+                    
+                    const zoomFactor = e.deltaY < 0 ? 1.2 : 0.8;
+                    currentPxPerSec = Math.max(
+                        Math.min(currentPxPerSec * zoomFactor, maxPxPerSec),
+                        minPxPerSec
+                    );
+                    wavesurfer.zoom(currentPxPerSec);
+                }
+            });
+
+            // Window resize handler
+            window.addEventListener('resize', () => {
+                setTimeout(() => {
+                    renderBeatGrid();
+                    renderAnnotations();
+                }, 100);
+            });
+
+            // Initialize
+            initQuantizeOptions();
+            loadProjects();
+            updateToolSelection();
+        });
+    </script>
+</body>
+</html>

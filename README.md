@@ -1,6 +1,6 @@
-# Taigu Online Practice
+# 大鼓达人 (Da Gu Da Ren)
 
-This project is a web-based rhythm game inspired by "Taiko no Tatsujin" (太鼓の達人). The primary goal is to create a gameplay experience where the musical score (beatmap) is automatically generated from any given song.
+This project is a web-based rhythm game inspired by "Taiko no Tatsujin" (太鼓の達人) and the philosophical concept of "the burnout society" by Han Byung-chul. "大鼓达人" represents a transcendence of mere imitation—creating an authentic rhythmic experience through automated beatmap generation and professional-grade annotation tools.
 
 ## Project Goal
 
