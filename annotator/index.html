@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音频标注工具 V2.4</title>
+    <title>音频标注工具 V5.1 (项目版)</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 2em; background-color: #f4f4f9; color: #333; }
         #app { max-width: 900px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
@@ -16,8 +16,6 @@
         #save-btn { background-color: #ffc107; color: #212529;}
         #waveform { border: 1px solid #ddd; border-radius: 5px; }
         #loading { text-align: center; display: none; margin-top: 1em; color: #555; }
-        input[type="file"], input[type="text"] { font-size: 1em; padding: 0.4em; }
-        input[type="text"] { width: 95%; margin-top: 0.5em; }
         .section-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5em; text-align: left; margin-top: 2em; }
         .section-box h3 { margin-top: 0; }
         .section-box code { background-color: #e9ecef; padding: 0.2em 0.4em; border-radius: 3px; }
@@ -26,24 +24,23 @@
         .delete-btn { background-color: #dc3545; color: white; padding: 0.3em 0.8em; border-radius: 4px; cursor: pointer; }
         #selection-arrow {
             position: absolute;
-            top: 0; /* Position it at the top of the waveform container */
-            left: 50%; /* Will be dynamically updated */
+            top: 0;
+            left: 50%;
             width: 0;
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-top: 10px solid #0d6efd; /* Arrow color */
-            z-index: 11; /* Above the selected region highlight */
-            pointer-events: none; /* Make it non-interactive */
+            border-top: 10px solid #0d6efd;
+            z-index: 11;
+            pointer-events: none;
             transition: opacity 0.1s ease-in-out, left 0.05s linear;
             opacity: 0;
-            transform: translateX(-50%); /* Center the arrow precisely */
+            transform: translateX(-50%);
         }
         [data-id].selected-region {
-            /* Blue side borders for selection highlight */
             border-left: 3px solid rgba(13, 110, 253, 0.85);
             border-right: 3px solid rgba(13, 110, 253, 0.85);
-            box-sizing: border-box; /* Ensure borders don't increase region width */
+            box-sizing: border-box;
             z-index: 10 !important;
         }
         #annotations-list li.selected-annotation {
@@ -54,13 +51,15 @@
 </head>
 <body>
     <div id="app">
-        <h1>音频标注工具 V2.4</h1>
+        <h1>音频标注工具 V5.1 (项目版)</h1>
         <div class="section-box">
-             <h3>1. 加载文件</h3>
-            <p><strong>步骤 1.1:</strong> 选择要标注的音频文件 (例如 `drums.mp3`):</p>
-            <input type="file" id="audio-file" accept="audio/*">
-            <p style="margin-top: 1em;"><strong>步骤 1.2:</strong> 输入该音频所在的项目文件夹路径:</p>
-            <input type="text" id="project-path" placeholder="例如: data/xwx-backtrack-n-drum/generated_audio">
+            <h3>1. 选择项目</h3>
+            <p>从下方列表中选择一个项目开始标注。</p>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <select id="project-selector" style="font-size: 1em; padding: 0.4em; flex-grow: 1; max-width: 400px;"></select>
+                <button id="load-project-btn" style="margin-left: 1em;">加载项目</button>
+            </div>
+            <p id="load-status" style="margin-top: 1em; color: #555;"></p>
         </div>
         <div id="waveform-container" style="position: relative;">
             <div id="selection-arrow"></div>
@@ -74,7 +73,7 @@
         </div>
         <div class="section-box">
             <h3>2. 进行标注</h3>
-            <p>快捷键：<code>Space</code> 播放/暂停, <code>D</code>/<code>K</code> 键标注, 鼠标滚轮缩放。点击区域可选中，<code>S</code> 播放选中, <code>Backspace</code> 删除选中。</p>
+            <p>快捷键：<code>Space</code> 播放/暂停, <code>D</code>/<code>K</code> 键在当前播放位置添加标注, 鼠标滚轮缩放波形。点击一个已存在的区域来选中它，然后使用 <code>S</code> 键播放选中区域, 或使用 <code>Backspace</code>/<code>Delete</code> 键删除它。</p>
             <p>图例: <span style="background-color: rgba(255, 99, 71, 0.3); padding: 2px 5px; border-radius: 3px;">Don (咚)</span>
                 <span style="background-color: rgba(65, 105, 225, 0.3); padding: 2px 5px; border-radius: 3px; margin-left: 10px;">Ka (咔)</span>
             </p>
@@ -84,14 +83,15 @@
             <ul id="annotations-list"></ul>
         </div>
         <div class="section-box">
-            <h3>3. 保存或加载进度 (可选)</h3>
-            <button id="save-btn" disabled>保存标注到 JSON</button>
-            <input type="file" id="load-btn" accept=".json" style="margin-left: 1em;">
+            <h3>3. 保存进度</h3>
+            <button id="save-btn" disabled>保存标注到服务器</button>
+            <p id="save-status" style="margin-top: 1em; color: #555;"></p>
         </div>
         <div class="section-box">
             <h3>4. 导出</h3>
-            <p>完成标注后，生成剪辑脚本。下载后请从项目根目录运行它。</p>
-            <button id="export-btn" disabled>生成剪辑脚本</button>
+            <p>完成标注后，点击下方按钮将剪辑任务发送到本地Python服务器进行处理。</p>
+            <button id="export-btn" disabled>发送到服务器处理</button>
+            <p id="export-status" style="margin-top: 1em; color: #555;"></p>
         </div>
     </div>
 
@@ -100,14 +100,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const fileInput = document.getElementById('audio-file');
-            const projectPathInput = document.getElementById('project-path');
+            const projectSelector = document.getElementById('project-selector');
+            const loadProjectBtn = document.getElementById('load-project-btn');
+            const loadStatus = document.getElementById('load-status');
             const playBtn = document.getElementById('play-btn');
             const zoomInBtn = document.getElementById('zoom-in-btn');
             const zoomOutBtn = document.getElementById('zoom-out-btn');
             const exportBtn = document.getElementById('export-btn');
+            const exportStatus = document.getElementById('export-status');
             const saveBtn = document.getElementById('save-btn');
-            const loadInput = document.getElementById('load-btn');
+            const saveStatus = document.getElementById('save-status');
             const waveformDiv = document.getElementById('waveform');
             const loadingIndicator = document.getElementById('loading');
             const annotationsList = document.getElementById('annotations-list');
@@ -115,8 +117,9 @@
 
             let annotations = [];
             let originalAudioFileName = '';
-            let currentZoomLevel = 50;
+            let currentZoomLevel = 100;
             let selectedRegion = null;
+            let currentProject = '';
             let isRegionPlayback = false;
 
             const wavesurfer = WaveSurfer.create({ container: waveformDiv, waveColor: 'rgb(200, 200, 200)', progressColor: 'rgb(100, 100, 100)', cursorWidth: 2, barWidth: 3, barRadius: 3, responsive: true, height: 150, barGap: 3 });
@@ -131,9 +134,7 @@
                 const regionEl = selectedRegion.element;
                 const regionRect = regionEl.getBoundingClientRect();
                 const waveformRect = waveformDiv.getBoundingClientRect();
-
                 const arrowLeft = (regionRect.left - waveformRect.left) + (regionRect.width / 2);
-                
                 if (regionRect.right > waveformRect.left && regionRect.left < waveformRect.right) {
                     selectionArrow.style.left = `${arrowLeft}px`;
                     selectionArrow.style.opacity = '1';
@@ -146,10 +147,8 @@
             waveformDiv.addEventListener('wheel', (event) => {
                 if (wavesurfer.getDuration() === 0) return;
                 event.preventDefault();
-
                 const scrollSensitivity = 5;
                 const isHorizontalScroll = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-
                 if (isHorizontalScroll || event.shiftKey) {
                     const panDelta = event.shiftKey ? event.deltaY : event.deltaX;
                     wavesurfer.getWrapper().scrollLeft += panDelta * scrollSensitivity;
@@ -169,7 +168,7 @@
                     li.classList.remove('selected-annotation');
                 });
                 selectedRegion = null;
-                updateArrowPosition(); // Hide the arrow
+                updateArrowPosition();
             };
             const selectRegion = (region) => {
                 clearSelection();
@@ -181,25 +180,96 @@
                         correspondingLi.classList.add('selected-annotation');
                     }
                 }
-                updateArrowPosition(); // Show and position the arrow
+                updateArrowPosition();
             };
             wsRegions.on('region-clicked', (region, e) => { e.stopPropagation(); selectRegion(region); });
             wavesurfer.on('interaction', () => clearSelection());
             wavesurfer.on('click', () => clearSelection());
 
-            fileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0]; if (!file) return;
-                originalAudioFileName = file.name;
-                resetState();
-                loadingIndicator.style.display = 'block';
-                waveformDiv.style.display = 'none';
-                wavesurfer.load(URL.createObjectURL(file));
+            // --- Project Loading ---
+            async function loadProjects() {
+                try {
+                    const response = await fetch('/api/projects');
+                    if (!response.ok) throw new Error('无法从服务器获取项目列表。');
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        projectSelector.innerHTML = '<option value="">-- 请选择一个项目 --</option>';
+                        data.projects.forEach(project => {
+                            const option = document.createElement('option');
+                            option.value = project;
+                            option.textContent = project;
+                            projectSelector.appendChild(option);
+                        });
+                    } else { throw new Error(data.message); }
+                } catch (error) {
+                    loadStatus.textContent = `Error: ${error.message}`;
+                    loadStatus.style.color = '#dc3545';
+                }
+            }
+
+            async function loadAnnotations(projectName) {
+                try {
+                    const response = await fetch(`/api/annotations/${projectName}`);
+                    if (!response.ok) throw new Error('无法获取标注。');
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        annotations = data.annotations;
+                        if (annotations.length > 0) {
+                             loadStatus.textContent += ` 已找到 ${annotations.length} 个存在的标注。`;
+                        }
+                        wsRegions.clearRegions();
+                        annotations.forEach(addRegion);
+                        renderAnnotationsList();
+                    } else { throw new Error(data.message); }
+                } catch (error) {
+                    loadStatus.textContent += ` 警告: ${error.message}`;
+                    loadStatus.style.color = '#ffc107';
+                }
+            }
+
+            loadProjectBtn.addEventListener('click', () => {
+                const selectedProject = projectSelector.value;
+                if (!selectedProject) {
+                    loadStatus.textContent = '请先选择一个项目。';
+                    loadStatus.style.color = '#dc3545';
+                    return;
+                }
+                currentProject = selectedProject;
+                const audioFilePath = `data/${currentProject}/generated_audio/drums.mp3`;
+                
+                loadStatus.textContent = `正在加载 ${audioFilePath}...`;
+                loadStatus.style.color = '#555';
+
+                fetch(audioFilePath)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`找不到音频文件。请确保 '${audioFilePath}' 存在。`);
+                        return response.blob();
+                    })
+                    .then(audioBlob => {
+                        resetState();
+                        loadingIndicator.style.display = 'block';
+                        waveformDiv.style.display = 'none';
+                        originalAudioFileName = 'drums.mp3';
+                        wavesurfer.load(URL.createObjectURL(audioBlob));
+                    })
+                    .catch(error => {
+                        loadStatus.textContent = `加载失败: ${error.message}`;
+                        loadStatus.style.color = '#dc3545';
+                    });
             });
 
             const resetState = () => {
-                clearSelection(); annotations = []; wsRegions.clearRegions(); renderAnnotationsList();
-                playBtn.disabled = true; zoomInBtn.disabled = true; zoomOutBtn.disabled = true;
-                exportBtn.disabled = true; saveBtn.disabled = true;
+                clearSelection();
+                annotations = [];
+                wsRegions.clearRegions();
+                renderAnnotationsList();
+                playBtn.disabled = true;
+                zoomInBtn.disabled = true;
+                zoomOutBtn.disabled = true;
+                exportBtn.disabled = true;
+                saveBtn.disabled = true;
+                saveStatus.textContent = '';
+                exportStatus.textContent = '';
             };
             
             playBtn.addEventListener('click', () => wavesurfer.playPause());
@@ -208,14 +278,16 @@
 
             wavesurfer.on('ready', () => {
                 wavesurfer.getWrapper().addEventListener('scroll', updateArrowPosition);
-                loadingIndicator.style.display = 'none'; 
+                loadingIndicator.style.display = 'none';
                 waveformDiv.style.display = 'block';
-                playBtn.disabled = false; 
-                zoomInBtn.disabled = false; 
+                playBtn.disabled = false;
+                zoomInBtn.disabled = false;
                 zoomOutBtn.disabled = false;
-                const duration = wavesurfer.getDuration();
-                currentZoomLevel = waveformDiv.clientWidth / duration;
+                currentZoomLevel = 100;
                 wavesurfer.zoom(currentZoomLevel);
+                loadStatus.textContent = `项目 '${currentProject}' 加载成功。正在检查已保存的标注...`;
+                loadStatus.style.color = '#28a745';
+                loadAnnotations(currentProject);
             });
             wavesurfer.on('zoom', updateArrowPosition);
             wavesurfer.on('redraw', updateArrowPosition);
@@ -223,8 +295,7 @@
             const addAnnotation = (type) => {
                 if (wavesurfer.getDuration() === 0) return;
                 const currentTime = wavesurfer.getCurrentTime();
-                const duration = 0.1;
-                const newAnnotation = { id: `ann-${Date.now()}`, time: currentTime, duration: duration, type };
+                const newAnnotation = { id: `ann-${Date.now()}`, time: currentTime, duration: 0.1, type };
                 annotations.push(newAnnotation);
                 const newRegion = addRegion(newAnnotation);
                 renderAnnotationsList();
@@ -245,46 +316,31 @@
                     ann.time = region.start; 
                     ann.duration = region.end - region.start; 
                     renderAnnotationsList(); 
-                    updateArrowPosition(); // Keep arrow in sync while dragging/resizing
+                    updateArrowPosition();
                 }
             });
 
-            // --- Playback Control Logic ---
-            wavesurfer.on('pause', () => {
-                isRegionPlayback = false; 
-            });
-
+            wavesurfer.on('pause', () => { isRegionPlayback = false; });
             wavesurfer.on('audioprocess', (currentTime) => {
-                // Custom logic to stop playback at the end of a region
                 if (isRegionPlayback && selectedRegion && currentTime >= selectedRegion.end) {
                     wavesurfer.pause();
-                    // Ensure cursor is visually at the end of the region
                     wavesurfer.seekTo(selectedRegion.end / wavesurfer.getDuration());
                 }
-                updateArrowPosition(); // Continuously update arrow during playback
+                updateArrowPosition();
             });
 
             document.addEventListener('keydown', (e) => {
-                 if (e.target.tagName === 'INPUT') return;
+                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
                  e.preventDefault(); 
-
                  const key = e.key.toLowerCase();
-
-                 if (key === 'd') {
-                     addAnnotation('don');
-                 } else if (key === 'k') {
-                     addAnnotation('ka');
-                 } else if (key === ' ') {
-                     wavesurfer.playPause();
-                 } else if (key === 's') {
-                     if (selectedRegion) {
-                         isRegionPlayback = true;
-                         wavesurfer.play(selectedRegion.start);
-                     }
-                 } else if (key === 'backspace' || key === 'delete') {
-                     if (selectedRegion) {
-                         selectedRegion.remove();
-                     }
+                 if (key === 'd') addAnnotation('don');
+                 else if (key === 'k') addAnnotation('ka');
+                 else if (key === ' ') wavesurfer.playPause();
+                 else if (key === 's' && selectedRegion) {
+                     isRegionPlayback = true;
+                     wavesurfer.play(selectedRegion.start);
+                 } else if ((key === 'backspace' || key === 'delete') && selectedRegion) {
+                     selectedRegion.remove();
                  }
             });
             
@@ -295,7 +351,6 @@
                     if (region) region.remove();
                     return; 
                 }
-
                 const li = e.target.closest('li');
                 if (li && li.dataset.id) {
                     const regionToSelect = wsRegions.getRegions().find(r => r.id === li.dataset.id);
@@ -317,7 +372,8 @@
             const renderAnnotationsList = () => {
                 annotationsList.innerHTML = '';
                 const hasAnnotations = annotations.length > 0;
-                exportBtn.disabled = !hasAnnotations; saveBtn.disabled = !hasAnnotations;
+                exportBtn.disabled = !hasAnnotations;
+                saveBtn.disabled = !hasAnnotations;
                 if (!hasAnnotations) { annotationsList.innerHTML = '<li>暂无标注</li>'; return; }
                 annotations.sort((a, b) => a.time - b.time);
                 annotations.forEach(ann => {
@@ -331,11 +387,68 @@
                 });
             };
 
-            saveBtn.addEventListener('click', () => { /* ... (implementation) */ });
-            loadInput.addEventListener('change', (event) => { /* ... (implementation) */ });
-            exportBtn.addEventListener('click', () => { /* ... (implementation) */ });
+            saveBtn.addEventListener('click', async () => {
+                if (!currentProject) {
+                    saveStatus.textContent = '错误：请先加载一个项目。';
+                    saveStatus.style.color = '#dc3545';
+                    return;
+                }
+                saveStatus.textContent = '正在保存到服务器...';
+                saveStatus.style.color = '#007bff';
+                saveBtn.disabled = true;
+                try {
+                    const response = await fetch(`/api/annotations/${currentProject}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ annotations: annotations })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        saveStatus.textContent = `成功！${result.message}`;
+                        saveStatus.style.color = '#28a745';
+                    } else { throw new Error(result.message || 'Unknown server error'); }
+                } catch (error) {
+                    saveStatus.textContent = `保存失败: ${error.message}`;
+                    saveStatus.style.color = '#dc3545';
+                } finally {
+                    saveBtn.disabled = false;
+                }
+            });
+
+            exportBtn.addEventListener('click', async () => {
+                if (!currentProject) {
+                    exportStatus.textContent = '错误：请先加载一个项目。';
+                    exportStatus.style.color = '#dc3545';
+                    return;
+                }
+                exportStatus.textContent = '正在发送数据到服务器...';
+                exportStatus.style.color = '#007bff';
+                exportBtn.disabled = true;
+                try {
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectName: currentProject, // Changed from projectPath
+                            audioFile: originalAudioFileName,
+                            annotations: annotations
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        exportStatus.textContent = `成功！${result.message}`;
+                        exportStatus.style.color = '#28a745';
+                    } else { throw new Error(result.message || 'Unknown server error'); }
+                } catch (error) {
+                    exportStatus.textContent = `导出失败: ${error.message}。Python 服务器正在运行吗？`;
+                    exportStatus.style.color = '#dc3545';
+                } finally {
+                    exportBtn.disabled = false;
+                }
+            });
             
-            resetState();
+            // Initial load of project list
+            loadProjects();
         });
     </script>
 </body>
