@@ -1,51 +1,272 @@
-import argparse
 import os
-import librosa
+import sys
 import numpy as np
+import librosa
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+import joblib # For saving the trained model
+import json
 
-def main():
-    parser = argparse.ArgumentParser(description='Automatically generate a Taiko no Tatsujin beatmap from a drum audio file.')
-    parser.add_argument('audio_file', type=str, help='Path to the drum audio file (e.g., drums.mp3).')
-    args = parser.parse_args()
+# --- Phase 1: Learning from Samples ---
 
-    print(f"Starting beatmap generation for: {args.audio_file}")
-
-    if not os.path.exists(args.audio_file):
-        print(f"Error: Audio file not found at {args.audio_file}")
-        return
-
-    # --- Phase 1: Onset Detection ---
-    print("Step 1: Detecting beat onsets...")
-    
+def extract_features(file_path):
+    """
+    Extracts a feature vector from an audio file.
+    Features: Mean MFCCs and Mean Spectral Centroid.
+    """
     try:
-        # Load the audio file. 'sr=None' preserves the original sample rate.
-        y, sr = librosa.load(args.audio_file, sr=None)
+        y, sr = librosa.load(file_path, sr=None)
+        # Extract MFCCs
+        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+        mfccs_mean = np.mean(mfccs.T, axis=0)
+        
+        # Extract Spectral Centroid
+        spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
+        spec_cent_mean = np.mean(spec_cent)
 
-        # Detect the onsets (the start of each drum hit)
-        # 'onset_detect' returns the frame indices of the onsets.
-        onset_frames = librosa.onset.onset_detect(y=y, sr=sr, units='frames', wait=1, pre_avg=1, post_avg=1, post_max=1, delta=0.01)
+        # Extract Spectral Contrast
+        spec_con = librosa.feature.spectral_contrast(y=y, sr=sr)
+        spec_con_mean = np.mean(spec_con)
 
-        # Convert the frame indices to timestamps in seconds
-        onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+        # Extract Spectral Rolloff
+        spec_roll = librosa.feature.spectral_rolloff(y=y, sr=sr)
+        spec_roll_mean = np.mean(spec_roll)
 
-        print(f"Found {len(onset_times)} potential beats at the following timestamps:")
-        # Print the first 10 for brevity
-        for t in onset_times[:10]:
-            print(f"  - {t:.3f}s")
-        if len(onset_times) > 10:
-            print("  ...")
+        # Extract Zero-Crossing Rate
+        zcr = librosa.feature.zero_crossing_rate(y)
+        zcr_mean = np.mean(zcr)
 
+        # Combine features into a single vector
+        return np.hstack((mfccs_mean, spec_cent_mean, spec_con_mean, spec_roll_mean, zcr_mean))
     except Exception as e:
-        print(f"An error occurred during onset detection: {e}")
-        return
+        print(f"  [Warning] Could not process {os.path.basename(file_path)}: {e}")
+        return None
 
-    # --- Phase 2: Note Classification (To be implemented) ---
-    print("\nStep 2: Classifying notes (don/ka)...")
+def train_classifier(project_path):
+    """
+    Trains an SVM classifier on the annotated don/ka samples.
+    """
+    print("\n--- Phase 1: Training classifier from samples ---")
+    don_samples_path = os.path.join(project_path, 'generated_audio', 'don_samples')
+    ka_samples_path = os.path.join(project_path, 'generated_audio', 'ka_samples')
 
-    # --- Phase 3: Beatmap Generation (To be implemented) ---
-    print("Step 3: Generating beatmap JSON file...")
+    # 1. Load data and extract features
+    X = [] # Feature vectors
+    y = [] # Labels (0 for don, 1 for ka)
 
-    print("\nBeatmap generation complete (placeholder).")
+    print(" -> Processing 'don' samples...")
+    for f in os.listdir(don_samples_path):
+        if f.endswith('.wav'):
+            features = extract_features(os.path.join(don_samples_path, f))
+            if features is not None:
+                X.append(features)
+                y.append(0) # Label for 'don'
+
+    print(" -> Processing 'ka' samples...")
+    for f in os.listdir(ka_samples_path):
+         if f.endswith('.wav'):
+            features = extract_features(os.path.join(ka_samples_path, f))
+            if features is not None:
+                X.append(features)
+                y.append(1) # Label for 'ka'
+    
+    if len(X) < 2:
+        print("[Error] Not enough valid samples to train a model. Need at least one of each type.")
+        return None, None
+
+    X = np.array(X)
+    y = np.array(y)
+
+    # 2. Scale features
+    # This is crucial for SVMs to work correctly.
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    print(" -> Features have been scaled (standardized).")
+
+    # 3. Train the SVM model
+    # Split data for a quick accuracy test
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+    
+    print(f" -> Training model on {len(X_train)} samples...")
+    model = SVC(kernel='rbf', gamma='auto', probability=True) # probability=True is crucial for confidence filtering
+    model.fit(X_train, y_train)
+
+    # 4. Evaluate the model
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f" -> Model training complete. Internal accuracy: {accuracy*100:.2f}%")
+    
+    # We must return both the model and the scaler
+    return model, scaler
+
+# --- Phase 2: Application to Full Track ---
+
+def detect_onsets(audio_path):
+    """
+    Detects onsets in the full audio track.
+    """
+    print(f" -> Loading main track for onset detection: {os.path.basename(audio_path)}")
+    try:
+        y, sr = librosa.load(audio_path, sr=None)
+        
+        # Using a sensitive onset detection suitable for percussive tracks
+        onset_frames = librosa.onset.onset_detect(
+            y=y, 
+            sr=sr, 
+            units='frames',
+            hop_length=512, # Standard hop length
+            backtrack=False, # Simpler onset definition
+            pre_max=5,     # Look for a peak in a small window
+            post_max=6,
+            pre_avg=5,     # Compare with average energy in a small window
+            post_avg=6,
+            delta=0.05,    # Sensitivity threshold
+            wait=1         # Minimum frames between onsets
+        )
+        
+        onset_times = librosa.frames_to_time(onset_frames, sr=sr, hop_length=512)
+        print(f" -> Detected {len(onset_times)} potential onsets.")
+        return onset_times, y, sr
+        
+    except Exception as e:
+        print(f"  [Error] Failed during onset detection: {e}")
+        return None, None, None
+
+def classify_onsets(onset_times, y, sr, model, scaler, confidence_threshold=0.8):
+    """
+    Classifies each onset as 'don', 'ka', or None based on a confidence threshold.
+    """
+    print(f"\n--- Phase 3: Classifying {len(onset_times)} onsets with a {confidence_threshold*100}% confidence threshold ---")
+    
+    classified_notes = []
+    
+    # Define a small window around each onset to extract features from
+    # A window of 50ms is common for percussive hits
+    frame_length = int(sr * 0.05) 
+
+    for i, t in enumerate(onset_times):
+        # Get the audio frame for this onset
+        start_sample = int(t * sr)
+        end_sample = start_sample + frame_length
+        frame = y[start_sample:end_sample]
+
+        if len(frame) == 0:
+            continue
+
+        # Extract features for this frame
+        # We create a temporary WAV-like object in memory to reuse extract_features
+        # This is a bit of a workaround but keeps feature extraction consistent
+        # In a more advanced system, we'd refactor extract_features to accept (y, sr)
+        import soundfile as sf
+        from io import BytesIO
+        
+        buffer = BytesIO()
+        sf.write(buffer, frame, sr, format='WAV')
+        buffer.seek(0)
+        
+        features = extract_features(buffer)
+
+        if features is not None:
+            # Scale the features using the SAME scaler from training
+            features_scaled = scaler.transform([features])
+
+            # Get class probabilities
+            probabilities = model.predict_proba(features_scaled)[0]
+            
+            # Check if the max probability meets our threshold
+            max_proba = np.max(probabilities)
+            if max_proba >= confidence_threshold:
+                note_class = np.argmax(probabilities) # 0 for don, 1 for ka
+                note_type = 'don' if note_class == 0 else 'ka'
+                classified_notes.append({'time': t, 'type': note_type})
+        
+        # Simple progress indicator
+        if (i + 1) % 100 == 0:
+            print(f" -> Processed {i + 1}/{len(onset_times)} onsets...")
+
+    print(f" -> Successfully classified {len(classified_notes)} notes.")
+    return classified_notes
+
+def generate_beatmap_json(classified_notes, project_path):
+    """
+    Generates the final beatmap JSON file from the classified notes.
+    """
+    print(f"\n--- Phase 4: Generating final beatmap JSON ---")
+    
+    # Simple metadata for now
+    project_name = os.path.basename(project_path)
+    metadata = {
+        "songName": project_name,
+        "artist": "Unknown",
+        "audioFile": f"data/{project_name}/generated_audio/drums.mp3", # Relative path for the game
+        "bpm": 120, # Placeholder - BPM detection is a future step
+        "offset": 0,
+        "difficulty": "Oni"
+    }
+
+    # Prepare notes in the final format, rounding to 3 decimal places
+    notes_formatted = [
+        {"time": round(note['time'], 3), "type": note['type']}
+        for note in classified_notes
+    ]
+
+    beatmap_data = {
+        "metadata": metadata,
+        "notes": notes_formatted
+    }
+
+    # Write to file
+    output_filename = f"beatmap_generated.json"
+    output_path = os.path.join(project_path, output_filename)
+
+    try:
+        with open(output_path, 'w') as f:
+            json.dump(beatmap_data, f, indent=4)
+        print(f" -> Successfully created beatmap file at: {output_path}")
+    except Exception as e:
+        print(f"  [Error] Failed to write JSON file: {e}")
+
+def main(project_path):
+    """
+    Main function to drive the beatmap generation process.
+    """
+    # --- Step 1: Train the model and get the scaler ---
+    model, scaler = train_classifier(project_path)
+    
+    if model is None or scaler is None:
+        sys.exit(1)
+
+    # --- Step 2: Detect onsets in the main drum track ---
+    print("\n--- Phase 2: Detecting onsets in full drum track ---")
+    main_drum_track = os.path.join(project_path, 'generated_audio', 'drums.mp3')
+    if not os.path.exists(main_drum_track):
+        print(f"[Error] Main drum track not found at: {main_drum_track}")
+        sys.exit(1)
+    
+    onset_times, y, sr = detect_onsets(main_drum_track)
+
+    if onset_times is None:
+        sys.exit(1)
+
+    # --- Step 3: Classify each onset ---
+    classified_notes = classify_onsets(onset_times, y, sr, model, scaler)
+
+    # --- Step 4: Generate final beatmap ---
+    generate_beatmap_json(classified_notes, project_path)
+
+    print("\nBeatmap generation process finished successfully!")
+
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) != 2:
+        print("Usage: python3 beatmap_generator/generate_beatmap.py <path_to_project_directory>")
+        sys.exit(1)
+    
+    project_directory = sys.argv[1]
+    if not os.path.isdir(project_directory):
+        print(f"Error: Directory not found at '{project_directory}'")
+        sys.exit(1)
+
+    main(project_directory)
