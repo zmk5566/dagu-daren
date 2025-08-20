@@ -279,6 +279,7 @@
             height: 150px;
             position: relative;
             border-bottom: 1px solid var(--border-color);
+            z-index: 2;
         }
 
         #waveform {
@@ -289,12 +290,13 @@
         /* Beat Grid Overlay */
         .beat-grid-overlay {
             position: absolute;
-            top: 0;
+            top: 40px; /* Below timeline-header */
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 40px); /* Fill remaining space */
             pointer-events: none;
-            z-index: 5;
+            z-index: 1; /* Behind tracks */
+            overflow: hidden;
         }
 
         .beat-line {
@@ -302,26 +304,25 @@
             top: 0;
             width: 1px;
             height: 100%;
-            background: var(--accent-primary);
-            opacity: 0.3;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .beat-line.downbeat {
-            background: var(--warning-color);
-            opacity: 0.6;
+            background: rgba(0, 0, 0, 0.4);
             width: 2px;
         }
 
         .beat-line.subdivision {
-            opacity: 0.15;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         /* Annotation Track */
         .annotation-track {
             height: 60px;
-            background: var(--bg-secondary);
+            background: transparent; /* Make it transparent to see grid lines behind */
             border-bottom: 1px solid var(--border-color);
             position: relative;
+            z-index: 2; /* Put it above the grid */
         }
 
         .annotation-marker {
@@ -838,6 +839,7 @@
 
             <!-- Timeline Container -->
             <div class="timeline-container" id="timeline-container">
+                <div class="beat-grid-overlay" id="beat-grid-overlay"></div>
                 <!-- Timeline Header with Ruler -->
                 <div class="timeline-header">
                     <div class="timeline-ruler" id="timeline-ruler"></div>
@@ -845,7 +847,6 @@
 
                 <!-- Waveform Area -->
                 <div class="waveform-area">
-                    <div class="beat-grid-overlay" id="beat-grid-overlay"></div>
                     <div id="waveform"></div>
                 </div>
 
@@ -1123,47 +1124,42 @@
 
             // Render beat grid overlay
             function renderBeatGrid() {
-                if (!beatGrid) return;
-
-                const overlay = elements.beatGridOverlay;
-                overlay.innerHTML = '';
+                if (!beatGrid) {
+                    elements.beatGridOverlay.innerHTML = '';
+                    return;
+                }
 
                 const duration = wavesurfer.getDuration();
                 if (!duration) return;
 
-                const containerWidth = overlay.offsetWidth;
+                const totalWidth = duration * currentPxPerSec;
+                const content = document.createElement('div');
+                content.style.width = `${totalWidth}px`;
+                content.style.height = '100%';
+                content.style.position = 'relative';
 
-                // Render downbeats
-                beatGrid.downbeats.forEach(time => {
-                    const position = (time / duration) * containerWidth;
+                const addLine = (time, className) => {
+                    const position = time * currentPxPerSec;
                     const line = document.createElement('div');
-                    line.className = 'beat-line downbeat';
+                    line.className = `beat-line ${className}`;
                     line.style.left = `${position}px`;
-                    overlay.appendChild(line);
-                });
+                    content.appendChild(line);
+                };
 
-                // Render regular beats
-                beatGrid.beats.forEach(time => {
-                    const position = (time / duration) * containerWidth;
-                    const line = document.createElement('div');
-                    line.className = 'beat-line';
-                    line.style.left = `${position}px`;
-                    overlay.appendChild(line);
-                });
+                beatGrid.downbeats.forEach(time => addLine(time, 'downbeat'));
+                beatGrid.beats.forEach(time => addLine(time, ''));
 
-                // Render subdivisions based on quantize mode
                 if (beatGrid.subdivisions) {
                     const subdivisions = beatGrid.subdivisions.sixteenth_notes || [];
                     subdivisions.forEach(time => {
                         if (time <= duration) {
-                            const position = (time / duration) * containerWidth;
-                            const line = document.createElement('div');
-                            line.className = 'beat-line subdivision';
-                            line.style.left = `${position}px`;
-                            overlay.appendChild(line);
+                            addLine(time, 'subdivision');
                         }
                     });
                 }
+
+                elements.beatGridOverlay.innerHTML = '';
+                elements.beatGridOverlay.appendChild(content);
             }
 
             // Auto-align annotations
@@ -1217,21 +1213,25 @@
 
             // Render annotations
             function renderAnnotations() {
-                // Clear existing regions
                 wsRegions.clearRegions();
-                
-                // Clear annotation track
-                elements.annotationTrack.innerHTML = '';
-                
-                if (!wavesurfer.getDuration()) return;
 
                 const duration = wavesurfer.getDuration();
-                const trackWidth = elements.annotationTrack.offsetWidth;
+                if (!duration) {
+                    elements.annotationTrack.innerHTML = '';
+                    return;
+                }
+
+                const totalWidth = duration * currentPxPerSec;
+                const content = document.createElement('div');
+                content.style.width = `${totalWidth}px`;
+                content.style.height = '100%';
+                content.style.position = 'relative';
 
                 annotations.forEach((annotation, index) => {
-                    // Create region for waveform
+                    const regionId = annotation.id || `ann-${index}`;
+                    
                     const region = wsRegions.addRegion({
-                        id: annotation.id || `ann-${index}`,
+                        id: regionId,
                         start: annotation.time,
                         end: annotation.time + (annotation.duration || 0.1),
                         color: annotation.type === 'don' ? 'rgba(255, 99, 71, 0.3)' : 'rgba(65, 105, 225, 0.3)',
@@ -1239,22 +1239,24 @@
                         resize: true
                     });
 
-                    // Create marker for annotation track
                     const marker = document.createElement('div');
                     marker.className = `annotation-marker ${annotation.type}`;
-                    marker.dataset.id = annotation.id || `ann-${index}`;
+                    marker.dataset.id = regionId;
                     marker.textContent = annotation.type.toUpperCase();
                     
-                    const position = (annotation.time / duration) * trackWidth;
-                    const width = Math.max(20, (annotation.duration || 0.1) / duration * trackWidth);
+                    const position = annotation.time * currentPxPerSec;
+                    const width = Math.max(20, (annotation.duration || 0.1) * currentPxPerSec);
                     
                     marker.style.left = `${position}px`;
                     marker.style.width = `${width}px`;
                     
                     marker.addEventListener('click', () => selectAnnotation(annotation, marker, region));
                     
-                    elements.annotationTrack.appendChild(marker);
+                    content.appendChild(marker);
                 });
+                
+                elements.annotationTrack.innerHTML = '';
+                elements.annotationTrack.appendChild(content);
             }
 
             // Select annotation
@@ -1604,21 +1606,49 @@
                 elements.sidebar.classList.toggle('open');
             });
 
+            // Sync timeline elements scroll position
+            function syncTimelineScroll() {
+                const scrollLeft = wavesurfer.getScroll();
+
+                const gridContent = elements.beatGridOverlay.firstChild;
+                if (gridContent) {
+                    gridContent.style.transform = `translateX(-${scrollLeft}px)`;
+                }
+
+                const annotationContent = elements.annotationTrack.firstChild;
+                if (annotationContent) {
+                    annotationContent.style.transform = `translateX(-${scrollLeft}px)`;
+                }
+            }
+
             // WaveSurfer events
             wavesurfer.on('ready', () => {
                 hideLoading();
                 
-                // 设置初始缩放 - 显示大约10-15秒的音频
                 const duration = wavesurfer.getDuration();
                 const containerWidth = wavesurfer.getWrapper().clientWidth;
                 if (duration > 0) {
-                    const targetViewDuration = Math.min(duration, 15); // 显示最多15秒
+                    const targetViewDuration = Math.min(duration, 15);
                     currentPxPerSec = Math.max(containerWidth / targetViewDuration, minPxPerSec);
                     wavesurfer.zoom(currentPxPerSec);
                 }
                 
+                // Initial render and sync
                 renderBeatGrid();
                 renderAnnotations();
+                syncTimelineScroll();
+            });
+
+            wavesurfer.on('zoom', () => {
+                // In WaveSurfer v7, minPxPerSec option is updated to the current zoom level.
+                currentPxPerSec = wavesurfer.options.minPxPerSec;
+                renderBeatGrid();
+                renderAnnotations();
+                syncTimelineScroll();
+            });
+
+            wavesurfer.on('scroll', () => {
+                syncTimelineScroll();
             });
 
             wavesurfer.on('finish', () => {
@@ -1635,12 +1665,14 @@
                     annotation.time = region.start;
                     annotation.duration = region.end - region.start;
                     updateAnnotationsList();
-                    renderAnnotations(); // Re-render to update track markers
+                    // Re-render markers to reflect the change, then sync scroll
+                    renderAnnotations(); 
+                    syncTimelineScroll();
                 }
             });
 
             // Mouse wheel zoom (like in professional DAWs)
-            document.getElementById('waveform').addEventListener('wheel', (e) => {
+            document.getElementById('timeline-container').addEventListener('wheel', (e) => {
                 if (e.ctrlKey || e.metaKey) { // Ctrl/Cmd + wheel for zoom
                     e.preventDefault();
                     
@@ -1658,6 +1690,7 @@
                 setTimeout(() => {
                     renderBeatGrid();
                     renderAnnotations();
+                    syncTimelineScroll();
                 }, 100);
             });
 
