@@ -82,6 +82,29 @@ def serve_visualizer_static(filename):
 
 # --- DAW API Routes ---
 
+@app.route('/api/metadata/<project_name>')
+def get_project_metadata(project_name):
+    """Get project metadata including BPM, beat grid, and other settings"""
+    try:
+        # Look for metadata.json in project directory
+        metadata_path = os.path.join(DATA_DIR, project_name, 'metadata.json')
+        
+        if os.path.exists(metadata_path):
+            with open(metadata_path, 'r') as f:
+                metadata = json.load(f)
+            return jsonify({
+                "status": "success",
+                "metadata": metadata
+            })
+        else:
+            return jsonify({
+                "status": "not_found",
+                "message": "Metadata file not found. Auto-detection may be needed."
+            }), 404
+            
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/api/detect_bpm', methods=['POST'])
 def detect_bpm():
     """Detect BPM for audio file"""
@@ -106,9 +129,24 @@ def detect_bpm():
         detector = BPMDetector()
         result = detector.detect_bpm(audio_path)
         
+        # Create and save metadata.json
+        metadata = {
+            "project_name": project_name,
+            "audio_file": audio_file,
+            "bpm_data": result,
+            "created_at": time.time(),
+            "last_updated": time.time(),
+            "version": "1.0"
+        }
+        
+        metadata_path = os.path.join(DATA_DIR, project_name, 'metadata.json')
+        with open(metadata_path, 'w') as f:
+            json.dump(metadata, f, indent=4)
+        
         return jsonify({
             "status": "success",
-            "bpm_data": result
+            "bpm_data": result,
+            "metadata_saved": True
         })
         
     except Exception as e:
@@ -354,6 +392,36 @@ def list_projects():
         return jsonify({"status": "success", "projects": projects})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/score/<project_name>', methods=['GET', 'POST'])
+def handle_score(project_name):
+    """Handles both loading (GET) and saving (POST) of score data."""
+    if request.method == 'POST':
+        # --- SAVE score ---
+        try:
+            score_data = request.json.get('score', [])
+            score_dir = os.path.join(DATA_DIR, project_name, 'score')
+            os.makedirs(score_dir, exist_ok=True)
+            file_path = os.path.join(score_dir, 'score.json')
+            
+            with open(file_path, 'w') as f:
+                json.dump(score_data, f, indent=4)
+                
+            return jsonify({"status": "success", "message": f"已保存 {len(score_data)} 个曲谱音符。"})
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e)}), 500
+    else:
+        # --- LOAD score (GET) ---
+        try:
+            file_path = os.path.join(DATA_DIR, project_name, 'score', 'score.json')
+            if os.path.isfile(file_path):
+                with open(file_path, 'r') as f:
+                    score_data = json.load(f)
+                return jsonify({"status": "success", "score": score_data})
+            else:
+                return jsonify({"status": "success", "score": []})
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/annotations/<project_name>', methods=['GET', 'POST'])
 def handle_annotations(project_name):

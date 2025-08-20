@@ -272,6 +272,11 @@
             position: relative;
             background: linear-gradient(to right, var(--border-color) 0px, transparent 1px);
             background-size: 50px 100%;
+            cursor: ns-resize;
+        }
+
+        .timeline-ruler:hover {
+            background-color: rgba(255, 255, 255, 0.02);
         }
 
         /* Waveform Area */
@@ -325,6 +330,15 @@
             z-index: 2; /* Put it above the grid */
         }
 
+        /* Score Track */
+        .score-track {
+            height: 60px;
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 2;
+        }
+
         .annotation-marker {
             position: absolute;
             top: 5px;
@@ -356,6 +370,46 @@
         .annotation-marker.selected {
             border: 2px solid var(--accent-primary);
             box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        /* Score Markers */
+        .score-marker {
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s;
+            transform: translateY(-50%);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .score-marker.don {
+            background: rgba(255, 99, 71, 0.7);
+            box-shadow: 0 2px 8px rgba(255, 99, 71, 0.4);
+        }
+
+        .score-marker.ka {
+            background: rgba(65, 105, 225, 0.7);
+            box-shadow: 0 2px 8px rgba(65, 105, 225, 0.4);
+        }
+
+        .score-marker:hover {
+            transform: translateY(-50%) scale(1.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .score-marker.selected {
+            border: 3px solid var(--warning-color);
+            box-shadow: 0 0 15px var(--warning-color);
+            transform: translateY(-50%) scale(1.1);
         }
 
         /* Form Controls */
@@ -655,6 +709,205 @@
                 min-height: 50px;
             }
         }
+
+        /* Tracks Wrapper */
+        .tracks-wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Track Labels Panel */
+        .daw-track-labels {
+            width: 120px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .daw-track-labels.collapsed {
+            width: 30px; /* Keep enough space for the toggle button */
+        }
+
+        .daw-track-labels.collapsed .track-labels-content {
+            display: none;
+        }
+
+        .track-label-header {
+            height: 40px; /* Match timeline-header */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the button */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .track-label-toggle {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .daw-track-labels.collapsed .track-label-toggle {
+            transform: rotate(-180deg);
+        }
+
+        .track-label-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .toast.success .toast-icon {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .toast.error .toast-icon {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .toast.warning .toast-icon {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .toast.info .toast-icon {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-primary);
+            border-radius: 0 0 8px 8px;
+            transition: width 0.1s linear;
+        }
+
+        .toast.success .toast-progress {
+            background: var(--success-color);
+        }
+
+        .toast.error .toast-progress {
+            background: var(--error-color);
+        }
+
+        .toast.warning .toast-progress {
+            background: var(--warning-color);
+        }
     </style>
 </head>
 <body>
@@ -691,7 +944,6 @@
                     <button class="btn btn-primary btn-block" id="load-project-btn">
                         加载项目
                     </button>
-                    <div id="project-status"></div>
                 </div>
             </div>
 
@@ -712,7 +964,9 @@
                     <button class="btn btn-secondary btn-block" id="generate-beats-btn" disabled>
                         生成节拍网格
                     </button>
-                    <div id="bpm-status"></div>
+                    <button class="btn btn-primary btn-block" id="generate-score-btn" disabled style="margin-top: 8px;">
+                        生成曲谱
+                    </button>
                 </div>
             </div>
 
@@ -754,9 +1008,8 @@
                         <input type="number" class="form-input" id="tolerance" value="0.25" step="0.05" min="0.05" max="0.5">
                     </div>
                     <button class="btn btn-success btn-block" id="auto-align-btn" disabled>
-                        自动对齐标注
+                        自动对齐曲谱
                     </button>
-                    <div id="align-status"></div>
                 </div>
             </div>
 
@@ -779,8 +1032,10 @@
                         <button class="btn btn-secondary btn-block" id="export-annotations-btn" disabled style="margin-top: 8px;">
                             导出音频样本
                         </button>
+                        <button class="btn btn-warning btn-block" id="save-score-btn" disabled style="margin-top: 8px;">
+                            保存曲谱
+                        </button>
                     </div>
-                    <div id="save-status"></div>
                 </div>
             </div>
         </div>
@@ -837,43 +1092,194 @@
                 </div>
             </div>
 
-            <!-- Timeline Container -->
-            <div class="timeline-container" id="timeline-container">
-                <div class="beat-grid-overlay" id="beat-grid-overlay"></div>
-                <!-- Timeline Header with Ruler -->
-                <div class="timeline-header">
-                    <div class="timeline-ruler" id="timeline-ruler"></div>
+            <!-- Tracks Wrapper -->
+            <div class="tracks-wrapper">
+                <!-- Track Labels Panel -->
+                <div class="daw-track-labels" id="track-labels">
+                    <div class="track-label-header">
+                        <button class="track-label-toggle" id="toggle-track-labels" title="收起/展开轨道列表">‹</button>
+                    </div>
+                    <div class="track-labels-content">
+                        <div class="track-label-item" style="height: 151px;"> <!-- 150px height + 1px border -->
+                            <span>单鼓 Track</span>
+                        </div>
+                        <div class="track-label-item" style="height: 61px;"> <!-- 60px height + 1px border -->
+                            <span>标记 Track</span>
+                        </div>
+                        <div class="track-label-item" style="height: 61px;"> <!-- 60px height + 1px border -->
+                            <span>曲谱 Track</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Waveform Area -->
-                <div class="waveform-area">
-                    <div id="waveform"></div>
-                </div>
+                <!-- Timeline Container -->
+                <div class="timeline-container" id="timeline-container">
+                    <div class="beat-grid-overlay" id="beat-grid-overlay"></div>
+                    <!-- Timeline Header with Ruler -->
+                    <div class="timeline-header">
+                        <div class="timeline-ruler" id="timeline-ruler"></div>
+                    </div>
 
-                <!-- Annotation Track -->
-                <div class="annotation-track" id="annotation-track">
-                    <!-- Annotation markers will be placed here -->
-                </div>
+                    <!-- Waveform Area -->
+                    <div class="waveform-area">
+                        <div id="waveform"></div>
+                    </div>
 
-                <!-- Loading Overlay -->
-                <div class="loading-overlay" id="loading-overlay" style="display: none;">
-                    <div class="loading-spinner"></div>
-                    <div class="loading-text" id="loading-text">加载中...</div>
+                    <!-- Annotation Track -->
+                    <div class="annotation-track" id="annotation-track">
+                        <!-- Annotation markers will be placed here -->
+                    </div>
+
+                    <!-- Score Track -->
+                    <div class="score-track" id="score-track">
+                        <!-- Score markers will be placed here -->
+                    </div>
+
+                    <!-- Loading Overlay -->
+                    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text" id="loading-text">加载中...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Include WaveSurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
     <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
 
     <script>
+        // Toast Notification System
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+                this.toasts = new Map();
+                this.nextId = 1;
+            }
+
+            show(message, type = 'info', title = null, duration = 5000) {
+                const id = this.nextId++;
+                const toast = this.createToast(id, message, type, title, duration);
+                
+                this.container.appendChild(toast);
+                this.toasts.set(id, { element: toast, timer: null });
+
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+
+                // Auto-dismiss if duration is set
+                if (duration > 0) {
+                    this.startAutoClose(id, duration);
+                }
+
+                return id;
+            }
+
+            createToast(id, message, type, title, duration) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.dataset.id = id;
+
+                const iconMap = {
+                    success: '✓',
+                    error: '✕',
+                    warning: '⚠',
+                    info: 'ℹ'
+                };
+
+                toast.innerHTML = `
+                    <div class="toast-icon">${iconMap[type] || 'ℹ'}</div>
+                    <div class="toast-content">
+                        ${title ? `<div class="toast-title">${title}</div>` : ''}
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="toastManager.close(${id})">&times;</button>
+                    ${duration > 0 ? '<div class="toast-progress"></div>' : ''}
+                `;
+
+                return toast;
+            }
+
+            startAutoClose(id, duration) {
+                const toastData = this.toasts.get(id);
+                if (!toastData) return;
+
+                const progressBar = toastData.element.querySelector('.toast-progress');
+                let elapsed = 0;
+                const interval = 50;
+
+                const timer = setInterval(() => {
+                    elapsed += interval;
+                    const progress = (elapsed / duration) * 100;
+                    
+                    if (progressBar) {
+                        progressBar.style.width = `${Math.min(progress, 100)}%`;
+                    }
+
+                    if (elapsed >= duration) {
+                        clearInterval(timer);
+                        this.close(id);
+                    }
+                }, interval);
+
+                toastData.timer = timer;
+            }
+
+            close(id) {
+                const toastData = this.toasts.get(id);
+                if (!toastData) return;
+
+                if (toastData.timer) {
+                    clearInterval(toastData.timer);
+                }
+
+                toastData.element.classList.remove('show');
+                toastData.element.classList.add('hide');
+
+                setTimeout(() => {
+                    if (toastData.element.parentNode) {
+                        toastData.element.parentNode.removeChild(toastData.element);
+                    }
+                    this.toasts.delete(id);
+                }, 300);
+            }
+
+            success(message, title = null, duration = 5000) {
+                return this.show(message, 'success', title, duration);
+            }
+
+            error(message, title = null, duration = 8000) {
+                return this.show(message, 'error', title, duration);
+            }
+
+            warning(message, title = null, duration = 6000) {
+                return this.show(message, 'warning', title, duration);
+            }
+
+            info(message, title = null, duration = 5000) {
+                return this.show(message, 'info', title, duration);
+            }
+
+            loading(message, title = '处理中...') {
+                return this.show(message, 'info', title, 0); // No auto-close for loading
+            }
+        }
+
+        // Initialize toast manager
+        const toastManager = new ToastManager();
+
         // DAW Interface JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             // Global state
             let currentProject = '';
             let annotations = [];
+            let score = [];
             let beatGrid = null;
             let bpmData = null;
             let selectedAnnotation = null;
@@ -885,11 +1291,10 @@
             const elements = {
                 projectSelector: document.getElementById('project-selector'),
                 loadProjectBtn: document.getElementById('load-project-btn'),
-                projectStatus: document.getElementById('project-status'),
                 detectBpmBtn: document.getElementById('detect-bpm-btn'),
                 manualBpm: document.getElementById('manual-bpm'),
                 generateBeatsBtn: document.getElementById('generate-beats-btn'),
-                bpmStatus: document.getElementById('bpm-status'),
+                generateScoreBtn: document.getElementById('generate-score-btn'),
                 quantizeOptions: document.getElementById('quantize-options'),
                 swingAmount: document.getElementById('swing-amount'),
                 customSwingGroup: document.getElementById('custom-swing-group'),
@@ -897,11 +1302,10 @@
                 swingValue: document.getElementById('swing-value'),
                 tolerance: document.getElementById('tolerance'),
                 autoAlignBtn: document.getElementById('auto-align-btn'),
-                alignStatus: document.getElementById('align-status'),
                 annotationsList: document.getElementById('annotations-list'),
                 saveAnnotationsBtn: document.getElementById('save-annotations-btn'),
                 exportAnnotationsBtn: document.getElementById('export-annotations-btn'),
-                saveStatus: document.getElementById('save-status'),
+                saveScoreBtn: document.getElementById('save-score-btn'),
                 playBtn: document.getElementById('play-btn'),
                 stopBtn: document.getElementById('stop-btn'),
                 loopBtn: document.getElementById('loop-btn'),
@@ -915,10 +1319,14 @@
                 bpmConfidence: document.getElementById('bpm-confidence'),
                 beatGridOverlay: document.getElementById('beat-grid-overlay'),
                 annotationTrack: document.getElementById('annotation-track'),
+                scoreTrack: document.getElementById('score-track'),
+                timelineRuler: document.getElementById('timeline-ruler'),
                 loadingOverlay: document.getElementById('loading-overlay'),
                 loadingText: document.getElementById('loading-text'),
                 sidebarToggle: document.getElementById('sidebar-toggle'),
-                sidebar: document.getElementById('sidebar')
+                sidebar: document.getElementById('sidebar'),
+                trackLabels: document.getElementById('track-labels'),
+                toggleTrackLabelsBtn: document.getElementById('toggle-track-labels')
             };
 
 
@@ -940,17 +1348,38 @@
             const wsRegions = wavesurfer.registerPlugin(WaveSurfer.Regions.create());
 
             // Utility functions
+            let currentLoadingToast = null;
+
             function showLoading(text) {
-                elements.loadingText.textContent = text;
-                elements.loadingOverlay.style.display = 'flex';
+                // Close previous loading toast if exists
+                if (currentLoadingToast !== null) {
+                    toastManager.close(currentLoadingToast);
+                }
+                currentLoadingToast = toastManager.loading(text);
             }
 
             function hideLoading() {
-                elements.loadingOverlay.style.display = 'none';
+                if (currentLoadingToast !== null) {
+                    toastManager.close(currentLoadingToast);
+                    currentLoadingToast = null;
+                }
             }
 
             function showStatus(element, message, type = 'info') {
-                element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+                // Use toast instead of inline status
+                switch (type) {
+                    case 'success':
+                        toastManager.success(message);
+                        break;
+                    case 'error':
+                        toastManager.error(message);
+                        break;
+                    case 'warning':
+                        toastManager.warning(message);
+                        break;
+                    default:
+                        toastManager.info(message);
+                }
             }
 
             // Make togglePanel globally accessible
@@ -979,7 +1408,38 @@
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.projectStatus, `加载项目列表失败: ${error.message}`, 'error');
+                    showStatus(null, `加载项目列表失败: ${error.message}`, 'error');
+                }
+            }
+
+            // Load project metadata
+            async function loadProjectMetadata(projectName) {
+                try {
+                    const response = await fetch(`/api/metadata/${projectName}`);
+                    
+                    if (response.status === 404) {
+                        // Metadata doesn't exist, need to auto-detect BPM
+                        console.log('Metadata not found, auto-detecting BPM...');
+                        await detectBPM(); // This will create metadata.json
+                        
+                        // Try loading metadata again
+                        const retryResponse = await fetch(`/api/metadata/${projectName}`);
+                        if (retryResponse.ok) {
+                            const retryData = await retryResponse.json();
+                            return retryData.metadata;
+                        }
+                        return null;
+                    }
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.metadata;
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    console.warn('Failed to load metadata:', error);
+                    return null;
                 }
             }
 
@@ -999,16 +1459,33 @@
                     const audioBlob = await response.blob();
                     await wavesurfer.load(URL.createObjectURL(audioBlob));
                     
-                    // Load existing annotations
+                    // Load existing annotations and score
                     await loadAnnotations(projectName);
+                    await loadScore(projectName);
+                    
+                    // Load project metadata (BPM, etc.)
+                    const metadata = await loadProjectMetadata(projectName);
+                    if (metadata && metadata.bpm_data) {
+                        // Use metadata to populate BPM info
+                        bmpData = metadata.bpm_data; // Use existing variable name for consistency
+                        elements.bpmValue.textContent = metadata.bpm_data.bpm;
+                        elements.bpmConfidence.textContent = `置信度: ${(metadata.bpm_data.confidence * 100).toFixed(1)}%`;
+                        elements.manualBpm.value = metadata.bpm_data.bpm;
+                        elements.generateBeatsBtn.disabled = false;
+                        
+                        // Auto-generate beat grid using the BPM from metadata
+                        await generateBeatGrid();
+                        
+                        showStatus(null, `项目 "${projectName}" 加载成功 (BPM: ${metadata.bpm_data.bpm})`, 'success');
+                    } else {
+                        showStatus(null, `项目 "${projectName}" 加载成功 (需要检测 BPM)`, 'success');
+                    }
                     
                     // Enable controls
                     enableControls();
                     
-                    showStatus(elements.projectStatus, `项目 "${projectName}" 加载成功`, 'success');
-                    
                 } catch (error) {
-                    showStatus(elements.projectStatus, `加载项目失败: ${error.message}`, 'error');
+                    showStatus(null, `加载项目失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
@@ -1026,11 +1503,64 @@
                         updateAnnotationsList();
                         
                         if (annotations.length > 0) {
-                            showStatus(elements.projectStatus, `加载了 ${annotations.length} 个已有标注`, 'success');
+                            showStatus(null, `加载了 ${annotations.length} 个已有标注`, 'success');
+                            elements.generateScoreBtn.disabled = false;
                         }
                     }
                 } catch (error) {
                     console.warn('加载标注失败:', error);
+                }
+            }
+
+            // Load score
+            async function loadScore(projectName) {
+                try {
+                    const response = await fetch(`/api/score/${projectName}`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        score = data.score || [];
+                        renderScore();
+                        
+                        if (score.length > 0) {
+                            showStatus(null, `加载了 ${score.length} 个曲谱音符`, 'success');
+                            elements.saveScoreBtn.disabled = false;
+                            
+                            // Enable auto-align if beat grid is available
+                            if (beatGrid) {
+                                elements.autoAlignBtn.disabled = false;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.warn('加载曲谱失败:', error);
+                }
+            }
+
+            // Save score
+            async function saveScore() {
+                if (!currentProject) return;
+
+                showLoading('保存曲谱...');
+
+                try {
+                    const response = await fetch(`/api/score/${currentProject}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ score: score })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showStatus(null, `保存成功: ${data.message}`, 'success');
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    showStatus(null, `保存失败: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
                 }
             }
 
@@ -1065,13 +1595,13 @@
                         elements.bpmConfidence.textContent = `置信度: ${(bmpData.confidence * 100).toFixed(1)}%`;
                         elements.manualBpm.value = bmpData.bpm;
                         
-                        showStatus(elements.bpmStatus, `BPM 检测成功: ${bmpData.bpm} (${bmpData.method_used})`, 'success');
+                        showStatus(null, `BPM 检测成功: ${bmpData.bpm} (${bmpData.method_used})`, 'success');
                         elements.generateBeatsBtn.disabled = false;
                     } else {
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.bpmStatus, `BPM 检测失败: ${error.message}`, 'error');
+                    showStatus(null, `BPM 检测失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
@@ -1083,7 +1613,7 @@
 
                 const bpm = elements.manualBpm.value || (bmpData && bmpData.bpm);
                 if (!bpm) {
-                    showStatus(elements.bpmStatus, '请先检测 BPM 或输入手动 BPM', 'warning');
+                    showStatus(null, '请先检测 BPM 或输入手动 BPM', 'warning');
                     return;
                 }
 
@@ -1105,21 +1635,138 @@
                     if (data.status === 'success') {
                         beatGrid = data.beat_grid;
                         renderBeatGrid();
+                        renderTimelineRuler();
                         
-                        showStatus(elements.bpmStatus, 
+                        showStatus(null, 
                             `节拍网格生成成功: ${beatGrid.grid_metadata.total_beats} 个节拍, ${beatGrid.grid_metadata.total_measures} 个小节`, 
                             'success'
                         );
                         
-                        elements.autoAlignBtn.disabled = false;
+                        // Enable auto-align only if we have score data
+                        elements.autoAlignBtn.disabled = score.length === 0;
                     } else {
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.bpmStatus, `节拍网格生成失败: ${error.message}`, 'error');
+                    showStatus(null, `节拍网格生成失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
+            }
+
+            // Render timeline ruler with beat-aligned markers
+            function renderTimelineRuler() {
+                const ruler = elements.timelineRuler;
+                const duration = wavesurfer.getDuration();
+                if (!duration) {
+                    ruler.innerHTML = '';
+                    return;
+                }
+
+                const totalWidth = duration * currentPxPerSec;
+                const content = document.createElement('div');
+                content.style.width = `${totalWidth}px`;
+                content.style.height = '100%';
+                content.style.position = 'relative';
+
+                // If we have beat grid data, use it for alignment
+                if (beatGrid && beatGrid.downbeats) {
+                    // Add markers at downbeats (measure starts)
+                    beatGrid.downbeats.forEach((time, index) => {
+                        if (time <= duration) {
+                            const position = time * currentPxPerSec;
+                            const marker = document.createElement('div');
+                            marker.style.position = 'absolute';
+                            marker.style.left = `${position}px`;
+                            marker.style.top = '0';
+                            marker.style.height = '100%';
+                            marker.style.borderLeft = '2px solid var(--border-color)';
+                            marker.style.pointerEvents = 'none';
+                            
+                            // Add measure number label
+                            const label = document.createElement('span');
+                            label.textContent = `${index + 1} | ${formatTime(time)}`;
+                            label.style.position = 'absolute';
+                            label.style.left = '4px';
+                            label.style.top = '4px';
+                            label.style.fontSize = '11px';
+                            label.style.color = 'var(--text-primary)';
+                            label.style.backgroundColor = 'var(--bg-secondary)';
+                            label.style.padding = '2px 4px';
+                            label.style.borderRadius = '3px';
+                            label.style.fontWeight = '600';
+                            marker.appendChild(label);
+                            
+                            content.appendChild(marker);
+                        }
+                    });
+
+                    // Add lighter markers at regular beats if zoom is high enough
+                    if (currentPxPerSec > 200 && beatGrid.beats) {
+                        beatGrid.beats.forEach(time => {
+                            if (time <= duration) {
+                                const position = time * currentPxPerSec;
+                                const marker = document.createElement('div');
+                                marker.style.position = 'absolute';
+                                marker.style.left = `${position}px`;
+                                marker.style.top = '0';
+                                marker.style.height = '100%';
+                                marker.style.borderLeft = '1px solid var(--border-color)';
+                                marker.style.opacity = '0.5';
+                                marker.style.pointerEvents = 'none';
+                                
+                                content.appendChild(marker);
+                            }
+                        });
+                    }
+                } else {
+                    // Fallback to time-based markers if no beat grid
+                    let interval;
+                    if (currentPxPerSec < 100) {
+                        interval = 10; // 10 seconds
+                    } else if (currentPxPerSec < 200) {
+                        interval = 5; // 5 seconds
+                    } else if (currentPxPerSec < 500) {
+                        interval = 2; // 2 seconds
+                    } else {
+                        interval = 1; // 1 second
+                    }
+
+                    for (let time = 0; time <= duration; time += interval) {
+                        const position = time * currentPxPerSec;
+                        const marker = document.createElement('div');
+                        marker.style.position = 'absolute';
+                        marker.style.left = `${position}px`;
+                        marker.style.top = '0';
+                        marker.style.height = '100%';
+                        marker.style.borderLeft = '1px solid var(--border-color)';
+                        marker.style.pointerEvents = 'none';
+                        
+                        const label = document.createElement('span');
+                        label.textContent = formatTime(time);
+                        label.style.position = 'absolute';
+                        label.style.left = '4px';
+                        label.style.top = '4px';
+                        label.style.fontSize = '11px';
+                        label.style.color = 'var(--text-muted)';
+                        label.style.backgroundColor = 'var(--bg-secondary)';
+                        label.style.padding = '1px 3px';
+                        label.style.borderRadius = '2px';
+                        marker.appendChild(label);
+                        
+                        content.appendChild(marker);
+                    }
+                }
+
+                ruler.innerHTML = '';
+                ruler.appendChild(content);
+            }
+
+            // Format time in MM:SS format
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
             }
 
             // Render beat grid overlay
@@ -1162,14 +1809,14 @@
                 elements.beatGridOverlay.appendChild(content);
             }
 
-            // Auto-align annotations
-            async function autoAlignAnnotations() {
-                if (!currentProject || !beatGrid || annotations.length === 0) {
-                    showStatus(elements.alignStatus, '请先加载项目、生成节拍网格并添加标注', 'warning');
+            // Auto-align score (not annotations)
+            async function autoAlignScore() {
+                if (!currentProject || !beatGrid || score.length === 0) {
+                    showStatus(null, '请先加载项目、生成节拍网格和曲谱', 'warning');
                     return;
                 }
 
-                showLoading('自动对齐标注...');
+                showLoading('自动对齐曲谱...');
 
                 try {
                     const swingAmount = elements.swingAmount.value;
@@ -1185,27 +1832,27 @@
                             swingAmount: swingAmount,
                             customSwing: customSwing,
                             tolerance: tolerance,
-                            preserveOffBeat: true
+                            preserveOffBeat: true,
+                            annotations: score  // Pass score data instead of annotations
                         })
                     });
 
                     const data = await response.json();
                     
                     if (data.status === 'success') {
-                        annotations = data.alignment_result.aligned_annotations;
-                        renderAnnotations();
-                        updateAnnotationsList();
+                        score = data.alignment_result.aligned_annotations;  // Update score with aligned data
+                        renderScore();
                         
                         const stats = data.alignment_result.alignment_stats;
-                        showStatus(elements.alignStatus, 
-                            `对齐完成: ${stats.aligned_count} 个对齐, ${stats.preserved_count} 个保留, 平均调整 ${(stats.average_adjustment * 1000).toFixed(1)}ms`, 
+                        showStatus(null, 
+                            `曲谱对齐完成: ${stats.aligned_count} 个对齐, ${stats.preserved_count} 个保留, 平均调整 ${(stats.average_adjustment * 1000).toFixed(1)}ms`, 
                             'success'
                         );
                     } else {
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.alignStatus, `自动对齐失败: ${error.message}`, 'error');
+                    showStatus(null, `自动对齐失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
@@ -1242,10 +1889,10 @@
                     const marker = document.createElement('div');
                     marker.className = `annotation-marker ${annotation.type}`;
                     marker.dataset.id = regionId;
-                    marker.textContent = annotation.type.toUpperCase();
+                    marker.textContent = annotation.type === 'don' ? '咚' : '咔';
                     
                     const position = annotation.time * currentPxPerSec;
-                    const width = Math.max(20, (annotation.duration || 0.1) * currentPxPerSec);
+                    const width = (annotation.duration || 0.1) * currentPxPerSec;
                     
                     marker.style.left = `${position}px`;
                     marker.style.width = `${width}px`;
@@ -1257,6 +1904,72 @@
                 
                 elements.annotationTrack.innerHTML = '';
                 elements.annotationTrack.appendChild(content);
+            }
+
+            // Render score (曲谱)
+            function renderScore() {
+                const duration = wavesurfer.getDuration();
+                if (!duration) {
+                    elements.scoreTrack.innerHTML = '';
+                    return;
+                }
+
+                const totalWidth = duration * currentPxPerSec;
+                const content = document.createElement('div');
+                content.style.width = `${totalWidth}px`;
+                content.style.height = '100%';
+                content.style.position = 'relative';
+
+                score.forEach((scoreItem, index) => {
+                    const marker = document.createElement('div');
+                    marker.className = `score-marker ${scoreItem.type}`;
+                    marker.dataset.id = scoreItem.id || `score-${index}`;
+                    marker.textContent = scoreItem.type === 'don' ? '咚' : '咔';
+                    
+                    const position = scoreItem.time * currentPxPerSec;
+                    // Center the circle on the time position (subtract half the width)
+                    marker.style.left = `${position - 15}px`; // 15px = half of 30px width
+                    
+                    marker.addEventListener('click', () => selectScore(scoreItem, marker));
+                    
+                    content.appendChild(marker);
+                });
+                
+                elements.scoreTrack.innerHTML = '';
+                elements.scoreTrack.appendChild(content);
+            }
+
+            // Select score item
+            function selectScore(scoreItem, marker) {
+                // Clear previous selection
+                document.querySelectorAll('.score-marker.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+
+                // Select new score item
+                marker.classList.add('selected');
+                
+                // Seek to score position
+                wavesurfer.seekTo(scoreItem.time / wavesurfer.getDuration());
+            }
+
+            // Generate initial score from annotations
+            function generateScoreFromAnnotations() {
+                score = annotations.map(annotation => ({
+                    id: `score-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    time: annotation.time,
+                    type: annotation.type
+                }));
+                
+                renderScore();
+                elements.saveScoreBtn.disabled = false;
+                
+                // Enable auto-align if beat grid is available
+                if (beatGrid) {
+                    elements.autoAlignBtn.disabled = false;
+                }
+                
+                toastManager.success(`从标记生成了 ${score.length} 个曲谱音符`);
             }
 
             // Select annotation
@@ -1305,7 +2018,7 @@
                     
                     item.innerHTML = `
                         <div class="annotation-info">
-                            <div class="annotation-type ${annotation.type}">${annotation.type.toUpperCase()}</div>
+                            <div class="annotation-type ${annotation.type}">${annotation.type === 'don' ? '咚' : '咔'}</div>
                             <div class="annotation-time">${annotation.time.toFixed(3)}s (${(annotation.duration || 0.1).toFixed(3)}s)</div>
                         </div>
                         <button class="btn btn-error btn-small" onclick="deleteAnnotation('${annotation.id}')">删除</button>
@@ -1365,6 +2078,7 @@
 
                 annotations.push(newAnnotation);
                 renderAnnotations();
+                renderScore();
                 updateAnnotationsList();
             }
 
@@ -1384,12 +2098,12 @@
                     const data = await response.json();
                     
                     if (response.ok) {
-                        showStatus(elements.saveStatus, `保存成功: ${data.message}`, 'success');
+                        showStatus(null, `保存成功: ${data.message}`, 'success');
                     } else {
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.saveStatus, `保存失败: ${error.message}`, 'error');
+                    showStatus(null, `保存失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
@@ -1415,12 +2129,12 @@
                     const data = await response.json();
                     
                     if (response.ok) {
-                        showStatus(elements.saveStatus, `导出成功: ${data.message}`, 'success');
+                        showStatus(null, `导出成功: ${data.message}`, 'success');
                     } else {
                         throw new Error(data.message);
                     }
                 } catch (error) {
-                    showStatus(elements.saveStatus, `导出失败: ${error.message}`, 'error');
+                    showStatus(null, `导出失败: ${error.message}`, 'error');
                 } finally {
                     hideLoading();
                 }
@@ -1435,6 +2149,16 @@
                 elements.zoomOutBtn.disabled = false;
                 elements.zoomFitBtn.disabled = false;
                 elements.detectBpmBtn.disabled = false;
+                
+                // Enable generate score button if we have annotations
+                if (annotations.length > 0) {
+                    elements.generateScoreBtn.disabled = false;
+                }
+                
+                // Enable save score button if we have score data
+                if (score.length > 0) {
+                    elements.saveScoreBtn.disabled = false;
+                }
             }
 
             // Initialize quantization options
@@ -1481,9 +2205,11 @@
 
             elements.detectBpmBtn.addEventListener('click', detectBPM);
             elements.generateBeatsBtn.addEventListener('click', generateBeatGrid);
-            elements.autoAlignBtn.addEventListener('click', autoAlignAnnotations);
+            elements.generateScoreBtn.addEventListener('click', generateScoreFromAnnotations);
+            elements.autoAlignBtn.addEventListener('click', autoAlignScore);
             elements.saveAnnotationsBtn.addEventListener('click', saveAnnotations);
             elements.exportAnnotationsBtn.addEventListener('click', exportAudioSamples);
+            elements.saveScoreBtn.addEventListener('click', saveScore);
 
             // Transport controls
             elements.playBtn.addEventListener('click', () => wavesurfer.playPause());
@@ -1606,9 +2332,23 @@
                 elements.sidebar.classList.toggle('open');
             });
 
+            // Track labels toggle
+            elements.toggleTrackLabelsBtn.addEventListener('click', () => {
+                elements.trackLabels.classList.toggle('collapsed');
+                // Use a short timeout to allow the CSS transition to finish before redrawing WaveSurfer
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 300); // This should match the CSS transition duration
+            });
+
             // Sync timeline elements scroll position
             function syncTimelineScroll() {
                 const scrollLeft = wavesurfer.getScroll();
+
+                const rulerContent = elements.timelineRuler.firstChild;
+                if (rulerContent) {
+                    rulerContent.style.transform = `translateX(-${scrollLeft}px)`;
+                }
 
                 const gridContent = elements.beatGridOverlay.firstChild;
                 if (gridContent) {
@@ -1618,6 +2358,11 @@
                 const annotationContent = elements.annotationTrack.firstChild;
                 if (annotationContent) {
                     annotationContent.style.transform = `translateX(-${scrollLeft}px)`;
+                }
+
+                const scoreContent = elements.scoreTrack.firstChild;
+                if (scoreContent) {
+                    scoreContent.style.transform = `translateX(-${scrollLeft}px)`;
                 }
             }
 
@@ -1635,7 +2380,9 @@
                 
                 // Initial render and sync
                 renderBeatGrid();
+                renderTimelineRuler();
                 renderAnnotations();
+                renderScore();
                 syncTimelineScroll();
             });
 
@@ -1643,7 +2390,9 @@
                 // In WaveSurfer v7, minPxPerSec option is updated to the current zoom level.
                 currentPxPerSec = wavesurfer.options.minPxPerSec;
                 renderBeatGrid();
+                renderTimelineRuler();
                 renderAnnotations();
+                renderScore();
                 syncTimelineScroll();
             });
 
@@ -1666,8 +2415,53 @@
                     annotation.duration = region.end - region.start;
                     updateAnnotationsList();
                     // Re-render markers to reflect the change, then sync scroll
-                    renderAnnotations(); 
+                    renderAnnotations();
+                renderScore(); 
                     syncTimelineScroll();
+                }
+            });
+
+            // Timeline ruler vertical drag zoom
+            let isDragZooming = false;
+            let dragStartY = 0;
+            let dragStartZoom = 0;
+
+            elements.timelineRuler.addEventListener('mousedown', (e) => {
+                if (e.button === 0) { // Left mouse button
+                    isDragZooming = true;
+                    dragStartY = e.clientY;
+                    dragStartZoom = currentPxPerSec;
+                    
+                    // Prevent text selection during drag
+                    e.preventDefault();
+                    document.body.style.userSelect = 'none';
+                    elements.timelineRuler.style.cursor = 'ns-resize';
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragZooming) {
+                    const deltaY = dragStartY - e.clientY; // Negative for up, positive for down
+                    const sensitivity = 0.01; // Adjust zoom sensitivity
+                    const zoomFactor = 1 + (deltaY * sensitivity);
+                    
+                    const newZoom = Math.max(
+                        Math.min(dragStartZoom * zoomFactor, maxPxPerSec),
+                        minPxPerSec
+                    );
+                    
+                    if (Math.abs(newZoom - currentPxPerSec) > 1) {
+                        currentPxPerSec = newZoom;
+                        wavesurfer.zoom(currentPxPerSec);
+                    }
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragZooming) {
+                    isDragZooming = false;
+                    document.body.style.userSelect = '';
+                    elements.timelineRuler.style.cursor = '';
                 }
             });
 
@@ -1689,7 +2483,9 @@
             window.addEventListener('resize', () => {
                 setTimeout(() => {
                     renderBeatGrid();
+                    renderTimelineRuler();
                     renderAnnotations();
+                renderScore();
                     syncTimelineScroll();
                 }, 100);
             });
