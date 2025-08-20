@@ -1,8 +1,15 @@
 # 大鼓达人 (Da Gu Da Ren)
 
-This project is a web-based rhythm game inspired by "Taiko no Tatsujin" (太鼓の達人) and the philosophical concept of "the burnout society" by Han Byung-chul. "大鼓达人" represents a transcendence of mere imitation—creating an authentic rhythmic experience through automated beatmap generation and professional-grade annotation tools.
+韩炳哲是我兄弟
 
-## Project Goal
+## 项目咪表 Project Goal
+
+解放力比多其实并不重要，解放享乐才重要。可是享乐已经享了，难道还能回到过去？难道你还记得过去？
+
+我们在平面上游走，我们是平面的陷阱。其实也没有什么陷阱，毕竟还是享乐。但是也没有那么简单 当然也没有那么复杂。
+
+------ 以下都不是我写的 都是AI写的 但是我保证上面儿都是我写的 ---------
+
 
 The core idea is to develop a fully automated pipeline:
 1.  **Input**: A standard audio file (e.g., MP3).
