@@ -2,6 +2,16 @@ import numpy as np
 import librosa
 import os
 from typing import Tuple, List, Dict, Optional
+from scipy import stats
+
+# Try to import BeatNet for advanced BPM detection
+try:
+    from BeatNet.BeatNet import BeatNet
+    BEATNET_AVAILABLE = True
+    print("[BPM] BeatNet available - using advanced deep learning BPM detection")
+except ImportError:
+    BEATNET_AVAILABLE = False
+    print("[BPM] BeatNet not available - falling back to librosa methods")
 
 class BPMDetector:
     """
@@ -18,6 +28,16 @@ class BPMDetector:
         self.hop_length = hop_length
         self.sr = sr
         
+        # Initialize BeatNet if available
+        self.beatnet_estimator = None
+        if BEATNET_AVAILABLE:
+            try:
+                self.beatnet_estimator = BeatNet(1, mode='offline', inference_model='DBN', plot=[], thread=False)
+                print("[BPM] BeatNet estimator initialized successfully")
+            except Exception as e:
+                print(f"[BPM] Failed to initialize BeatNet: {e}")
+                self.beatnet_estimator = None
+        
     def detect_bpm(self, audio_path: str) -> Dict:
         """
         Detect BPM using multiple algorithms and return the most confident result.
@@ -29,36 +49,13 @@ class BPMDetector:
             Dictionary with BPM, confidence score, and beat times
         """
         try:
-            # Load audio file
-            y, sr = librosa.load(audio_path, sr=self.sr)
-            print(f"[BPM] Loaded audio: {os.path.basename(audio_path)} ({len(y)/sr:.1f}s)")
+            print(f"[BPM] Analyzing: {os.path.basename(audio_path)}")
             
-            # Method 1: Tempo detection with onset envelope
-            tempo_onset = self._detect_tempo_onset(y, sr)
+            # Use BeatNet exclusively - no fallback methods
+            if self.beatnet_estimator is None:
+                raise RuntimeError("BeatNet not available - cannot perform BPM detection")
             
-            # Method 2: Beat tracking approach
-            tempo_beat = self._detect_tempo_beat_tracking(y, sr)
-            
-            # Method 3: Spectral centroid periodicity
-            tempo_spectral = self._detect_tempo_spectral(y, sr)
-            
-            # Combine results and select most confident
-            candidates = [tempo_onset, tempo_beat, tempo_spectral]
-            best_result = max(candidates, key=lambda x: x['confidence'])
-            
-            # Generate precise beat times using the best BPM
-            beat_times = self._generate_beat_times(y, sr, best_result['bpm'])
-            
-            result = {
-                'bpm': round(best_result['bpm'], 2),
-                'confidence': round(best_result['confidence'], 3),
-                'beat_times': beat_times.tolist(),
-                'method_used': best_result['method'],
-                'all_candidates': candidates
-            }
-            
-            print(f"[BPM] Detected: {result['bpm']} BPM (confidence: {result['confidence']:.3f})")
-            return result
+            return self._detect_tempo_beatnet(audio_path)
             
         except Exception as e:
             print(f"[BPM] Error detecting BPM: {e}")
@@ -69,6 +66,79 @@ class BPMDetector:
                 'method_used': 'fallback',
                 'error': str(e)
             }
+    
+    def _detect_tempo_beatnet(self, audio_path: str) -> Dict:
+        """Advanced BPM detection using BeatNet deep learning model with offset calculation"""
+        try:
+            # Process audio with BeatNet
+            output = self.beatnet_estimator.process(audio_path)
+            
+            if output is None or len(output) == 0:
+                raise RuntimeError("BeatNet failed to detect any beats")
+            
+            beat_times = output[:, 0]  # First column is timestamps
+            beat_types = output[:, 1]  # Second column is beat types (1=downbeat, 2=beat)
+            
+            print(f"[BPM] BeatNet detected {len(beat_times)} beats")
+            
+            # Linear regression for overall tempo
+            beat_numbers = np.arange(len(beat_times))
+            slope, intercept, r_value, p_value, std_err = stats.linregress(beat_times, beat_numbers)
+            fitted_bpm = slope * 60
+            
+            # Calculate confidence based on R² value
+            r_squared = r_value ** 2
+            confidence = r_squared  # Direct use of R² as confidence
+            
+            # Validate BPM range
+            if not (60 <= fitted_bpm <= 200):
+                # Try harmonic relationships
+                for harmonic in [2, 0.5, 4, 0.25]:
+                    adjusted_bpm = fitted_bpm * harmonic
+                    if 60 <= adjusted_bpm <= 200:
+                        fitted_bpm = adjusted_bpm
+                        confidence *= 0.9
+                        break
+                else:
+                    raise RuntimeError(f"BPM {fitted_bpm:.1f} outside valid range")
+            
+            # Calculate offset for downbeat alignment
+            offset = self._calculate_downbeat_offset(beat_times, beat_types, fitted_bpm)
+            
+            # Prepare complete beat data with types
+            beat_data = []
+            for i, (time, beat_type) in enumerate(zip(beat_times, beat_types)):
+                beat_data.append({
+                    'time': float(time),
+                    'type': 'downbeat' if beat_type == 1 else 'beat',
+                    'index': i
+                })
+            
+            # Calculate residuals for quality assessment
+            residuals = beat_numbers - (slope * beat_times + intercept)
+            max_residual = np.max(np.abs(residuals))
+            
+            # Count downbeats
+            downbeat_count = len(np.where(beat_types == 1)[0])
+            
+            print(f"[BPM] Analysis: {fitted_bpm:.1f} BPM, R²={r_squared:.6f}, offset={offset:.3f}s, downbeats={downbeat_count}")
+            
+            return {
+                'bpm': float(fitted_bpm),
+                'confidence': float(confidence),
+                'beat_times': beat_times.tolist(),  # Keep for backward compatibility
+                'beat_data': beat_data,  # Complete beat information
+                'offset': float(offset),  # Calculated offset for alignment
+                'method_used': 'beatnet_deep_learning',
+                'r_squared': r_squared,
+                'max_residual': max_residual,
+                'total_beats': len(beat_times),
+                'downbeat_count': downbeat_count
+            }
+            
+        except Exception as e:
+            print(f"[BPM] BeatNet method failed: {e}")
+            raise RuntimeError(f"BeatNet detection failed: {e}")
     
     def _detect_tempo_onset(self, y: np.ndarray, sr: int) -> Dict:
         """Method 1: Onset-based tempo detection"""
@@ -92,11 +162,11 @@ class BPMDetector:
             return {
                 'bpm': float(tempo),
                 'confidence': confidence,
-                'method': 'onset_envelope'
+                'method_used': 'onset_envelope'
             }
         except Exception as e:
             print(f"[BPM] Onset method failed: {e}")
-            return {'bpm': 120.0, 'confidence': 0.0, 'method': 'onset_envelope'}
+            return {'bpm': 120.0, 'confidence': 0.0, 'method_used': 'onset_envelope'}
     
     def _detect_tempo_beat_tracking(self, y: np.ndarray, sr: int) -> Dict:
         """Method 2: Beat tracking approach"""
@@ -118,11 +188,11 @@ class BPMDetector:
             return {
                 'bpm': float(tempo),
                 'confidence': confidence,
-                'method': 'beat_tracking'
+                'method_used': 'beat_tracking'
             }
         except Exception as e:
             print(f"[BPM] Beat tracking method failed: {e}")
-            return {'bpm': 120.0, 'confidence': 0.0, 'method': 'beat_tracking'}
+            return {'bpm': 120.0, 'confidence': 0.0, 'method_used': 'beat_tracking'}
     
     def _detect_tempo_spectral(self, y: np.ndarray, sr: int) -> Dict:
         """Method 3: Spectral-based tempo detection"""
@@ -168,11 +238,11 @@ class BPMDetector:
             return {
                 'bpm': float(bpm),
                 'confidence': float(confidence),
-                'method': 'spectral_periodicity'
+                'method_used': 'spectral_periodicity'
             }
         except Exception as e:
             print(f"[BPM] Spectral method failed: {e}")
-            return {'bpm': 120.0, 'confidence': 0.0, 'method': 'spectral_periodicity'}
+            return {'bpm': 120.0, 'confidence': 0.0, 'method_used': 'spectral_periodicity'}
     
     def _calculate_onset_confidence(self, onset_envelope: np.ndarray, bpm: float, sr: int) -> float:
         """Calculate confidence score based on onset strength consistency"""
@@ -231,6 +301,55 @@ class BPMDetector:
             duration = len(y) / sr
             beat_interval = 60.0 / bpm
             return np.arange(0, duration, beat_interval)
+    
+    def _calculate_downbeat_offset(self, beat_times: np.ndarray, beat_types: np.ndarray, bpm: float) -> float:
+        """Calculate optimal offset to align downbeats with measure grid"""
+        try:
+            # Find all downbeats
+            downbeat_indices = np.where(beat_types == 1)[0]
+            if len(downbeat_indices) < 2:
+                return 0.0  # Not enough downbeats to calculate offset
+            
+            downbeat_times = beat_times[downbeat_indices]
+            
+            # Calculate expected measure duration (assuming 4/4 time)
+            beats_per_minute = bpm
+            beats_per_second = beats_per_minute / 60.0
+            beats_per_measure = 4  # Assuming 4/4 time signature
+            measure_duration = beats_per_measure / beats_per_second
+            
+            print(f"[Offset] Measure duration: {measure_duration:.3f}s, analyzing {len(downbeat_times)} downbeats")
+            
+            # Try different offset values to find best alignment
+            best_offset = 0.0
+            best_score = float('inf')
+            
+            # Test offset range from 0 to one measure duration
+            test_offsets = np.linspace(0, measure_duration, 100)
+            
+            for offset in test_offsets:
+                # Calculate how well downbeats align with measure grid after applying offset
+                adjusted_times = downbeat_times + offset
+                # Find how far each downbeat is from nearest measure grid line
+                grid_positions = adjusted_times / measure_duration
+                deviations = np.abs(grid_positions - np.round(grid_positions))
+                # Score is average deviation (lower is better)
+                score = np.mean(deviations)
+                
+                if score < best_score:
+                    best_score = score
+                    best_offset = offset
+            
+            # Negative offset means we need to wait before starting
+            final_offset = -best_offset
+            
+            print(f"[Offset] Best offset: {final_offset:.3f}s (alignment score: {best_score:.4f})")
+            
+            return final_offset
+            
+        except Exception as e:
+            print(f"[Offset] Calculation failed: {e}")
+            return 0.0
 
 def test_bpm_detection():
     """Test BPM detection on the current project's drum track"""
@@ -255,7 +374,7 @@ def test_bpm_detection():
         # Show all candidates
         print("\n=== All Method Results ===")
         for candidate in result.get('all_candidates', []):
-            print(f"{candidate['method']}: {candidate['bpm']:.2f} BPM (conf: {candidate['confidence']:.3f})")
+            print(f"{candidate['method_used']}: {candidate['bpm']:.2f} BPM (conf: {candidate['confidence']:.3f})")
     else:
         print(f"Test audio file not found: {test_audio}")
 

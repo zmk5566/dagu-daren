@@ -954,12 +954,29 @@
                     <span class="panel-toggle">▼</span>
                 </div>
                 <div class="daw-panel-content">
+                    <div class="form-group">
+                        <label class="form-label">BPM 检测音源</label>
+                        <select class="form-select" id="bpm-source-select">
+                            <option value="drums">鼓轨 (drums.mp3)</option>
+                            <option value="original">原曲 (更准确)</option>
+                        </select>
+                    </div>
                     <button class="btn btn-secondary btn-block" id="detect-bpm-btn" disabled>
                         检测 BPM
                     </button>
                     <div class="form-group">
                         <label class="form-label">手动 BPM</label>
                         <input type="number" class="form-input" id="manual-bpm" placeholder="120.0" step="0.1" min="60" max="200">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">音频偏移 (秒)</label>
+                        <input type="number" class="form-input" id="audio-offset" placeholder="0.000" step="0.001" min="-5" max="5" value="0">
+                        <small style="color: var(--text-secondary); font-size: 11px;">负值表示延迟播放，正值表示提前播放</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">曲谱偏移 (秒)</label>
+                        <input type="number" class="form-input" id="score-offset" placeholder="0.000" step="0.001" min="-5" max="5" value="0">
+                        <small style="color: var(--text-secondary); font-size: 11px;">独立调整曲谱显示位置</small>
                     </div>
                     <button class="btn btn-secondary btn-block" id="generate-beats-btn" disabled>
                         生成节拍网格
@@ -1286,13 +1303,18 @@
             let currentTool = 'select';
             let isLooping = false;
             let quantizeMode = '1/16';
+            let audioOffset = 0.0;  // Audio offset to align downbeats with measure grid
+            let scoreOffset = 0.0;  // Score offset for independent score positioning
 
             // DOM elements
             const elements = {
                 projectSelector: document.getElementById('project-selector'),
                 loadProjectBtn: document.getElementById('load-project-btn'),
+                bpmSourceSelect: document.getElementById('bpm-source-select'),
                 detectBpmBtn: document.getElementById('detect-bpm-btn'),
                 manualBpm: document.getElementById('manual-bpm'),
+                audioOffsetInput: document.getElementById('audio-offset'),
+                scoreOffsetInput: document.getElementById('score-offset'),
                 generateBeatsBtn: document.getElementById('generate-beats-btn'),
                 generateScoreBtn: document.getElementById('generate-score-btn'),
                 quantizeOptions: document.getElementById('quantize-options'),
@@ -1473,13 +1495,27 @@
                         elements.manualBpm.value = metadata.bpm_data.bpm;
                         elements.generateBeatsBtn.disabled = false;
                         
+                        // Apply audio offset for downbeat alignment
+                        audioOffset = metadata.bpm_data.offset || 0.0;
+                        elements.audioOffsetInput.value = audioOffset.toFixed(3);
+                        if (audioOffset !== 0) {
+                            console.log(`[Offset] Applied audio offset: ${audioOffset.toFixed(3)}s for downbeat alignment`);
+                            // The offset will be applied in all time-related calculations
+                        }
+                        
                         // Auto-generate beat grid using the BPM from metadata
                         await generateBeatGrid();
                         
-                        showStatus(null, `项目 "${projectName}" 加载成功 (BPM: ${metadata.bpm_data.bpm})`, 'success');
+                        const offsetText = audioOffset ? `, offset: ${audioOffset.toFixed(3)}s` : '';
+                        showStatus(null, `项目 "${projectName}" 加载成功 (BPM: ${metadata.bpm_data.bpm}${offsetText})`, 'success');
                     } else {
                         showStatus(null, `项目 "${projectName}" 加载成功 (需要检测 BPM)`, 'success');
+                        audioOffset = 0.0;  // Reset audio offset if no metadata
                     }
+                    
+                    // Reset score offset when loading new project (will be set by loadScore if saved)
+                    scoreOffset = 0.0;
+                    elements.scoreOffsetInput.value = "0.000";
                     
                     // Enable controls
                     enableControls();
@@ -1519,11 +1555,28 @@
                     const data = await response.json();
                     
                     if (data.status === 'success') {
-                        score = data.score || [];
+                        const scoreData = data.score || [];
+                        
+                        // Check if score data has metadata with offset
+                        if (Array.isArray(scoreData)) {
+                            score = scoreData;
+                            scoreOffset = 0.0; // Default if no metadata
+                        } else if (scoreData.metadata && Array.isArray(scoreData.notes)) {
+                            // New format with metadata
+                            score = scoreData.notes;
+                            scoreOffset = scoreData.metadata.scoreOffset || 0.0;
+                            elements.scoreOffsetInput.value = scoreOffset.toFixed(3);
+                            console.log(`[Score] 加载了score offset: ${scoreOffset.toFixed(3)}s`);
+                        } else {
+                            score = [];
+                            scoreOffset = 0.0;
+                        }
+                        
                         renderScore();
                         
                         if (score.length > 0) {
-                            showStatus(null, `加载了 ${score.length} 个曲谱音符`, 'success');
+                            const offsetText = scoreOffset !== 0 ? `, score offset: ${scoreOffset.toFixed(3)}s` : '';
+                            showStatus(null, `加载了 ${score.length} 个曲谱音符${offsetText}`, 'success');
                             elements.saveScoreBtn.disabled = false;
                             
                             // Enable auto-align if beat grid is available
@@ -1544,10 +1597,20 @@
                 showLoading('保存曲谱...');
 
                 try {
+                    // Save score with metadata including score offset
+                    const scoreData = {
+                        metadata: {
+                            scoreOffset: scoreOffset,
+                            createdAt: Date.now(),
+                            version: "2.0"
+                        },
+                        notes: score
+                    };
+                    
                     const response = await fetch(`/api/score/${currentProject}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ score: score })
+                        body: JSON.stringify({ score: scoreData })
                     });
 
                     const data = await response.json();
@@ -1568,7 +1631,8 @@
             async function detectBPM() {
                 if (!currentProject) return;
 
-                showLoading('检测 BPM...');
+                const useOriginal = elements.bpmSourceSelect.value === 'original';
+                showLoading(`检测 BPM...${useOriginal ? '(使用原曲)' : '(使用鼓轨)'}`);
                 
                 try {
                     const response = await fetch('/api/detect_bpm', {
@@ -1576,7 +1640,8 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             projectName: currentProject,
-                            audioFile: 'drums.mp3'
+                            audioFile: 'drums.mp3',
+                            useOriginal: useOriginal
                         })
                     });
 
@@ -1592,10 +1657,19 @@
                         }
                         
                         elements.bpmValue.textContent = bmpData.bpm;
-                        elements.bpmConfidence.textContent = `置信度: ${(bmpData.confidence * 100).toFixed(1)}%`;
+                        elements.bmpConfidence.textContent = `置信度: ${(bmpData.confidence * 100).toFixed(1)}%`;
                         elements.manualBpm.value = bmpData.bpm;
                         
-                        showStatus(null, `BPM 检测成功: ${bmpData.bpm} (${bmpData.method_used})`, 'success');
+                        // Update offset input with detected offset
+                        if (bmpData.offset !== undefined) {
+                            audioOffset = bmpData.offset;
+                            elements.audioOffsetInput.value = audioOffset.toFixed(3);
+                        }
+                        
+                        const sourceText = bmpData.audio_source === 'original_track' ? '原曲' : 
+                                         bmpData.audio_source === 'drums_fallback' ? '鼓轨(原曲未找到)' : '鼓轨';
+                        const offsetText = bmpData.offset ? `, offset: ${bmpData.offset.toFixed(3)}s` : '';
+                        showStatus(null, `BPM 检测成功: ${bmpData.bpm} (${bmpData.method_used}) - 音源: ${sourceText}${offsetText}`, 'success');
                         elements.generateBeatsBtn.disabled = false;
                     } else {
                         throw new Error(data.message);
@@ -1673,8 +1747,10 @@
                 if (beatGrid && beatGrid.downbeats) {
                     // Add markers at downbeats (measure starts)
                     beatGrid.downbeats.forEach((time, index) => {
-                        if (time <= duration) {
-                            const position = time * currentPxPerSec;
+                        // Apply audio offset to timeline ruler markers
+                        const offsetTime = time + audioOffset;
+                        if (offsetTime <= duration && offsetTime >= 0) {
+                            const position = offsetTime * currentPxPerSec;
                             const marker = document.createElement('div');
                             marker.style.position = 'absolute';
                             marker.style.left = `${position}px`;
@@ -1786,7 +1862,9 @@
                 content.style.position = 'relative';
 
                 const addLine = (time, className) => {
-                    const position = time * currentPxPerSec;
+                    // Apply audio offset to shift all beat lines
+                    const offsetTime = time + audioOffset;
+                    const position = offsetTime * currentPxPerSec;
                     const line = document.createElement('div');
                     line.className = `beat-line ${className}`;
                     line.style.left = `${position}px`;
@@ -1914,6 +1992,8 @@
                     return;
                 }
 
+                console.log(`[Score] 渲染曲谱: ${score.length} 个音符, score offset: ${scoreOffset.toFixed(3)}s`);
+
                 const totalWidth = duration * currentPxPerSec;
                 const content = document.createElement('div');
                 content.style.width = `${totalWidth}px`;
@@ -1926,7 +2006,12 @@
                     marker.dataset.id = scoreItem.id || `score-${index}`;
                     marker.textContent = scoreItem.type === 'don' ? '咚' : '咔';
                     
-                    const position = scoreItem.time * currentPxPerSec;
+                    // Apply score offset to score markers for visual alignment
+                    const offsetTime = scoreItem.time + scoreOffset;
+                    const position = offsetTime * currentPxPerSec;
+                    
+                    console.log(`[Score] 音符${index}: 原时间=${scoreItem.time.toFixed(3)}s, score offset后=${offsetTime.toFixed(3)}s, 位置=${position.toFixed(1)}px`);
+                    
                     // Center the circle on the time position (subtract half the width)
                     marker.style.left = `${position - 15}px`; // 15px = half of 30px width
                     
@@ -2212,7 +2297,19 @@
             elements.saveScoreBtn.addEventListener('click', saveScore);
 
             // Transport controls
-            elements.playBtn.addEventListener('click', () => wavesurfer.playPause());
+            elements.playBtn.addEventListener('click', () => {
+                // Apply offset when starting playback
+                if (!wavesurfer.isPlaying()) {
+                    const currentTime = wavesurfer.getCurrentTime();
+                    // If starting from beginning, apply offset
+                    if (currentTime === 0 && audioOffset !== 0) {
+                        const offsetTime = Math.max(0, audioOffset);
+                        wavesurfer.seekTo(offsetTime / wavesurfer.getDuration());
+                        console.log(`[Offset] 播放时应用offset: ${audioOffset.toFixed(3)}s`);
+                    }
+                }
+                wavesurfer.playPause();
+            });
             elements.stopBtn.addEventListener('click', () => wavesurfer.stop());
             elements.loopBtn.addEventListener('click', () => {
                 isLooping = !isLooping;
@@ -2227,11 +2324,19 @@
             elements.zoomInBtn.addEventListener('click', () => {
                 currentPxPerSec = Math.min(currentPxPerSec * 1.5, maxPxPerSec);
                 wavesurfer.zoom(currentPxPerSec);
+                // Re-render all overlays with new zoom level and offset
+                renderBeatGrid();
+                renderTimelineRuler();
+                renderScore();
             });
             
             elements.zoomOutBtn.addEventListener('click', () => {
                 currentPxPerSec = Math.max(currentPxPerSec / 1.5, minPxPerSec);
                 wavesurfer.zoom(currentPxPerSec);
+                // Re-render all overlays with new zoom level and offset
+                renderBeatGrid();
+                renderTimelineRuler();
+                renderScore();
             });
             
             elements.zoomFitBtn.addEventListener('click', () => {
@@ -2241,6 +2346,10 @@
                 if (duration > 0) {
                     currentPxPerSec = Math.max(containerWidth / duration, minPxPerSec);
                     wavesurfer.zoom(currentPxPerSec);
+                    // Re-render all overlays with new zoom level and offset
+                    renderBeatGrid();
+                    renderTimelineRuler();
+                    renderScore();
                 }
             });
 
@@ -2278,6 +2387,50 @@
             elements.customSwing.addEventListener('input', () => {
                 const value = parseFloat(elements.customSwing.value);
                 elements.swingValue.textContent = `${Math.round(value * 100)}%`;
+            });
+
+            // Audio offset real-time adjustment
+            elements.audioOffsetInput.addEventListener('input', () => {
+                const newOffset = parseFloat(elements.audioOffsetInput.value) || 0.0;
+                audioOffset = newOffset;
+                console.log(`[Audio Offset] 用户调整audio offset为: ${audioOffset.toFixed(3)}s`);
+                
+                // Re-render audio-related visualizations with new offset
+                console.log(`[Audio Offset] 开始重新渲染...`);
+                renderBeatGrid();
+                renderTimelineRuler();
+                console.log(`[Audio Offset] 渲染完成`);
+                // Note: annotations stay at original positions as reference data
+                // Note: score uses its own offset, not audio offset
+                
+                // If wavesurfer is playing, seek to apply the new offset
+                if (wavesurfer && wavesurfer.isPlaying()) {
+                    const currentTime = wavesurfer.getCurrentTime();
+                    wavesurfer.pause();
+                    // Apply offset and resume from the equivalent position
+                    const newTime = Math.max(0, currentTime + audioOffset);
+                    wavesurfer.seekTo(newTime / wavesurfer.getDuration());
+                    wavesurfer.play();
+                }
+                
+                // Show status message
+                toastManager.info(`音频偏移调整为 ${audioOffset.toFixed(3)}s - 节拍网格已更新`);
+            });
+
+            // Score offset real-time adjustment
+            elements.scoreOffsetInput.addEventListener('input', () => {
+                const newOffset = parseFloat(elements.scoreOffsetInput.value) || 0.0;
+                scoreOffset = newOffset;
+                console.log(`[Score Offset] 用户调整score offset为: ${scoreOffset.toFixed(3)}s`);
+                console.log(`[Score Offset] 当前score数据: ${score.length} 个音符`);
+                
+                // Re-render score with new offset
+                console.log(`[Score Offset] 开始重新渲染score...`);
+                renderScore();
+                console.log(`[Score Offset] Score渲染完成`);
+                
+                // Show status message
+                toastManager.info(`曲谱偏移调整为 ${scoreOffset.toFixed(3)}s - 曲谱位置已更新`);
             });
 
             // Timeline click to add annotations

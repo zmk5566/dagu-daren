@@ -115,19 +115,36 @@ def detect_bpm():
         data = request.json
         project_name = data.get('projectName')
         audio_file = data.get('audioFile', 'drums.mp3')
+        use_original = data.get('useOriginal', False)  # New option to use original track
         
         if not project_name:
             return jsonify({"status": "error", "message": "Project name required"}), 400
         
-        # Construct audio file path
-        audio_path = os.path.join(DATA_DIR, project_name, 'generated_audio', audio_file)
+        # Determine audio file path based on user choice
+        if use_original:
+            # Use original track: look for project_name/project_name.mp3 in data directory
+            original_audio_path = os.path.join(DATA_DIR, project_name, f'{project_name}.mp3')
+            if os.path.exists(original_audio_path):
+                audio_path = original_audio_path
+                audio_source = "original_track"
+            else:
+                # Fallback to drums if original not found
+                audio_path = os.path.join(DATA_DIR, project_name, 'generated_audio', audio_file)
+                audio_source = "drums_fallback"
+        else:
+            # Use drums track
+            audio_path = os.path.join(DATA_DIR, project_name, 'generated_audio', audio_file)
+            audio_source = "drums_track"
         
         if not os.path.exists(audio_path):
-            return jsonify({"status": "error", "message": f"Audio file not found: {audio_file}"}), 404
+            return jsonify({"status": "error", "message": f"Audio file not found: {audio_path}"}), 404
         
         # Detect BPM
         detector = BPMDetector()
         result = detector.detect_bpm(audio_path)
+        
+        # Add audio source info to result (no path for privacy)
+        result['audio_source'] = audio_source
         
         # Create and save metadata.json
         metadata = {
@@ -406,8 +423,18 @@ def handle_score(project_name):
             
             with open(file_path, 'w') as f:
                 json.dump(score_data, f, indent=4)
+            
+            # Get note count from the score data
+            if isinstance(score_data, dict) and 'notes' in score_data:
+                note_count = len(score_data['notes'])
+                score_offset = score_data.get('metadata', {}).get('scoreOffset', 0)
+                offset_msg = f", score offset: {score_offset:.3f}s" if score_offset != 0 else ""
+                message = f"已保存 {note_count} 个曲谱音符{offset_msg}。"
+            else:
+                note_count = len(score_data) if isinstance(score_data, list) else 0
+                message = f"已保存 {note_count} 个曲谱音符。"
                 
-            return jsonify({"status": "success", "message": f"已保存 {len(score_data)} 个曲谱音符。"})
+            return jsonify({"status": "success", "message": message})
         except Exception as e:
             return jsonify({"status": "error", "message": str(e)}), 500
     else:
