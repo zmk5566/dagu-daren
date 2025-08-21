@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from pydub import AudioSegment
 import os
+import sys
 import time
 import json
 
@@ -267,6 +268,8 @@ def auto_align_annotations():
         tolerance = data.get('tolerance', 0.25)          # Tolerance as fraction of beat
         preserve_off_beat = data.get('preserveOffBeat', True)
         annotations_override = data.get('annotations')   # Optional: provide annotations directly
+        audio_offset = data.get('audioOffset', 0.0)      # Audio offset from frontend
+        score_offset = data.get('scoreOffset', 0.0)      # Score offset from frontend
         
         if not project_name:
             return jsonify({"status": "error", "message": "Project name required"}), 400
@@ -319,6 +322,15 @@ def auto_align_annotations():
         
         # Perform auto-alignment
         aligner = AutoAligner()
+        
+        # Combine first_measure_start with audio_offset for proper alignment
+        # The audio_offset shifts the visual beat grid, so we need to account for it
+        effective_first_measure_start = first_measure['first_measure_start'] + audio_offset
+        
+        print(f"[AutoAlign API] Audio offset: {audio_offset:.3f}s, Score offset: {score_offset:.3f}s")
+        print(f"[AutoAlign API] Original first_measure_start: {first_measure['first_measure_start']:.3f}s")
+        print(f"[AutoAlign API] Effective first_measure_start: {effective_first_measure_start:.3f}s")
+        
         alignment_result = aligner.auto_align_annotations(
             annotations=annotations,
             beat_grid=beat_grid,
@@ -327,7 +339,7 @@ def auto_align_annotations():
             custom_swing=custom_swing,
             tolerance=tolerance,
             preserve_off_beat=preserve_off_beat,
-            first_measure_start=first_measure['first_measure_start']
+            first_measure_start=effective_first_measure_start
         )
         
         return jsonify({

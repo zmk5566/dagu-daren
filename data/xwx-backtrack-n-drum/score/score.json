@@ -1,2462 +1,2469 @@
-[
-    {
-        "duration": 0.2223868421857662,
-        "id": "score-1755689782967-jxgv07wn2",
-        "time": 2.6522563410311033,
-        "type": "don"
-    },
-    {
-        "duration": 0.17004739081903786,
-        "id": "score-1755689782968-xg82rc9kl",
-        "time": 6.099457747631182,
-        "type": "don"
-    },
-    {
-        "duration": 0.18644614339292875,
-        "id": "score-1755689782968-ufh1mmh3g",
-        "time": 6.336703348244839,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-m5ghzyl9d",
-        "time": 9.534104,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999964,
-        "id": "score-1755689782968-lz7eapnua",
-        "time": 11.26236501013161,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999964,
-        "id": "score-1755689782968-ijrs7amdp",
-        "time": 12.103696078714776,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999964,
-        "id": "score-1755689782968-iqtrqg7gi",
-        "time": 12.972241035070942,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-y4hep74ic",
-        "time": 13.842830064222758,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pn51xjowt",
-        "time": 14.27038521323408,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-sktb5qc39",
-        "time": 14.700884,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wlorj7two",
-        "time": 15.341169560126936,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-euf1fekzh",
-        "time": 15.758481167332462,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u0o2wyqa6",
-        "time": 15.920181,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-6aeaudxu2",
-        "time": 16.825739966487774,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-azk0qm5fu",
-        "time": 17.041051960112938,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-e3y3opfw6",
-        "time": 17.256331757480865,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vd194toxe",
-        "time": 18.094172,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-e1fa5umey",
-        "time": 18.761145024939346,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-t7c298hcs",
-        "time": 19.188053939247713,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-75s3xgjc0",
-        "time": 19.399773,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-09zm7641t",
-        "time": 19.836796239594612,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hxy92cpbl",
-        "time": 20.039237138071684,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-logce1lqi",
-        "time": 20.26279692764607,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-cn2rcfwl8",
-        "time": 20.478076725014002,
-        "type": "don"
-    },
-    {
-        "duration": 0.12423663002015672,
-        "id": "score-1755689782968-j9azhdh4f",
-        "time": 20.676741536369818,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-slaaygu9y",
-        "time": 21.111258872802967,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-33obpflbw",
-        "time": 21.609105784620212,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-g6g8bk7yy",
-        "time": 21.82294968356199,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-rwx6900tw",
-        "time": 22.190365971319846,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ntlvm1cpk",
-        "time": 22.39931659270693,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-f23n0awtg",
-        "time": 22.832059604234697,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-plhj1yqxu",
-        "time": 23.260036792720857,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-cge9c5jir",
-        "time": 23.58126251330022,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3f259tabd",
-        "time": 23.90145866426234,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1kugr403f",
-        "time": 24.12796398005548,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1skyfcgze",
-        "time": 24.541850966186576,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-lqwmioyr4",
-        "time": 24.7704154212142,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6ay1vnbog",
-        "time": 24.97838848389699,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pjwjdqioc",
-        "time": 25.18636154657978,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-d4ijtl4a3",
-        "time": 25.40668944466947,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u9s87uopq",
-        "time": 25.612603368117778,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-cxy623kyu",
-        "time": 26.05634787314888,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3gj85f0vk",
-        "time": 26.266380075066152,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1cqhaqtti",
-        "time": 26.694681035838634,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4oukulc3n",
-        "time": 26.90471323775591,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-urph5ngsc",
-        "time": 27.13327769278353,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-x3t3pooj2",
-        "time": 27.341250755466323,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-j0y9r8m74",
-        "time": 27.54716467891463,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-a917nltz1",
-        "time": 27.765433437769836,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-grw92qrig",
-        "time": 27.983702196625043,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mhrnl40zq",
-        "time": 28.20505966433197,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-mr6528p3h",
-        "time": 28.408906202602168,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-shl3x44wa",
-        "time": 29.051074044139842,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jty3z6m0s",
-        "time": 29.472321170512945,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-fp8pgm3oy",
-        "time": 29.704475142380787,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-o1tgncyck",
-        "time": 30.554458232929186,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qrp45rrk9",
-        "time": 30.769762319742107,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9ilugs1rm",
-        "time": 30.983194197104478,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-83b36009l",
-        "time": 31.85356907895019,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jagep1inm",
-        "time": 32.469274267240195,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-m41rfy3rh",
-        "time": 32.91236453519282,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-0c1stxhug",
-        "time": 33.12711380616373,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-41e814ekf",
-        "time": 33.96994191834842,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ohmamjmcm",
-        "time": 34.20160001264558,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-l9v5x0n8d",
-        "time": 34.409545740722464,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hp7pvyye4",
-        "time": 34.83857061128109,
-        "type": "ka"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-b4caipmfp",
-        "time": 35.33712222902829,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tdnf6a912",
-        "time": 35.64411553393988,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-s6ujp8wao",
-        "time": 35.8947505942256,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-0judfe3ma",
-        "time": 36.16215232959012,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qf52liegv",
-        "time": 36.555390175714415,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4hlwk498m",
-        "time": 36.98533022081031,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jd71cgmhy",
-        "time": 37.31854730383067,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qdbxi0nlk",
-        "time": 37.6331399049167,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-p1dko2jqw",
-        "time": 37.82976028059547,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dyqrcvhcf",
-        "time": 38.26232510708877,
-        "type": "don"
-    },
-    {
-        "duration": 0.1065540125226292,
-        "id": "score-1755689782968-i5otdn8y0",
-        "time": 38.48843853911935,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-luk58bgrk",
-        "time": 38.69161292732075,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-mpm5ofab2",
-        "time": 38.927936718725036,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dhrs58dkb",
-        "time": 39.17333284773374,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zd681bs0f",
-        "time": 39.33630900467501,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3x46tmzpz",
-        "time": 39.76691507392665,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vtakws7vp",
-        "time": 39.977772323176715,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qasw0qccs",
-        "time": 40.40456771924914,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ep860w4cg",
-        "time": 40.632864614275185,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-xposbvowe",
-        "time": 40.83711905938506,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-eu0mrw5fq",
-        "time": 41.05295844382877,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xo3mn7k91",
-        "time": 41.265721292293826,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-g4q5ut8y5",
-        "time": 41.485820790705944,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xdk7uempy",
-        "time": 41.694181649202754,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6hgazezgl",
-        "time": 41.943627747403156,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-gwn6thb5z",
-        "time": 42.17840054570942,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8qm3ymdws",
-        "time": 42.76900086644861,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-phsaxzsq2",
-        "time": 43.194526563378716,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9eahnbh8d",
-        "time": 43.41315873180142,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-spgfvo1qb",
-        "time": 44.26486220467351,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-lswp51b8e",
-        "time": 44.47621468336451,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-f86e4siev",
-        "time": 44.69666271754175,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hwazwm157",
-        "time": 45.56401227128437,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yz14cg2ih",
-        "time": 46.19543774006237,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-987qd26g8",
-        "time": 46.622854583645484,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-v9iwoy6dp",
-        "time": 46.83562431544382,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-wg511j2y4",
-        "time": 47.269486592922476,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-7sl8dp4yx",
-        "time": 47.49145048579643,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6in76p5km",
-        "time": 47.7028202951416,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9m3m6egj5",
-        "time": 47.91651918009447,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-emy8nspmt",
-        "time": 48.12645106584983,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nqi15gn6d",
-        "time": 48.55743980088333,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pgushh5mu",
-        "time": 48.97788191605109,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-d8vcpilp6",
-        "time": 49.30118740461113,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-7zkbpg3kk",
-        "time": 49.62086839217833,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3lkjwaiy8",
-        "time": 49.84051315234356,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-29vqizctt",
-        "time": 50.26457976850415,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qwjuauw9m",
-        "time": 50.69372068605468,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vw8sa4yqc",
-        "time": 51.019200875210416,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8mld2u95p",
-        "time": 51.338156962579056,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1kkk22o6p",
-        "time": 51.54547841936868,
-        "type": "ka"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-2mkxvqh52",
-        "time": 51.97099483592641,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-y742qihvp",
-        "time": 52.18556529470168,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ux3ypki9z",
-        "time": 52.40738475546259,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mhy8gyvkv",
-        "time": 52.60818211046512,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-rrlpndhtp",
-        "time": 52.83579670286428,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jlsin1zf8",
-        "time": 53.059100604930144,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yu1als49a",
-        "time": 53.46645577002685,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8p86wk33o",
-        "time": 53.69499335729737,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kgg1r6bwl",
-        "time": 54.11456045453831,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-k1uwzkpga",
-        "time": 54.34222576094139,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-b6ad3jrth",
-        "time": 54.55506229259791,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hksq4jwb8",
-        "time": 54.78185531813355,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-emhafqjwd",
-        "time": 54.985969041115624,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qvx9yy5k0",
-        "time": 55.19964346907747,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-oc3d3p1l1",
-        "time": 55.402927628002786,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vbwonl2dn",
-        "time": 55.60506974109143,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-3nspxo226",
-        "time": 55.81178003752672,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-k5dqkilzx",
-        "time": 56.47337551841571,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jpa2e6lex",
-        "time": 56.90433571159471,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-cdogj7liv",
-        "time": 57.12641213767164,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hzc0rdqad",
-        "time": 57.5496766131153,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qkib9z6gs",
-        "time": 57.97843802979849,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ddfafmqzk",
-        "time": 58.18732179690056,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hhdzpx876",
-        "time": 58.39620556400263,
-        "type": "ka"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-kdabt1apv",
-        "time": 59.25816221863441,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nmsuoznz9",
-        "time": 59.910435518013415,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-sbaf42fnl",
-        "time": 60.33994881535501,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-byliuw0tq",
-        "time": 60.54536821843143,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-05e27adva",
-        "time": 61.4003931364313,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mpeft5wav",
-        "time": 61.62715481515202,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-onxuxtrei",
-        "time": 61.837909787139516,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-569qidbx6",
-        "time": 62.25541805443119,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8eabsrd4z",
-        "time": 62.754293747616764,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wt9koka0x",
-        "time": 63.010401055348396,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-0j8loogqn",
-        "time": 63.32653351332963,
-        "type": "don"
-    },
-    {
-        "duration": 0.10000000000000142,
-        "id": "score-1755689782968-dkkngwz1t",
-        "time": 63.59731363556672,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-o0w900dvt",
-        "time": 63.969469567114245,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-uwcfk6rhc",
-        "time": 64.40298454113915,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-s1cc4kq8s",
-        "time": 64.72178478357591,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-c4l3tuhxc",
-        "time": 65.04992227160707,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jik9z7s0r",
-        "time": 65.25800945913903,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-2fyg4o5fn",
-        "time": 65.67818551088624,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-l7xxoqmxq",
-        "time": 65.91295054297356,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-i4xx12k1n",
-        "time": 66.12370551496106,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-c60awe54j",
-        "time": 66.35713665482062,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-rafxha5gp",
-        "time": 66.55988827344137,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hv8am1fy4",
-        "time": 66.76397378429014,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dg7n5wkvd",
-        "time": 67.18815151272067,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9eoyydjym",
-        "time": 67.40424205361923,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ofai25ozp",
-        "time": 67.82708588982197,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-gsjz2kn7b",
-        "time": 68.0371739783726,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-qwctjwn9r",
-        "time": 68.24826241714932,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-ok9etvw20",
-        "time": 68.45935080578447,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yo5cu2jjv",
-        "time": 68.68518734669674,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8qxpmq5dn",
-        "time": 68.90861345497603,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vyzm9nk7n",
-        "time": 69.1253701271873,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-sjkcn17e5",
-        "time": 69.34212679939856,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qwvykgur2",
-        "time": 69.54554459947373,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-noxg4gr9c",
-        "time": 70.16746951281834,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6gu1dx4kp",
-        "time": 70.62766060151301,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-gn8t4g1q0",
-        "time": 70.8310784015882,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ta6xnhho0",
-        "time": 71.26459174601071,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-r469zcp8z",
-        "time": 71.68039246328746,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-71kk2ut3h",
-        "time": 71.91262240176913,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-aa2nakp9u",
-        "time": 72.11114154272927,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1t7z8a2ud",
-        "time": 72.97451252369743,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mo6gt7xik",
-        "time": 73.62063614286016,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kkizwehfa",
-        "time": 74.04951240021745,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yq6d68luc",
-        "time": 74.28174233869912,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-uvcn8r12s",
-        "time": 74.69750884146478,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-prxxbizim",
-        "time": 75.12825792090652,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-hyx8fvbk7",
-        "time": 75.33426835020478,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ynljhywym",
-        "time": 75.55151571201021,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-x900d9zsm",
-        "time": 75.75752614130849,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-elqldvnky",
-        "time": 75.9860104356211,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9ghknozyt",
-        "time": 76.40552258255575,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-pzj8f37n4",
-        "time": 76.72390233692576,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-al3mej7t3",
-        "time": 77.05351902380299,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-q0g8an9ml",
-        "time": 77.33069669231338,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-81k80ogjq",
-        "time": 77.69402417671213,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-gozx374xp",
-        "time": 78.1022993911396,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-uko600iwu",
-        "time": 78.44877147677758,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-563bbovrx",
-        "time": 78.76715123114761,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-k1n2bz3iw",
-        "time": 78.97316166044588,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-m84rf0abu",
-        "time": 79.39267380738052,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-a5eqzyqs9",
-        "time": 79.62677656794672,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4apihykrf",
-        "time": 79.83840546349857,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8ws2dilrs",
-        "time": 80.05752564738854,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-di9ug8t3v",
-        "time": 80.28039147544757,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-50yv0veiw",
-        "time": 80.47516497223864,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zcs90cy6x",
-        "time": 80.90404122959593,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ii1g8oru9",
-        "time": 81.12503423557044,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3p2uehmda",
-        "time": 81.54267356042054,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kwj5lw2oe",
-        "time": 81.75804810014145,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-p1sm85vj4",
-        "time": 81.98653239445407,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-mn6s38e97",
-        "time": 82.1850515354142,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zqmdvkcfg",
-        "time": 82.40791736347323,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8zol0fnl6",
-        "time": 82.61018214860243,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-5xu7rc4gl",
-        "time": 82.83117515457694,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-x0mnup8oj",
-        "time": 83.05591380472049,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-13jgjwxe2",
-        "time": 83.25443294568063,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qdpc2rb37",
-        "time": 83.68518202512244,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-c5ruw0nun",
-        "time": 83.90992067526601,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-68uxmu6yw",
-        "time": 84.34254257679235,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jdkc1gxyt",
-        "time": 84.55229865025967,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-c0p4h3jua",
-        "time": 85.38570447787536,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nl756yxnv",
-        "time": 85.61793441635704,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-g664oasnk",
-        "time": 85.83892742233154,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-uyg40yxxi",
-        "time": 86.70604404746877,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-lytstcimw",
-        "time": 87.32407533536355,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jx199r9dp",
-        "time": 87.74358748229818,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nw2ej0gcn",
-        "time": 87.98705435328704,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zomc4wgcd",
-        "time": 88.61819539577353,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-evytbdxcc",
-        "time": 88.83169711340989,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-svnyvbwvy",
-        "time": 89.06767269606064,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-aq29wg6jk",
-        "time": 89.26993748118983,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u9zt5669g",
-        "time": 89.47407508840358,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-igbm2t8a3",
-        "time": 90.12019870756629,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-sicm63up7",
-        "time": 90.40112202024574,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mahlzm0f7",
-        "time": 90.76819514881355,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xm04fxnyh",
-        "time": 90.97045993394275,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-y86ntlh3r",
-        "time": 91.3974633692155,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wilghmvhw",
-        "time": 91.81135704989656,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-r8bgq5jt0",
-        "time": 92.1353552705202,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-se6vcot4j",
-        "time": 92.46684477948193,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-cqsuwoyui",
-        "time": 92.70656600630173,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-v05s6oi03",
-        "time": 93.12795097532089,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-2l529g7r8",
-        "time": 93.3302157604501,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zdyz8q9qp",
-        "time": 93.56244569893177,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wwq7ycfed",
-        "time": 93.78343870490627,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nrrb13wdq",
-        "time": 93.99319477837359,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-toqopzs55",
-        "time": 94.19545956350278,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-74v0pviay",
-        "time": 94.48012852035127,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-oqa2ep7cw",
-        "time": 94.63931839753633,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-95qu64wjt",
-        "time": 94.84532882683459,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6ntt44oax",
-        "time": 95.0419751457102,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tjg2tf989",
-        "time": 95.27420508419186,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-7wy99xeiw",
-        "time": 95.49707091225089,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qlz7ddu2l",
-        "time": 95.71057262988727,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-peplp4yhz",
-        "time": 95.91471023710099,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-h17j8el4n",
-        "time": 96.11884784431473,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-au1z1ys6q",
-        "time": 96.34733213862735,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pi86hzsjh",
-        "time": 96.54959692375654,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1sry9ym5r",
-        "time": 96.77808121806916,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8wq3bg22r",
-        "time": 96.9784092406777,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mytew7znd",
-        "time": 97.41319327798608,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-eawm1pswe",
-        "time": 97.61753042345738,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pc5ft1n2i",
-        "time": 98.05572007985694,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-jm5torc6r",
-        "time": 98.26913887623807,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-fpbztrluk",
-        "time": 98.7061933262739,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-7sii7878d",
-        "time": 99.11032679176158,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wmmcpqg9k",
-        "time": 99.33509765178,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4nwi86ehg",
-        "time": 99.55078686088859,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-014rm1nax",
-        "time": 100.41013807823178,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4hk4lrqox",
-        "time": 101.09807313465181,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u7h3jt06c",
-        "time": 101.48290809195608,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yuifekm1l",
-        "time": 101.68951565015485,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1np9i1kog",
-        "time": 102.12884051291813,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1ized33tp",
-        "time": 102.33544807111689,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zplweohne",
-        "time": 102.33544807111689,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3jiakgfeo",
-        "time": 102.54659645477057,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-5uhvg6018",
-        "time": 102.76909690206152,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-45i0kbfcw",
-        "time": 102.99046214298876,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-2pddk7k48",
-        "time": 103.3968660212039,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kxwd46jwk",
-        "time": 103.8407317094221,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mqlg70egy",
-        "time": 104.16085990399381,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u233ahlcl",
-        "time": 104.47985289220178,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zljns2996",
-        "time": 104.73867994313208,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-j0bd0qzol",
-        "time": 105.11329804316281,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3dzr7410k",
-        "time": 105.54921728683492,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-d3rgxvluv",
-        "time": 105.86253424322422,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-smxj947hs",
-        "time": 106.2008257396156,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9ff1wjm0q",
-        "time": 106.40062205963197,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-0ah80wdvl",
-        "time": 106.62312250692294,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-0h6dyl2f4",
-        "time": 106.83540609694036,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-acew837zi",
-        "time": 107.05790654423132,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8biw428g5",
-        "time": 107.05790654423132,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-a7e4idyuy",
-        "time": 107.2577028642477,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qp2qdklsz",
-        "time": 107.47793289881122,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-m6q4egf37",
-        "time": 107.70724458428455,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-rvngugxt2",
-        "time": 107.91612255521076,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8ufzk35se",
-        "time": 108.33614890979065,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xiy7g8qoi",
-        "time": 108.55627743623128,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-caudf8qz7",
-        "time": 108.7598619799826,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4tnmykdj0",
-        "time": 108.9782653358687,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-x4io9g6l4",
-        "time": 109.19144148229036,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-lxo75f210",
-        "time": 109.4096682355453,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-iyyoarynl",
-        "time": 109.62079818381632,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-iescxv4xz",
-        "time": 109.83192813208736,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-s48mz0y5t",
-        "time": 110.05192908658827,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-n4a9y934h",
-        "time": 110.26483323610528,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-yjgsq72g5",
-        "time": 110.50080200181995,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ywcf61l27",
-        "time": 110.73246455936412,
-        "type": "don"
-    },
-    {
-        "duration": 0.11921278584323147,
-        "id": "score-1755689782968-e8b1qgtep",
-        "time": 112.36437693846558,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yuyri3a2b",
-        "time": 113.2593725456613,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-422q17x7i",
-        "time": 114.12394790860527,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xgtbilq2g",
-        "time": 114.54342706618179,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-3szyu6lcj",
-        "time": 114.98372007508844,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-glisbcr6k",
-        "time": 115.4048002981519,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-xus4nf3xa",
-        "time": 115.85950289644096,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-e71drxvll",
-        "time": 116.0676414097423,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6zsm6o9qh",
-        "time": 116.27898205401748,
-        "type": "don"
-    },
-    {
-        "duration": 0.10480319646079295,
-        "id": "score-1755689782968-kfwygmerg",
-        "time": 116.49832802572737,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-5l2of6rtx",
-        "time": 116.70006227708093,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-jtwy73dqe",
-        "time": 116.9258125107385,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wqh7v7shl",
-        "time": 117.12114250014439,
-        "type": "don"
-    },
-    {
-        "duration": 0.10973956309550204,
-        "id": "score-1755689782968-vbhu1dwsh",
-        "time": 117.32373145933077,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-rngywcgro",
-        "time": 117.52300078227053,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mixlpk0w5",
-        "time": 118.42529559206888,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-620gqk9yu",
-        "time": 119.0544713680449,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dw5l2nlg9",
-        "time": 119.26679384352906,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-zd0tcpf11",
-        "time": 120.1238753959422,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-j9clpb39z",
-        "time": 120.98632245642482,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-vhy6gl8xw",
-        "time": 121.84479233976326,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tidastzcd",
-        "time": 122.4808496650784,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-gl1t7zvly",
-        "time": 122.69901587841993,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qg8s52liu",
-        "time": 123.11976500415001,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6i3i61igb",
-        "time": 123.55999325607134,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-sj7pdkyns",
-        "time": 124.40149150753152,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kwxzhjuib",
-        "time": 125.25662514732555,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-c1z2ymz70",
-        "time": 125.88768345642492,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4yslq4qch",
-        "time": 126.13708165116816,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-lo9vqfqa4",
-        "time": 126.97273616477099,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-iylt8ffp5",
-        "time": 127.83176562980327,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qyuefs79q",
-        "time": 128.69663883269288,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-43ux5oj1o",
-        "time": 129.33555417176453,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ply5nl07m",
-        "time": 129.56151203558255,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-uxb81pkh4",
-        "time": 129.99005281178913,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-62jfwgfd5",
-        "time": 130.4166456753766,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-34nm1vxq1",
-        "time": 131.274253,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-4nts51fm1",
-        "time": 132.1061076116662,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-24y64f55b",
-        "time": 132.7659339416694,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tu6vrrj18",
-        "time": 132.963108,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1ceq4ii85",
-        "time": 133.84107605979096,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-grm2g97n5",
-        "time": 134.68147066999674,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-ee8cj7pz7",
-        "time": 135.54452044666468,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-h9uzh4cws",
-        "time": 136.18051911535508,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-qortwy7hj",
-        "time": 136.40726511800017,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-esfuf2yzx",
-        "time": 136.8441091769494,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dmr6w3lqh",
-        "time": 137.29178408033533,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-f1dmtqo1e",
-        "time": 138.11312311678944,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-9v8vfvcn2",
-        "time": 138.97959067173002,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wxfef63aj",
-        "time": 139.604169367583,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mm5fvlpop",
-        "time": 139.87613378464354,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-4204a8py3",
-        "time": 140.69401333855305,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-nvjy1uvnt",
-        "time": 141.53575714066562,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-z1xmv4v9o",
-        "time": 142.4120104228959,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-ntcp7mvnq",
-        "time": 143.04284561722136,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-mg42ejjpa",
-        "time": 143.26571657829172,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nhstg06yw",
-        "time": 143.69021085112004,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-21pjzi36j",
-        "time": 144.1195601475035,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-r2xws603f",
-        "time": 144.97628924808515,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ssivpw8r8",
-        "time": 145.8389268252226,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tdte0gjcz",
-        "time": 146.484920261983,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-q8hopx9hm",
-        "time": 146.69762541798949,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-8y8op2bdk",
-        "time": 147.5385985810892,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-ndykceqoc",
-        "time": 148.376318,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tzhdkjdel",
-        "time": 149.27175170410496,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-6axtsrerc",
-        "time": 149.89805021901296,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-t2an1jv2q",
-        "time": 150.11863334376042,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-maj6s6o7x",
-        "time": 150.55389111669962,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-yblimwzq1",
-        "time": 150.9970268583798,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-u2nlapj4z",
-        "time": 151.83996951366473,
-        "type": "don"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-45f5uyxwt",
-        "time": 152.6888206455054,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-ry1qzbxh3",
-        "time": 153.32693611352488,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kmbf4g9zi",
-        "time": 153.5514582226428,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-7ymzvf7f5",
-        "time": 154.42788224507692,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dxo2ns3bq",
-        "time": 155.258269,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1uha1k6zc",
-        "time": 156.1177065400173,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-462dn9g7t",
-        "time": 156.7696084533335,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-y8518cgst",
-        "time": 156.98231360933997,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-66hz6ra9n",
-        "time": 157.40378493698245,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-1fkojvzwi",
-        "time": 157.81737829588394,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tnml6604a",
-        "time": 158.67410739646562,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-idnaf2nhl",
-        "time": 159.55053141889974,
-        "type": "ka"
-    },
-    {
-        "duration": 0.09999999999999432,
-        "id": "score-1755689782968-wwui9quum",
-        "time": 160.17879942599296,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-r5j9f8lmx",
-        "time": 160.44468087100105,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-wd40u53pc",
-        "time": 161.25020317476634,
-        "type": "ka"
-    },
-    {
-        "duration": 0.11772542966727428,
-        "id": "score-1755689782968-t25o6i616",
-        "time": 162.12351160159182,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-vjhapycl4",
-        "time": 162.9735088368559,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-dhse6gnyu",
-        "time": 163.61753278143107,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-pztqq9eia",
-        "time": 163.86371930458674,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-100nf98mw",
-        "time": 164.27928215567349,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kw8penkle",
-        "time": 164.7027229755012,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-mzzqjd75l",
-        "time": 165.514544,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-28ynl8fwb",
-        "time": 166.40239473136782,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-z8tbxhsiy",
-        "time": 167.05232715249872,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-06v40vfrg",
-        "time": 167.28078824598717,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-kzn5mqng1",
-        "time": 168.1274954529192,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-tphhcpsal",
-        "time": 168.97061254092756,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-j874keqg5",
-        "time": 169.83521961025022,
-        "type": "ka"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-z62kz9gpj",
-        "time": 170.4575791407877,
-        "type": "don"
-    },
-    {
-        "duration": 0.1,
-        "id": "score-1755689782968-nhotj9lrp",
-        "time": 170.68604023427616,
-        "type": "don"
-    }
-]
+{
+    "metadata": {
+        "scoreOffset": 0,
+        "createdAt": 1755792659926,
+        "version": "2.0"
+    },
+    "notes": [
+        {
+            "duration": 0.2223868421857662,
+            "id": "score-1755689782967-jxgv07wn2",
+            "time": 2.667497782170853,
+            "type": "don"
+        },
+        {
+            "duration": 0.17004739081903786,
+            "id": "score-1755689782968-xg82rc9kl",
+            "time": 6.097137787819093,
+            "type": "don"
+        },
+        {
+            "duration": 0.18644614339292875,
+            "id": "score-1755689782968-ufh1mmh3g",
+            "time": 6.3114902881721076,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-m5ghzyl9d",
+            "time": 9.526777793467332,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999964,
+            "id": "score-1755689782968-lz7eapnua",
+            "time": 11.241597796291453,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999964,
+            "id": "score-1755689782968-ijrs7amdp",
+            "time": 12.099007797703512,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999964,
+            "id": "score-1755689782968-iqtrqg7gi",
+            "time": 12.956417799115572,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-y4hep74ic",
+            "time": 13.813827800527632,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pn51xjowt",
+            "time": 14.242532801233661,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-sktb5qc39",
+            "time": 14.671237801939691,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wlorj7two",
+            "time": 15.314295302998737,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-euf1fekzh",
+            "time": 15.743000303704768,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u0o2wyqa6",
+            "time": 15.95735280405778,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-6aeaudxu2",
+            "time": 16.81476280546984,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-azk0qm5fu",
+            "time": 17.029115305822856,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-e3y3opfw6",
+            "time": 17.24346780617587,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vd194toxe",
+            "time": 18.10087780758793,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-e1fa5umey",
+            "time": 18.74393530864698,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-t7c298hcs",
+            "time": 19.172640309353007,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-75s3xgjc0",
+            "time": 19.386992809706022,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-09zm7641t",
+            "time": 19.81569781041205,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hxy92cpbl",
+            "time": 20.030050310765066,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-logce1lqi",
+            "time": 20.244402811118082,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-cn2rcfwl8",
+            "time": 20.458755311471098,
+            "type": "don"
+        },
+        {
+            "duration": 0.12423663002015672,
+            "id": "score-1755689782968-j9azhdh4f",
+            "time": 20.67310781182411,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-slaaygu9y",
+            "time": 21.10181281253014,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-33obpflbw",
+            "time": 21.637694063412678,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-g6g8bk7yy",
+            "time": 21.852046563765693,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-rwx6900tw",
+            "time": 22.173575314295217,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ntlvm1cpk",
+            "time": 22.387927814648233,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-f23n0awtg",
+            "time": 22.81663281535426,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-plhj1yqxu",
+            "time": 23.245337816060292,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-cge9c5jir",
+            "time": 23.566866566589816,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3f259tabd",
+            "time": 23.888395317119336,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1kugr403f",
+            "time": 24.102747817472352,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1skyfcgze",
+            "time": 24.53145281817838,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-lqwmioyr4",
+            "time": 24.745805318531396,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6ay1vnbog",
+            "time": 24.96015781888441,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pjwjdqioc",
+            "time": 25.174510319237427,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-d4ijtl4a3",
+            "time": 25.38886281959044,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u9s87uopq",
+            "time": 25.603215319943455,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-cxy623kyu",
+            "time": 26.031920320649487,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3gj85f0vk",
+            "time": 26.2462728210025,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1cqhaqtti",
+            "time": 26.67497782170853,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4oukulc3n",
+            "time": 26.889330322061546,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-urph5ngsc",
+            "time": 27.103682822414562,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-x3t3pooj2",
+            "time": 27.318035322767578,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-j0y9r8m74",
+            "time": 27.53238782312059,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-a917nltz1",
+            "time": 27.746740323473606,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-grw92qrig",
+            "time": 27.961092823826622,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mhrnl40zq",
+            "time": 28.175445324179638,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-mr6528p3h",
+            "time": 28.38979782453265,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-shl3x44wa",
+            "time": 29.032855325591697,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jty3z6m0s",
+            "time": 29.461560326297725,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-fp8pgm3oy",
+            "time": 29.67591282665074,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-o1tgncyck",
+            "time": 30.5333228280628,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qrp45rrk9",
+            "time": 30.747675328415816,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9ilugs1rm",
+            "time": 30.96202782876883,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-83b36009l",
+            "time": 31.819437830180892,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jagep1inm",
+            "time": 32.46249533123994,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-m41rfy3rh",
+            "time": 32.89120033194597,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-0c1stxhug",
+            "time": 33.10555283229898,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-41e814ekf",
+            "time": 33.962962833711046,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ohmamjmcm",
+            "time": 34.17731533406406,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-l9v5x0n8d",
+            "time": 34.39166783441707,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hp7pvyye4",
+            "time": 34.8203728351231,
+            "type": "ka"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-b4caipmfp",
+            "time": 35.35625408600564,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tdnf6a912",
+            "time": 35.677782836535165,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-s6ujp8wao",
+            "time": 35.89213533688818,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-0judfe3ma",
+            "time": 36.213664087417705,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qf52liegv",
+            "time": 36.53519283794722,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4hlwk498m",
+            "time": 36.96389783865325,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jd71cgmhy",
+            "time": 37.28542658918278,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qdbxi0nlk",
+            "time": 37.6069553397123,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-p1dko2jqw",
+            "time": 37.821307840065316,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dyqrcvhcf",
+            "time": 38.25001284077134,
+            "type": "don"
+        },
+        {
+            "duration": 0.1065540125226292,
+            "id": "score-1755689782968-i5otdn8y0",
+            "time": 38.464365341124356,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-luk58bgrk",
+            "time": 38.67871784147737,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-mpm5ofab2",
+            "time": 38.89307034183039,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dhrs58dkb",
+            "time": 39.21459909235991,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zd681bs0f",
+            "time": 39.32177534253642,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3x46tmzpz",
+            "time": 39.75048034324245,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vtakws7vp",
+            "time": 39.96483284359546,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qasw0qccs",
+            "time": 40.39353784430149,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ep860w4cg",
+            "time": 40.60789034465451,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-xposbvowe",
+            "time": 40.82224284500752,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-eu0mrw5fq",
+            "time": 41.03659534536054,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xo3mn7k91",
+            "time": 41.250947845713554,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-g4q5ut8y5",
+            "time": 41.46530034606657,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xdk7uempy",
+            "time": 41.679652846419586,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6hgazezgl",
+            "time": 41.8940053467726,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-gwn6thb5z",
+            "time": 42.21553409730212,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8qm3ymdws",
+            "time": 42.75141534818466,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-phsaxzsq2",
+            "time": 43.18012034889069,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9eahnbh8d",
+            "time": 43.394472849243705,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-spgfvo1qb",
+            "time": 44.25188285065576,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-lswp51b8e",
+            "time": 44.46623535100878,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-f86e4siev",
+            "time": 44.68058785136179,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hwazwm157",
+            "time": 45.537997852773856,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yz14cg2ih",
+            "time": 46.181055353832896,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-987qd26g8",
+            "time": 46.60976035453893,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-v9iwoy6dp",
+            "time": 46.82411285489194,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-wg511j2y4",
+            "time": 47.252817855597975,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-7sl8dp4yx",
+            "time": 47.46717035595099,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6in76p5km",
+            "time": 47.681522856304,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9m3m6egj5",
+            "time": 47.895875356657015,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-emy8nspmt",
+            "time": 48.11022785701003,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nqi15gn6d",
+            "time": 48.53893285771606,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pgushh5mu",
+            "time": 48.967637858422094,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-d8vcpilp6",
+            "time": 49.28916660895162,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-7zkbpg3kk",
+            "time": 49.610695359481134,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3lkjwaiy8",
+            "time": 49.82504785983415,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-29vqizctt",
+            "time": 50.25375286054018,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qwjuauw9m",
+            "time": 50.68245786124621,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vw8sa4yqc",
+            "time": 51.00398661177574,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8mld2u95p",
+            "time": 51.32551536230526,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1kkk22o6p",
+            "time": 51.53986786265827,
+            "type": "ka"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-2mkxvqh52",
+            "time": 51.9685728633643,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-y742qihvp",
+            "time": 52.18292536371732,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ux3ypki9z",
+            "time": 52.39727786407033,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mhy8gyvkv",
+            "time": 52.61163036442335,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-rrlpndhtp",
+            "time": 52.825982864776364,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jlsin1zf8",
+            "time": 53.04033536512938,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yu1als49a",
+            "time": 53.469040365835404,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8p86wk33o",
+            "time": 53.68339286618842,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kgg1r6bwl",
+            "time": 54.11209786689445,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-k1uwzkpga",
+            "time": 54.32645036724747,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-b6ad3jrth",
+            "time": 54.54080286760048,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hksq4jwb8",
+            "time": 54.7551553679535,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-emhafqjwd",
+            "time": 54.969507868306515,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qvx9yy5k0",
+            "time": 55.18386036865953,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-oc3d3p1l1",
+            "time": 55.39821286901254,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vbwonl2dn",
+            "time": 55.612565369365555,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-3nspxo226",
+            "time": 55.82691786971857,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-k5dqkilzx",
+            "time": 56.46997537077762,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jpa2e6lex",
+            "time": 56.89868037148365,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-cdogj7liv",
+            "time": 57.11303287183666,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hzc0rdqad",
+            "time": 57.54173787254269,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qkib9z6gs",
+            "time": 57.97044287324872,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ddfafmqzk",
+            "time": 58.18479537360174,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hhdzpx876",
+            "time": 58.39914787395475,
+            "type": "ka"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-kdabt1apv",
+            "time": 59.25655787536681,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nmsuoznz9",
+            "time": 59.89961537642586,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-sbaf42fnl",
+            "time": 60.32832037713189,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-byliuw0tq",
+            "time": 60.542672877484904,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-05e27adva",
+            "time": 61.40008287889696,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mpeft5wav",
+            "time": 61.614435379249976,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-onxuxtrei",
+            "time": 61.82878787960299,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-569qidbx6",
+            "time": 62.25749288030902,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8eabsrd4z",
+            "time": 62.793374131191555,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wt9koka0x",
+            "time": 63.00772663154457,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-0j8loogqn",
+            "time": 63.329255382074095,
+            "type": "don"
+        },
+        {
+            "duration": 0.10000000000000142,
+            "id": "score-1755689782968-dkkngwz1t",
+            "time": 63.65078413260362,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-o0w900dvt",
+            "time": 63.97231288313314,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-uwcfk6rhc",
+            "time": 64.40101788383917,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-s1cc4kq8s",
+            "time": 64.7225466343687,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-c4l3tuhxc",
+            "time": 65.04407538489822,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jik9z7s0r",
+            "time": 65.25842788525124,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-2fyg4o5fn",
+            "time": 65.68713288595725,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-l7xxoqmxq",
+            "time": 65.90148538631027,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-i4xx12k1n",
+            "time": 66.11583788666329,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-c60awe54j",
+            "time": 66.3301903870163,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-rafxha5gp",
+            "time": 66.54454288736932,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hv8am1fy4",
+            "time": 66.75889538772233,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dg7n5wkvd",
+            "time": 67.18760038842836,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9eoyydjym",
+            "time": 67.40195288878138,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ofai25ozp",
+            "time": 67.83065788948741,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-gsjz2kn7b",
+            "time": 68.04501038984043,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-qwctjwn9r",
+            "time": 68.25936289019344,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-ok9etvw20",
+            "time": 68.47371539054646,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yo5cu2jjv",
+            "time": 68.68806789089948,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8qxpmq5dn",
+            "time": 68.90242039125249,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vyzm9nk7n",
+            "time": 69.1167728916055,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-sjkcn17e5",
+            "time": 69.33112539195852,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qwvykgur2",
+            "time": 69.54547789231152,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-noxg4gr9c",
+            "time": 70.18853539337057,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6gu1dx4kp",
+            "time": 70.6172403940766,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-gn8t4g1q0",
+            "time": 70.83159289442962,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ta6xnhho0",
+            "time": 71.26029789513565,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-r469zcp8z",
+            "time": 71.68900289584168,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-71kk2ut3h",
+            "time": 71.9033553961947,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-aa2nakp9u",
+            "time": 72.11770789654771,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1t7z8a2ud",
+            "time": 72.97511789795978,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mo6gt7xik",
+            "time": 73.61817539901881,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kkizwehfa",
+            "time": 74.04688039972484,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yq6d68luc",
+            "time": 74.26123290007786,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-uvcn8r12s",
+            "time": 74.68993790078389,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-prxxbizim",
+            "time": 75.11864290148992,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-hyx8fvbk7",
+            "time": 75.33299540184294,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ynljhywym",
+            "time": 75.54734790219595,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-x900d9zsm",
+            "time": 75.76170040254897,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-elqldvnky",
+            "time": 75.97605290290198,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9ghknozyt",
+            "time": 76.40475790360802,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-pzj8f37n4",
+            "time": 76.72628665413754,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-al3mej7t3",
+            "time": 77.04781540466705,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-q0g8an9ml",
+            "time": 77.36934415519657,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-81k80ogjq",
+            "time": 77.6908729057261,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-gozx374xp",
+            "time": 78.11957790643213,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-uko600iwu",
+            "time": 78.44110665696165,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-563bbovrx",
+            "time": 78.76263540749117,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-k1n2bz3iw",
+            "time": 78.97698790784419,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-m84rf0abu",
+            "time": 79.40569290855022,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-a5eqzyqs9",
+            "time": 79.62004540890324,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4apihykrf",
+            "time": 79.83439790925625,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8ws2dilrs",
+            "time": 80.04875040960927,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-di9ug8t3v",
+            "time": 80.26310290996229,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-50yv0veiw",
+            "time": 80.4774554103153,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zcs90cy6x",
+            "time": 80.90616041102132,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ii1g8oru9",
+            "time": 81.12051291137433,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3p2uehmda",
+            "time": 81.54921791208037,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kwj5lw2oe",
+            "time": 81.76357041243338,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-p1sm85vj4",
+            "time": 81.9779229127864,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-mn6s38e97",
+            "time": 82.19227541313941,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zqmdvkcfg",
+            "time": 82.40662791349243,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8zol0fnl6",
+            "time": 82.62098041384544,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-5xu7rc4gl",
+            "time": 82.83533291419846,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-x0mnup8oj",
+            "time": 83.04968541455148,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-13jgjwxe2",
+            "time": 83.26403791490449,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qdpc2rb37",
+            "time": 83.69274291561052,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-c5ruw0nun",
+            "time": 83.90709541596354,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-68uxmu6yw",
+            "time": 84.33580041666957,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jdkc1gxyt",
+            "time": 84.55015291702257,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-c0p4h3jua",
+            "time": 85.40756291843464,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nl756yxnv",
+            "time": 85.62191541878765,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-g664oasnk",
+            "time": 85.83626791914067,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-uyg40yxxi",
+            "time": 86.69367792055273,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-lytstcimw",
+            "time": 87.33673542161178,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jx199r9dp",
+            "time": 87.76544042231781,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nw2ej0gcn",
+            "time": 87.97979292267082,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zomc4wgcd",
+            "time": 88.62285042372986,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-evytbdxcc",
+            "time": 88.83720292408287,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-svnyvbwvy",
+            "time": 89.05155542443589,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-aq29wg6jk",
+            "time": 89.2659079247889,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u9zt5669g",
+            "time": 89.48026042514192,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-igbm2t8a3",
+            "time": 90.12331792620097,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-sicm63up7",
+            "time": 90.44484667673049,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mahlzm0f7",
+            "time": 90.76637542726002,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xm04fxnyh",
+            "time": 90.98072792761303,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-y86ntlh3r",
+            "time": 91.40943292831906,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wilghmvhw",
+            "time": 91.8381379290251,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-r8bgq5jt0",
+            "time": 92.15966667955462,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-se6vcot4j",
+            "time": 92.48119543008413,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-cqsuwoyui",
+            "time": 92.69554793043714,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-v05s6oi03",
+            "time": 93.12425293114318,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-2l529g7r8",
+            "time": 93.33860543149619,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zdyz8q9qp",
+            "time": 93.5529579318492,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wwq7ycfed",
+            "time": 93.76731043220222,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nrrb13wdq",
+            "time": 93.98166293255524,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-toqopzs55",
+            "time": 94.19601543290825,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-74v0pviay",
+            "time": 94.51754418343778,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-oqa2ep7cw",
+            "time": 94.62472043361429,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-95qu64wjt",
+            "time": 94.8390729339673,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6ntt44oax",
+            "time": 95.05342543432032,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tjg2tf989",
+            "time": 95.26777793467333,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-7wy99xeiw",
+            "time": 95.48213043502635,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qlz7ddu2l",
+            "time": 95.69648293537936,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-peplp4yhz",
+            "time": 95.91083543573238,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-h17j8el4n",
+            "time": 96.12518793608538,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-au1z1ys6q",
+            "time": 96.3395404364384,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pi86hzsjh",
+            "time": 96.55389293679141,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1sry9ym5r",
+            "time": 96.76824543714443,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8wq3bg22r",
+            "time": 96.98259793749745,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mytew7znd",
+            "time": 97.41130293820348,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-eawm1pswe",
+            "time": 97.62565543855649,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pc5ft1n2i",
+            "time": 98.05436043926252,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-jm5torc6r",
+            "time": 98.26871293961554,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-fpbztrluk",
+            "time": 98.69741794032157,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-7sii7878d",
+            "time": 99.1261229410276,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wmmcpqg9k",
+            "time": 99.34047544138062,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4nwi86ehg",
+            "time": 99.55482794173362,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-014rm1nax",
+            "time": 100.41223794314568,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4hk4lrqox",
+            "time": 101.05529544420473,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u7h3jt06c",
+            "time": 101.48400044491076,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yuifekm1l",
+            "time": 101.69835294526378,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1np9i1kog",
+            "time": 102.12705794596981,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1ized33tp",
+            "time": 102.34141044632283,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zplweohne",
+            "time": 102.34141044632283,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3jiakgfeo",
+            "time": 102.55576294667584,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-5uhvg6018",
+            "time": 102.77011544702886,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-45i0kbfcw",
+            "time": 102.98446794738187,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-2pddk7k48",
+            "time": 103.41317294808789,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kxwd46jwk",
+            "time": 103.84187794879392,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mqlg70egy",
+            "time": 104.16340669932345,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u233ahlcl",
+            "time": 104.48493544985297,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zljns2996",
+            "time": 104.69928795020598,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-j0bd0qzol",
+            "time": 105.12799295091202,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3dzr7410k",
+            "time": 105.55669795161805,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-d3rgxvluv",
+            "time": 105.87822670214757,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-smxj947hs",
+            "time": 106.1997554526771,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9ff1wjm0q",
+            "time": 106.41410795303011,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-0ah80wdvl",
+            "time": 106.62846045338313,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-0h6dyl2f4",
+            "time": 106.84281295373614,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-acew837zi",
+            "time": 107.05716545408916,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8biw428g5",
+            "time": 107.05716545408916,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-a7e4idyuy",
+            "time": 107.27151795444216,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qp2qdklsz",
+            "time": 107.48587045479518,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-m6q4egf37",
+            "time": 107.70022295514819,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-rvngugxt2",
+            "time": 107.91457545550121,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8ufzk35se",
+            "time": 108.34328045620724,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xiy7g8qoi",
+            "time": 108.55763295656025,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-caudf8qz7",
+            "time": 108.77198545691327,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4tnmykdj0",
+            "time": 108.98633795726629,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-x4io9g6l4",
+            "time": 109.2006904576193,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-lxo75f210",
+            "time": 109.41504295797232,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-iyyoarynl",
+            "time": 109.62939545832533,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-iescxv4xz",
+            "time": 109.84374795867835,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-s48mz0y5t",
+            "time": 110.05810045903137,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-n4a9y934h",
+            "time": 110.27245295938438,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-yjgsq72g5",
+            "time": 110.4868054597374,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ywcf61l27",
+            "time": 110.70115796009041,
+            "type": "don"
+        },
+        {
+            "duration": 0.11921278584323147,
+            "id": "score-1755689782968-e8b1qgtep",
+            "time": 112.41597796291452,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yuyri3a2b",
+            "time": 113.27338796432659,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-422q17x7i",
+            "time": 114.13079796573865,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xgtbilq2g",
+            "time": 114.55950296644468,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-3szyu6lcj",
+            "time": 114.9882079671507,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-glisbcr6k",
+            "time": 115.41691296785673,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-xus4nf3xa",
+            "time": 115.84561796856276,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-e71drxvll",
+            "time": 116.05997046891578,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6zsm6o9qh",
+            "time": 116.2743229692688,
+            "type": "don"
+        },
+        {
+            "duration": 0.10480319646079295,
+            "id": "score-1755689782968-kfwygmerg",
+            "time": 116.48867546962181,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-5l2of6rtx",
+            "time": 116.70302796997483,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-jtwy73dqe",
+            "time": 116.91738047032784,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wqh7v7shl",
+            "time": 117.13173297068086,
+            "type": "don"
+        },
+        {
+            "duration": 0.10973956309550204,
+            "id": "score-1755689782968-vbhu1dwsh",
+            "time": 117.34608547103387,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-rngywcgro",
+            "time": 117.56043797138689,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mixlpk0w5",
+            "time": 118.41784797279895,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-620gqk9yu",
+            "time": 119.06090547385799,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dw5l2nlg9",
+            "time": 119.275257974211,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-zd0tcpf11",
+            "time": 120.13266797562306,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-j9clpb39z",
+            "time": 120.99007797703513,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-vhy6gl8xw",
+            "time": 121.84748797844719,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tidastzcd",
+            "time": 122.49054547950622,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-gl1t7zvly",
+            "time": 122.70489797985924,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qg8s52liu",
+            "time": 123.13360298056527,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6i3i61igb",
+            "time": 123.5623079812713,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-sj7pdkyns",
+            "time": 124.41971798268337,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kwxzhjuib",
+            "time": 125.27712798409543,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-c1z2ymz70",
+            "time": 125.92018548515448,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4yslq4qch",
+            "time": 126.13453798550748,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-lo9vqfqa4",
+            "time": 126.99194798691954,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-iylt8ffp5",
+            "time": 127.8493579883316,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qyuefs79q",
+            "time": 128.70676798974367,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-43ux5oj1o",
+            "time": 129.34982549080271,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ply5nl07m",
+            "time": 129.56417799115573,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-uxb81pkh4",
+            "time": 129.99288299186176,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-62jfwgfd5",
+            "time": 130.4215879925678,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-34nm1vxq1",
+            "time": 131.27899799397986,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-4nts51fm1",
+            "time": 132.1364079953919,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-24y64f55b",
+            "time": 132.77946549645094,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tu6vrrj18",
+            "time": 132.99381799680395,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1ceq4ii85",
+            "time": 133.85122799821602,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-grm2g97n5",
+            "time": 134.70863799962808,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-ee8cj7pz7",
+            "time": 135.56604800104014,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-h9uzh4cws",
+            "time": 136.2091055020992,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-qortwy7hj",
+            "time": 136.4234580024522,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-esfuf2yzx",
+            "time": 136.85216300315824,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dmr6w3lqh",
+            "time": 137.28086800386427,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-f1dmtqo1e",
+            "time": 138.13827800527633,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-9v8vfvcn2",
+            "time": 138.9956880066884,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wxfef63aj",
+            "time": 139.63874550774742,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mm5fvlpop",
+            "time": 139.85309800810043,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-4204a8py3",
+            "time": 140.7105080095125,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-nvjy1uvnt",
+            "time": 141.56791801092456,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-z1xmv4v9o",
+            "time": 142.42532801233662,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-ntcp7mvnq",
+            "time": 143.06838551339567,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-mg42ejjpa",
+            "time": 143.28273801374868,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nhstg06yw",
+            "time": 143.71144301445472,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-21pjzi36j",
+            "time": 144.14014801516075,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-r2xws603f",
+            "time": 144.9975580165728,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ssivpw8r8",
+            "time": 145.85496801798487,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tdte0gjcz",
+            "time": 146.49802551904392,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-q8hopx9hm",
+            "time": 146.71237801939694,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-8y8op2bdk",
+            "time": 147.56978802080897,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-ndykceqoc",
+            "time": 148.42719802222103,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tzhdkjdel",
+            "time": 149.2846080236331,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-6axtsrerc",
+            "time": 149.92766552469215,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-t2an1jv2q",
+            "time": 150.14201802504516,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-maj6s6o7x",
+            "time": 150.5707230257512,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-yblimwzq1",
+            "time": 150.99942802645722,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-u2nlapj4z",
+            "time": 151.8568380278693,
+            "type": "don"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-45f5uyxwt",
+            "time": 152.71424802928135,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-ry1qzbxh3",
+            "time": 153.3573055303404,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kmbf4g9zi",
+            "time": 153.5716580306934,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-7ymzvf7f5",
+            "time": 154.42906803210545,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dxo2ns3bq",
+            "time": 155.2864780335175,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1uha1k6zc",
+            "time": 156.14388803492957,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-462dn9g7t",
+            "time": 156.78694553598862,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-y8518cgst",
+            "time": 157.00129803634164,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-66hz6ra9n",
+            "time": 157.43000303704767,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-1fkojvzwi",
+            "time": 157.8587080377537,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tnml6604a",
+            "time": 158.71611803916576,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-idnaf2nhl",
+            "time": 159.57352804057783,
+            "type": "ka"
+        },
+        {
+            "duration": 0.09999999999999432,
+            "id": "score-1755689782968-wwui9quum",
+            "time": 160.21658554163687,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-r5j9f8lmx",
+            "time": 160.4309380419899,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-wd40u53pc",
+            "time": 161.28834804340195,
+            "type": "ka"
+        },
+        {
+            "duration": 0.11772542966727428,
+            "id": "score-1755689782968-t25o6i616",
+            "time": 162.145758044814,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-vjhapycl4",
+            "time": 163.00316804622605,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-dhse6gnyu",
+            "time": 163.6462255472851,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-pztqq9eia",
+            "time": 163.8605780476381,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-100nf98mw",
+            "time": 164.28928304834415,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kw8penkle",
+            "time": 164.71798804905018,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-mzzqjd75l",
+            "time": 165.46822180028573,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-28ynl8fwb",
+            "time": 166.4328080518743,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-z8tbxhsiy",
+            "time": 167.07586555293335,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-06v40vfrg",
+            "time": 167.29021805328637,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-kzn5mqng1",
+            "time": 168.14762805469843,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-tphhcpsal",
+            "time": 169.0050380561105,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-j874keqg5",
+            "time": 169.86244805752253,
+            "type": "ka"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-z62kz9gpj",
+            "time": 170.50550555858158,
+            "type": "don"
+        },
+        {
+            "duration": 0.1,
+            "id": "score-1755689782968-nhotj9lrp",
+            "time": 170.7198580589346,
+            "type": "don"
+        }
+    ]
+}

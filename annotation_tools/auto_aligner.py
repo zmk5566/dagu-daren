@@ -72,6 +72,10 @@ class AutoAligner:
             # Get basic beat info
             bpm = beat_grid['bpm']
             beat_interval = beat_grid['beat_interval']
+            tolerance_seconds = tolerance * beat_interval
+            
+            print(f"[AutoAlign] BPM: {bpm}, beat_interval: {beat_interval:.3f}s")
+            print(f"[AutoAlign] Tolerance: {tolerance} = {tolerance_seconds:.3f}s ({tolerance_seconds*1000:.0f}ms)")
             
             # Generate quantization grid
             quant_grid = self._generate_quantization_grid(
@@ -87,7 +91,9 @@ class AutoAligner:
                 'conflicts_resolved': 0,
                 'average_adjustment': 0.0,
                 'max_adjustment': 0.0,
-                'adjustments': []
+                'adjustments': [],
+                'outside_tolerance_count': 0,
+                'closest_distances': []
             }
             
             for annotation in annotations:
@@ -122,10 +128,19 @@ class AutoAligner:
                         'adjustment': 0.0,
                         'grid_position': 'off_beat',
                         'quantize_mode': 'preserved',
-                        'confidence': 1.0
+                        'confidence': 1.0,
+                        'reason': alignment_result.get('reason', 'preserved')
                     }
                     aligned_annotations.append(preserved_annotation)
                     alignment_stats['preserved_count'] += 1
+                    
+                    # Track statistics for outside tolerance notes
+                    if alignment_result.get('reason') == 'outside_tolerance':
+                        alignment_stats['outside_tolerance_count'] += 1
+                        alignment_stats['closest_distances'].append(alignment_result.get('closest_distance', 0))
+                else:
+                    # Skip annotation entirely if not preserving off-beat notes
+                    pass
                 
                 alignment_stats['total_processed'] += 1
             
@@ -137,6 +152,13 @@ class AutoAligner:
             # Resolve conflicts (multiple annotations at same time)
             aligned_annotations = self._resolve_conflicts(aligned_annotations)
             alignment_stats['conflicts_resolved'] = len(annotations) - len(aligned_annotations)
+            
+            # Additional debug information
+            if alignment_stats['closest_distances']:
+                avg_distance = sum(alignment_stats['closest_distances']) / len(alignment_stats['closest_distances'])
+                max_distance = max(alignment_stats['closest_distances'])
+                print(f"[AutoAlign] Outside tolerance stats: {alignment_stats['outside_tolerance_count']} notes")
+                print(f"[AutoAlign] Closest distances - avg: {avg_distance*1000:.0f}ms, max: {max_distance*1000:.0f}ms")
             
             print(f"[AutoAlign] Completed: {alignment_stats['aligned_count']} aligned, "
                   f"{alignment_stats['preserved_count']} preserved, "
@@ -179,6 +201,8 @@ class AutoAligner:
         
         # Adjust beats to start from first measure
         beats = beats + first_measure_start
+        print(f"[AutoAlign] Beat grid adjusted by first_measure_start: {first_measure_start:.3f}s")
+        print(f"[AutoAlign] Sample beat times: {beats[:5]} (showing first 5)")
         
         grid_points = []
         

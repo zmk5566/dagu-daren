@@ -987,46 +987,75 @@
                 </div>
             </div>
 
-            <!-- Auto-Alignment Panel -->
+            <!-- Snap to Grid Panel -->
             <div class="daw-panel" id="align-panel">
                 <div class="daw-panel-header" onclick="togglePanel('align-panel')">
-                    <span>自动对齐</span>
+                    <span>📍 吸附到网格</span>
                     <span class="panel-toggle">▼</span>
                 </div>
                 <div class="daw-panel-content">
                     <div class="form-group">
-                        <label class="form-label">量化模式</label>
+                        <label class="form-label">吸附精度</label>
                         <div class="quantize-options" id="quantize-options">
                             <!-- Will be populated by JavaScript -->
                         </div>
+                        <small style="color: var(--text-secondary); font-size: 11px; margin-top: 4px;">
+                            选择音符吸附到的网格密度
+                        </small>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Swing 量</label>
-                        <select class="form-select" id="swing-amount">
-                            <option value="light">轻微 Swing (55%)</option>
-                            <option value="medium" selected>中等 Swing (60%)</option>
-                            <option value="heavy">重度 Swing (67%)</option>
-                            <option value="custom">自定义</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="custom-swing-group" style="display: none;">
-                        <label class="form-label">自定义 Swing 比例</label>
-                        <div class="range-slider">
-                            <input type="range" class="range-input" id="custom-swing" min="0.5" max="0.8" step="0.01" value="0.6">
-                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                                <span>直拍 (50%)</span>
-                                <span id="swing-value">60%</span>
-                                <span>重摆 (80%)</span>
-                            </div>
+                    
+                    <!-- Debug Offset Controls -->
+                    <div class="form-group" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 16px;">
+                        <label class="form-label">🔧 微调控制</label>
+                        <small style="color: var(--text-secondary); font-size: 11px; margin-bottom: 8px; display: block;">
+                            吸附后可进行精细调整
+                        </small>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <button class="btn btn-secondary btn-small" id="debug-left-btn" disabled title="向左微调 (-10ms)">
+                                ← -10ms
+                            </button>
+                            <button class="btn btn-secondary btn-small" id="debug-right-btn" disabled title="向右微调 (+10ms)">
+                                +10ms →
+                            </button>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <button class="btn btn-secondary btn-small" id="debug-left-big-btn" disabled title="向左大幅调整 (-100ms)">
+                                ⟵ -100ms
+                            </button>
+                            <button class="btn btn-secondary btn-small" id="debug-right-big-btn" disabled title="向右大幅调整 (+100ms)">
+                                +100ms ⟶
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">手动调试偏移 (ms)</label>
+                            <input type="number" class="form-input" id="debug-offset" value="0" step="1" min="-1000" max="1000">
+                            <small style="color: var(--text-secondary); font-size: 11px;">
+                                当前偏移: <span id="debug-offset-display">0</span>ms
+                            </small>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button class="btn btn-warning btn-small" id="reset-debug-offset-btn" disabled>
+                                重置偏移
+                            </button>
+                            <button class="btn btn-success btn-small" id="apply-debug-offset-btn" disabled>
+                                应用偏移
+                            </button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">容差 (节拍比例)</label>
-                        <input type="number" class="form-input" id="tolerance" value="0.25" step="0.05" min="0.05" max="0.5">
+                    
+                    <!-- Main Snap Button -->
+                    <div style="border-top: 1px solid var(--border-color); margin-top: 12px; padding-top: 12px;">
+                        <button class="btn btn-primary btn-block" id="snap-to-grid-btn" disabled style="font-size: 16px; padding: 12px;">
+                            📍 吸附到网格
+                        </button>
+                        <small style="color: var(--text-secondary); font-size: 11px; margin-top: 4px; display: block;">
+                            将每个音符移动到最近的节拍位置
+                        </small>
                     </div>
-                    <button class="btn btn-success btn-block" id="auto-align-btn" disabled>
-                        自动对齐曲谱
-                    </button>
                 </div>
             </div>
 
@@ -1305,6 +1334,7 @@
             let quantizeMode = '1/16';
             let audioOffset = 0.0;  // Audio offset to align downbeats with measure grid
             let scoreOffset = 0.0;  // Score offset for independent score positioning
+            let debugOffset = 0.0;  // Debug offset for real-time alignment debugging (in seconds)
 
             // DOM elements
             const elements = {
@@ -1318,12 +1348,6 @@
                 generateBeatsBtn: document.getElementById('generate-beats-btn'),
                 generateScoreBtn: document.getElementById('generate-score-btn'),
                 quantizeOptions: document.getElementById('quantize-options'),
-                swingAmount: document.getElementById('swing-amount'),
-                customSwingGroup: document.getElementById('custom-swing-group'),
-                customSwing: document.getElementById('custom-swing'),
-                swingValue: document.getElementById('swing-value'),
-                tolerance: document.getElementById('tolerance'),
-                autoAlignBtn: document.getElementById('auto-align-btn'),
                 annotationsList: document.getElementById('annotations-list'),
                 saveAnnotationsBtn: document.getElementById('save-annotations-btn'),
                 exportAnnotationsBtn: document.getElementById('export-annotations-btn'),
@@ -1348,7 +1372,17 @@
                 sidebarToggle: document.getElementById('sidebar-toggle'),
                 sidebar: document.getElementById('sidebar'),
                 trackLabels: document.getElementById('track-labels'),
-                toggleTrackLabelsBtn: document.getElementById('toggle-track-labels')
+                toggleTrackLabelsBtn: document.getElementById('toggle-track-labels'),
+                // Debug offset controls
+                debugLeftBtn: document.getElementById('debug-left-btn'),
+                debugRightBtn: document.getElementById('debug-right-btn'),
+                debugLeftBigBtn: document.getElementById('debug-left-big-btn'),
+                debugRightBigBtn: document.getElementById('debug-right-big-btn'),
+                debugOffsetInput: document.getElementById('debug-offset'),
+                debugOffsetDisplay: document.getElementById('debug-offset-display'),
+                resetDebugOffsetBtn: document.getElementById('reset-debug-offset-btn'),
+                applyDebugOffsetBtn: document.getElementById('apply-debug-offset-btn'),
+                snapToGridBtn: document.getElementById('snap-to-grid-btn')
             };
 
 
@@ -1517,6 +1551,11 @@
                     scoreOffset = 0.0;
                     elements.scoreOffsetInput.value = "0.000";
                     
+                    // Reset debug offset when loading new project
+                    debugOffset = 0.0;
+                    elements.debugOffsetInput.value = "0";
+                    elements.debugOffsetDisplay.textContent = "0";
+                    
                     // Enable controls
                     enableControls();
                     
@@ -1579,10 +1618,18 @@
                             showStatus(null, `加载了 ${score.length} 个曲谱音符${offsetText}`, 'success');
                             elements.saveScoreBtn.disabled = false;
                             
-                            // Enable auto-align if beat grid is available
-                            if (beatGrid) {
-                                elements.autoAlignBtn.disabled = false;
-                            }
+                            
+                            // Enable snap to grid and debug offset controls now that we have score data
+                            const hasBeatGrid = beatGrid && beatGrid.beats;
+                            elements.snapToGridBtn.disabled = !hasBeatGrid;
+                            
+                            elements.debugLeftBtn.disabled = false;
+                            elements.debugRightBtn.disabled = false;
+                            elements.debugLeftBigBtn.disabled = false;
+                            elements.debugRightBigBtn.disabled = false;
+                            elements.debugOffsetInput.disabled = false;
+                            elements.resetDebugOffsetBtn.disabled = false;
+                            elements.applyDebugOffsetBtn.disabled = false;
                         }
                     }
                 } catch (error) {
@@ -1887,54 +1934,6 @@
                 elements.beatGridOverlay.appendChild(content);
             }
 
-            // Auto-align score (not annotations)
-            async function autoAlignScore() {
-                if (!currentProject || !beatGrid || score.length === 0) {
-                    showStatus(null, '请先加载项目、生成节拍网格和曲谱', 'warning');
-                    return;
-                }
-
-                showLoading('自动对齐曲谱...');
-
-                try {
-                    const swingAmount = elements.swingAmount.value;
-                    const customSwing = parseFloat(elements.customSwing.value);
-                    const tolerance = parseFloat(elements.tolerance.value);
-
-                    const response = await fetch('/api/auto_align', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            projectName: currentProject,
-                            quantizeMode: quantizeMode,
-                            swingAmount: swingAmount,
-                            customSwing: customSwing,
-                            tolerance: tolerance,
-                            preserveOffBeat: true,
-                            annotations: score  // Pass score data instead of annotations
-                        })
-                    });
-
-                    const data = await response.json();
-                    
-                    if (data.status === 'success') {
-                        score = data.alignment_result.aligned_annotations;  // Update score with aligned data
-                        renderScore();
-                        
-                        const stats = data.alignment_result.alignment_stats;
-                        showStatus(null, 
-                            `曲谱对齐完成: ${stats.aligned_count} 个对齐, ${stats.preserved_count} 个保留, 平均调整 ${(stats.average_adjustment * 1000).toFixed(1)}ms`, 
-                            'success'
-                        );
-                    } else {
-                        throw new Error(data.message);
-                    }
-                } catch (error) {
-                    showStatus(null, `自动对齐失败: ${error.message}`, 'error');
-                } finally {
-                    hideLoading();
-                }
-            }
 
             // Render annotations
             function renderAnnotations() {
@@ -1992,7 +1991,7 @@
                     return;
                 }
 
-                console.log(`[Score] 渲染曲谱: ${score.length} 个音符, score offset: ${scoreOffset.toFixed(3)}s`);
+                console.log(`[Score] 渲染曲谱: ${score.length} 个音符, score offset: ${scoreOffset.toFixed(3)}s, debug offset: ${debugOffset.toFixed(3)}s`);
 
                 const totalWidth = duration * currentPxPerSec;
                 const content = document.createElement('div');
@@ -2006,11 +2005,11 @@
                     marker.dataset.id = scoreItem.id || `score-${index}`;
                     marker.textContent = scoreItem.type === 'don' ? '咚' : '咔';
                     
-                    // Apply score offset to score markers for visual alignment
-                    const offsetTime = scoreItem.time + scoreOffset;
+                    // Apply both score offset and debug offset to score markers for visual alignment
+                    const offsetTime = scoreItem.time + scoreOffset + debugOffset;
                     const position = offsetTime * currentPxPerSec;
                     
-                    console.log(`[Score] 音符${index}: 原时间=${scoreItem.time.toFixed(3)}s, score offset后=${offsetTime.toFixed(3)}s, 位置=${position.toFixed(1)}px`);
+                    console.log(`[Score] 音符${index}: 原时间=${scoreItem.time.toFixed(3)}s, 总偏移后=${offsetTime.toFixed(3)}s, 位置=${position.toFixed(1)}px`);
                     
                     // Center the circle on the time position (subtract half the width)
                     marker.style.left = `${position - 15}px`; // 15px = half of 30px width
@@ -2049,10 +2048,18 @@
                 renderScore();
                 elements.saveScoreBtn.disabled = false;
                 
-                // Enable auto-align if beat grid is available
-                if (beatGrid) {
-                    elements.autoAlignBtn.disabled = false;
-                }
+                
+                // Enable snap to grid and debug offset controls now that we have score data
+                const hasBeatGrid = beatGrid && beatGrid.beats;
+                elements.snapToGridBtn.disabled = !hasBeatGrid;
+                
+                elements.debugLeftBtn.disabled = false;
+                elements.debugRightBtn.disabled = false;
+                elements.debugLeftBigBtn.disabled = false;
+                elements.debugRightBigBtn.disabled = false;
+                elements.debugOffsetInput.disabled = false;
+                elements.resetDebugOffsetBtn.disabled = false;
+                elements.applyDebugOffsetBtn.disabled = false;
                 
                 toastManager.success(`从标记生成了 ${score.length} 个曲谱音符`);
             }
@@ -2244,6 +2251,20 @@
                 if (score.length > 0) {
                     elements.saveScoreBtn.disabled = false;
                 }
+                
+                // Enable snap to grid if we have beat grid and score data
+                const hasScore = score.length > 0;
+                const hasBeatGrid = beatGrid && beatGrid.beats;
+                elements.snapToGridBtn.disabled = !(hasScore && hasBeatGrid);
+                
+                // Enable debug offset controls when project is loaded and we have score data
+                elements.debugLeftBtn.disabled = !hasScore;
+                elements.debugRightBtn.disabled = !hasScore;
+                elements.debugLeftBigBtn.disabled = !hasScore;
+                elements.debugRightBigBtn.disabled = !hasScore;
+                elements.debugOffsetInput.disabled = !hasScore;
+                elements.resetDebugOffsetBtn.disabled = !hasScore;
+                elements.applyDebugOffsetBtn.disabled = !hasScore;
             }
 
             // Initialize quantization options
@@ -2291,7 +2312,6 @@
             elements.detectBpmBtn.addEventListener('click', detectBPM);
             elements.generateBeatsBtn.addEventListener('click', generateBeatGrid);
             elements.generateScoreBtn.addEventListener('click', generateScoreFromAnnotations);
-            elements.autoAlignBtn.addEventListener('click', autoAlignScore);
             elements.saveAnnotationsBtn.addEventListener('click', saveAnnotations);
             elements.exportAnnotationsBtn.addEventListener('click', exportAudioSamples);
             elements.saveScoreBtn.addEventListener('click', saveScore);
@@ -2378,16 +2398,6 @@
                 }
             }
 
-            // Swing amount change
-            elements.swingAmount.addEventListener('change', () => {
-                const isCustom = elements.swingAmount.value === 'custom';
-                elements.customSwingGroup.style.display = isCustom ? 'block' : 'none';
-            });
-
-            elements.customSwing.addEventListener('input', () => {
-                const value = parseFloat(elements.customSwing.value);
-                elements.swingValue.textContent = `${Math.round(value * 100)}%`;
-            });
 
             // Audio offset real-time adjustment
             elements.audioOffsetInput.addEventListener('input', () => {
@@ -2432,6 +2442,188 @@
                 // Show status message
                 toastManager.info(`曲谱偏移调整为 ${scoreOffset.toFixed(3)}s - 曲谱位置已更新`);
             });
+
+            // Debug offset functions
+            function updateDebugOffset(newOffset) {
+                debugOffset = newOffset;
+                elements.debugOffsetInput.value = Math.round(debugOffset * 1000); // Convert to ms
+                elements.debugOffsetDisplay.textContent = Math.round(debugOffset * 1000);
+                
+                console.log(`[Debug Offset] 调试偏移调整为: ${debugOffset.toFixed(3)}s (${Math.round(debugOffset * 1000)}ms)`);
+                
+                // Re-render score with new debug offset
+                renderScore();
+                
+                // Show status message
+                toastManager.info(`调试偏移: ${Math.round(debugOffset * 1000)}ms - 实时预览已更新`);
+            }
+
+            // Debug offset controls event handlers
+            elements.debugLeftBtn.addEventListener('click', () => {
+                updateDebugOffset(debugOffset - 0.01); // -10ms
+            });
+
+            elements.debugRightBtn.addEventListener('click', () => {
+                updateDebugOffset(debugOffset + 0.01); // +10ms
+            });
+
+            elements.debugLeftBigBtn.addEventListener('click', () => {
+                updateDebugOffset(debugOffset - 0.1); // -100ms
+            });
+
+            elements.debugRightBigBtn.addEventListener('click', () => {
+                updateDebugOffset(debugOffset + 0.1); // +100ms
+            });
+
+            elements.debugOffsetInput.addEventListener('input', () => {
+                const newOffsetMs = parseFloat(elements.debugOffsetInput.value) || 0.0;
+                const newOffsetSeconds = newOffsetMs / 1000.0;
+                updateDebugOffset(newOffsetSeconds);
+            });
+
+            elements.resetDebugOffsetBtn.addEventListener('click', () => {
+                updateDebugOffset(0.0);
+                toastManager.success('调试偏移已重置');
+            });
+
+            elements.applyDebugOffsetBtn.addEventListener('click', () => {
+                if (debugOffset === 0.0) {
+                    toastManager.warning('当前调试偏移为0，无需应用');
+                    return;
+                }
+
+                // Apply debug offset permanently to all score items
+                score.forEach(scoreItem => {
+                    scoreItem.time += debugOffset;
+                });
+
+                // Reset debug offset to 0 after applying
+                const appliedOffset = debugOffset;
+                updateDebugOffset(0.0);
+                
+                // Re-render score
+                renderScore();
+                
+                toastManager.success(`已将${Math.round(appliedOffset * 1000)}ms偏移永久应用到${score.length}个音符`);
+                console.log(`[Debug Offset] 永久应用了 ${appliedOffset.toFixed(3)}s 偏移到曲谱`);
+            });
+
+            // Generate snap grid based on quantization mode
+            function generateSnapGrid() {
+                if (!beatGrid || !beatGrid.beats) {
+                    return [];
+                }
+                
+                const beats = beatGrid.beats.map(time => time + audioOffset);
+                const beatInterval = beatGrid.beat_interval;
+                let snapPoints = [];
+                
+                console.log(`[Snap] 生成${quantizeMode}精度网格`);
+                
+                switch (quantizeMode) {
+                    case '1/4':
+                        // Quarter notes - use main beats
+                        snapPoints = beats;
+                        break;
+                        
+                    case '1/8':
+                        // Eighth notes - beats + off-beats
+                        beats.forEach(beatTime => {
+                            snapPoints.push(beatTime);
+                            snapPoints.push(beatTime + beatInterval / 2);
+                        });
+                        break;
+                        
+                    case '1/16':
+                        // Sixteenth notes - 4 divisions per beat
+                        beats.forEach(beatTime => {
+                            for (let i = 0; i < 4; i++) {
+                                snapPoints.push(beatTime + (i * beatInterval / 4));
+                            }
+                        });
+                        break;
+                        
+                    case '1/8T':
+                        // Eighth triplets - 3 divisions per beat
+                        beats.forEach(beatTime => {
+                            for (let i = 0; i < 3; i++) {
+                                snapPoints.push(beatTime + (i * beatInterval / 3));
+                            }
+                        });
+                        break;
+                        
+                    default:
+                        snapPoints = beats;
+                }
+                
+                // Sort and remove duplicates
+                snapPoints = [...new Set(snapPoints)].sort((a, b) => a - b);
+                
+                console.log(`[Snap] 生成了${snapPoints.length}个吸附点`);
+                return snapPoints;
+            }
+
+            // Simple Snap to Grid functionality
+            function snapToGrid() {
+                if (!beatGrid || !beatGrid.beats || score.length === 0) {
+                    toastManager.warning('需要先生成节拍网格和曲谱');
+                    return;
+                }
+
+                showLoading(`吸附音符到${quantizeMode}网格...`);
+
+                try {
+                    // Generate snap grid based on selected quantization
+                    const snapPoints = generateSnapGrid();
+                    
+                    if (snapPoints.length === 0) {
+                        throw new Error('无法生成吸附网格');
+                    }
+                    
+                    let snappedCount = 0;
+                    let totalAdjustment = 0;
+
+                    score.forEach((scoreItem, index) => {
+                        const originalTime = scoreItem.time;
+                        
+                        // Find closest snap point
+                        let closestSnapPoint = snapPoints[0];
+                        let minDistance = Math.abs(originalTime - closestSnapPoint);
+
+                        for (const snapPoint of snapPoints) {
+                            const distance = Math.abs(originalTime - snapPoint);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestSnapPoint = snapPoint;
+                            }
+                        }
+
+                        // Snap to closest point
+                        const adjustment = Math.abs(originalTime - closestSnapPoint);
+                        scoreItem.time = closestSnapPoint;
+                        
+                        snappedCount++;
+                        totalAdjustment += adjustment;
+
+                        console.log(`[Snap] 音符${index}: ${originalTime.toFixed(3)}s -> ${closestSnapPoint.toFixed(3)}s (调整: ${(adjustment*1000).toFixed(0)}ms)`);
+                    });
+
+                    // Re-render score
+                    renderScore();
+
+                    const avgAdjustment = totalAdjustment / snappedCount;
+                    toastManager.success(`${quantizeMode}网格吸附完成！${snappedCount}个音符，平均调整${(avgAdjustment*1000).toFixed(0)}ms`);
+                    console.log(`[Snap] 完成：${snappedCount}个音符吸附到${quantizeMode}网格，平均调整${(avgAdjustment*1000).toFixed(0)}ms`);
+
+                } catch (error) {
+                    console.error('[Snap] Error:', error);
+                    toastManager.error(`吸附失败: ${error.message}`);
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            elements.snapToGridBtn.addEventListener('click', snapToGrid);
 
             // Timeline click to add annotations
             elements.annotationTrack.addEventListener('click', (e) => {
