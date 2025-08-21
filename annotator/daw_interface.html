@@ -271,20 +271,25 @@
         .bpm-display {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0 15px;
+            gap: 2px;
+            padding: 0 8px;
             border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+            min-width: 60px;
+        }
+
+        .bpm-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
 
         .bpm-value {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--accent-primary);
-        }
-
-        .bpm-confidence {
-            font-size: 12px;
-            color: var(--text-muted);
+            min-width: 24px;
+            text-align: left;
         }
 
         /* Timeline Container */
@@ -917,6 +922,93 @@
         .toast.warning .toast-progress {
             background: var(--warning-color);
         }
+
+        /* Export Popup Menu */
+        .export-popup-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            min-width: 160px;
+            margin-top: 4px;
+        }
+
+        .popup-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .popup-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .popup-menu-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .popup-menu-item:active {
+            background: var(--accent-primary);
+        }
+
+        .menu-icon {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Audio Source Selector */
+        .audio-source-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 12px;
+            border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .audio-source-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .audio-source-select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 11px;
+            padding: 4px 6px;
+            min-width: 80px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .audio-source-select:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-secondary);
+        }
+
+        .audio-source-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -986,24 +1078,6 @@
                 </div>
             </div>
 
-            <!-- Snap to Grid Panel -->
-            <div class="daw-panel" id="align-panel">
-                <div class="daw-panel-header" onclick="togglePanel('align-panel')">
-                    <span>📍 吸附到网格</span>
-                    <span class="panel-toggle">▼</span>
-                </div>
-                <div class="daw-panel-content">
-                    
-                    
-                    <!-- Main Snap Button -->
-                    <button class="btn btn-primary btn-block" id="snap-to-grid-btn" disabled style="font-size: 16px; padding: 12px;">
-                        📍 吸附到网格
-                    </button>
-                    <small style="color: var(--text-secondary); font-size: 11px; margin-top: 4px; display: block;">
-                        将每个音符移动到最近的节拍位置 (精度: <span id="current-precision-display">1/16</span>)
-                    </small>
-                </div>
-            </div>
 
             <!-- Annotations Panel -->
             <div class="daw-panel" id="annotations-panel">
@@ -1017,17 +1091,6 @@
                             暂无标注
                         </div>
                     </div>
-                    <div style="margin-top: 16px;">
-                        <button class="btn btn-warning btn-block" id="save-annotations-btn" disabled>
-                            保存标注
-                        </button>
-                        <button class="btn btn-secondary btn-block" id="export-annotations-btn" disabled style="margin-top: 8px;">
-                            导出音频样本
-                        </button>
-                        <button class="btn btn-warning btn-block" id="save-score-btn" disabled style="margin-top: 8px;">
-                            保存曲谱
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1036,6 +1099,22 @@
         <div class="daw-main">
             <!-- Toolbar -->
             <div class="daw-toolbar">
+                <!-- BPM Display -->
+                <div class="bpm-display">
+                    <span class="bpm-label">BPM:</span>
+                    <span class="bpm-value" id="bpm-value">--</span>
+                </div>
+
+                <!-- Audio Source Selector -->
+                <div class="audio-source-container">
+                    <label class="audio-source-label">音源:</label>
+                    <select class="audio-source-select" id="audio-source-select" title="选择音频源">
+                        <option value="drums">🥁 单鼓</option>
+                        <option value="backing">🎵 无鼓</option>
+                        <option value="original">🎶 原曲</option>
+                    </select>
+                </div>
+
                 <!-- Transport Controls -->
                 <div class="transport-controls">
                     <button class="transport-btn" id="play-btn" disabled title="播放/暂停 (空格键)">
@@ -1049,14 +1128,6 @@
                     </button>
                 </div>
 
-                <!-- BPM Display -->
-                <div class="bpm-display">
-                    <div>
-                        <div class="bpm-value" id="bpm-value">--</div>
-                        <div class="bpm-confidence" id="bpm-confidence">BPM</div>
-                    </div>
-                </div>
-
                 <!-- Zoom Controls -->
                 <div class="transport-controls">
                     <button class="transport-btn" id="zoom-out-btn" disabled title="缩小 (Ctrl+滚轮)">
@@ -1064,9 +1135,6 @@
                     </button>
                     <button class="transport-btn" id="zoom-in-btn" disabled title="放大 (Ctrl+滚轮)">
                         <span>+</span>
-                    </button>
-                    <button class="transport-btn" id="zoom-fit-btn" disabled title="适应窗口">
-                        <span>⊟</span>
                     </button>
                 </div>
 
@@ -1093,6 +1161,31 @@
                             <option value="1/16T">1/16T - 十六分三连音</option>
                             <option value="1/32">1/32 - 三十二分音符</option>
                         </select>
+                        
+                        <!-- Export Button with Popup Menu -->
+                        <div class="export-menu-container" style="position: relative; margin-left: 8px;">
+                            <button class="transport-btn" id="export-menu-btn" disabled title="导出选项" style="padding: 6px 12px; font-size: 12px;">
+                                导出
+                            </button>
+                            <div class="export-popup-menu" id="export-popup-menu" style="display: none;">
+                                <div class="popup-menu-item" id="save-annotations-menu">
+                                    <span class="menu-icon">💾</span>
+                                    <span class="menu-text">保存标注</span>
+                                </div>
+                                <div class="popup-menu-item" id="export-audio-samples-menu">
+                                    <span class="menu-icon">🎵</span>
+                                    <span class="menu-text">导出音频样本</span>
+                                </div>
+                                <div class="popup-menu-item" id="save-score-menu">
+                                    <span class="menu-icon">🎼</span>
+                                    <span class="menu-text">保存曲谱</span>
+                                </div>
+                                <div class="popup-menu-item" id="save-all-menu">
+                                    <span class="menu-icon">📋</span>
+                                    <span class="menu-text">全部保存</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1106,7 +1199,7 @@
                     </div>
                     <div class="track-labels-content">
                         <div class="track-label-item" style="height: 151px;"> <!-- 150px height + 1px border -->
-                            <span>单鼓 Track</span>
+                            <span>音频轨道</span>
                         </div>
                         <div class="track-label-item" style="height: 61px;"> <!-- 60px height + 1px border -->
                             <span>标记 Track</span>
@@ -1293,6 +1386,8 @@
             let quantizeMode = '1/16';  // Default snap precision
             let audioOffset = 0.0;  // Keep for backward compatibility (unused)
             let scoreOffset = 0.0;  // Keep for backward compatibility (unused)
+            let currentAudioSource = 'drums';  // Current audio source: drums, backing, original
+            let isSwitchingAudio = false;  // Flag to prevent auto-zoom during audio switching
 
             // DOM elements
             const elements = {
@@ -1304,20 +1399,15 @@
                 generateBeatsBtn: document.getElementById('generate-beats-btn'),
                 generateScoreBtn: document.getElementById('generate-score-btn'),
                 annotationsList: document.getElementById('annotations-list'),
-                saveAnnotationsBtn: document.getElementById('save-annotations-btn'),
-                exportAnnotationsBtn: document.getElementById('export-annotations-btn'),
-                saveScoreBtn: document.getElementById('save-score-btn'),
                 playBtn: document.getElementById('play-btn'),
                 stopBtn: document.getElementById('stop-btn'),
                 loopBtn: document.getElementById('loop-btn'),
                 zoomInBtn: document.getElementById('zoom-in-btn'),
                 zoomOutBtn: document.getElementById('zoom-out-btn'),
-                zoomFitBtn: document.getElementById('zoom-fit-btn'),
                 toolSelect: document.getElementById('tool-select'),
                 toolDon: document.getElementById('tool-don'),
                 toolKa: document.getElementById('tool-ka'),
                 bpmValue: document.getElementById('bpm-value'),
-                bpmConfidence: document.getElementById('bpm-confidence'),
                 beatGridOverlay: document.getElementById('beat-grid-overlay'),
                 annotationTrack: document.getElementById('annotation-track'),
                 scoreTrack: document.getElementById('score-track'),
@@ -1328,9 +1418,14 @@
                 sidebar: document.getElementById('sidebar'),
                 trackLabels: document.getElementById('track-labels'),
                 toggleTrackLabelsBtn: document.getElementById('toggle-track-labels'),
-                snapToGridBtn: document.getElementById('snap-to-grid-btn'),
                 snapPrecisionSelect: document.getElementById('snap-precision-select'),
-                currentPrecisionDisplay: document.getElementById('current-precision-display')
+                exportMenuBtn: document.getElementById('export-menu-btn'),
+                exportPopupMenu: document.getElementById('export-popup-menu'),
+                saveAnnotationsMenuBtn: document.getElementById('save-annotations-menu'),
+                exportAudioSamplesMenuBtn: document.getElementById('export-audio-samples-menu'),
+                saveScoreMenuBtn: document.getElementById('save-score-menu'),
+                saveAllMenuBtn: document.getElementById('save-all-menu'),
+                audioSourceSelect: document.getElementById('audio-source-select')
             };
 
 
@@ -1447,13 +1542,103 @@
                 }
             }
 
+            // Get audio path based on current source and project
+            function getAudioPath(projectName, source = currentAudioSource) {
+                const basePath = `data/${projectName}`;
+                switch (source) {
+                    case 'drums':
+                        return `${basePath}/generated_audio/drums.mp3`;
+                    case 'backing':
+                        return `${basePath}/generated_audio/backing_track_no_drums.mp3`;
+                    case 'original':
+                        return `${basePath}/${projectName}.mp3`;
+                    default:
+                        return `${basePath}/generated_audio/drums.mp3`;
+                }
+            }
+
+            // Switch audio source
+            async function switchAudioSource(source) {
+                if (!currentProject) {
+                    toastManager.warning('请先加载项目');
+                    return;
+                }
+
+                if (source === currentAudioSource) {
+                    return; // Already using this source
+                }
+
+                showLoading(`切换到${getSourceDisplayName(source)}...`);
+                isSwitchingAudio = true;  // 标记正在切换音频
+
+                try {
+                    // 1. 停止当前音频
+                    wavesurfer.stop();
+
+                    const audioPath = getAudioPath(currentProject, source);
+                    const response = await fetch(audioPath);
+                    
+                    if (!response.ok) {
+                        throw new Error(`音频文件不存在: ${audioPath}`);
+                    }
+
+                    const audioBlob = await response.blob();
+                    await wavesurfer.load(URL.createObjectURL(audioBlob));
+
+                    // 2. 保持当前缩放比例或使用较小的默认缩放
+                    if (currentPxPerSec === 100) {
+                        // 如果还是默认值，设置一个较小的缩放比例（显示更多内容）
+                        currentPxPerSec = Math.max(minPxPerSec, 80);
+                    }
+                    // 否则保持用户设置的缩放比例
+                    
+                    wavesurfer.zoom(currentPxPerSec);
+                    
+                    // Re-render all overlays with current zoom level
+                    renderBeatGrid();
+                    renderTimelineRuler();
+                    renderAnnotations();
+                    renderScore();
+                    syncTimelineScroll();
+
+                    // 3. 再次触发停止，确保光标移动到最前方
+                    wavesurfer.stop();
+
+                    currentAudioSource = source;
+                    updateAudioSourceDisplay();
+                    toastManager.success(`已切换到${getSourceDisplayName(source)}`);
+
+                } catch (error) {
+                    toastManager.error(`切换音频源失败: ${error.message}`);
+                    console.error('Failed to switch audio source:', error);
+                } finally {
+                    isSwitchingAudio = false;  // 重置标记
+                    hideLoading();
+                }
+            }
+
+            // Get display name for audio source
+            function getSourceDisplayName(source) {
+                switch (source) {
+                    case 'drums': return '单鼓';
+                    case 'backing': return '无鼓';
+                    case 'original': return '原曲';
+                    default: return '单鼓';
+                }
+            }
+
+            // Update audio source display
+            function updateAudioSourceDisplay() {
+                elements.audioSourceSelect.value = currentAudioSource;
+            }
+
             // Load project
             async function loadProject(projectName) {
                 currentProject = projectName;
                 showLoading('加载项目音频...');
 
                 try {
-                    const audioPath = `data/${projectName}/generated_audio/drums.mp3`;
+                    const audioPath = getAudioPath(projectName, currentAudioSource);
                     const response = await fetch(audioPath);
                     
                     if (!response.ok) {
@@ -1472,8 +1657,7 @@
                     if (metadata && metadata.bpm_data) {
                         // Use metadata to populate BPM info
                         bmpData = metadata.bpm_data; // Use existing variable name for consistency
-                        elements.bpmValue.textContent = metadata.bpm_data.bpm;
-                        elements.bpmConfidence.textContent = `置信度: ${(metadata.bpm_data.confidence * 100).toFixed(1)}%`;
+                        elements.bpmValue.textContent = Math.round(metadata.bpm_data.bpm);
                         elements.manualBpm.value = metadata.bpm_data.bpm;
                         elements.generateBeatsBtn.disabled = false;
                         
@@ -1517,6 +1701,7 @@
                         if (annotations.length > 0) {
                             showStatus(null, `加载了 ${annotations.length} 个已有标注`, 'success');
                             elements.generateScoreBtn.disabled = false;
+                            elements.exportMenuBtn.disabled = false;
                         }
                     }
                 } catch (error) {
@@ -1547,12 +1732,7 @@
                         
                         if (score.length > 0) {
                             showStatus(null, `加载了 ${score.length} 个曲谱音符`, 'success');
-                            elements.saveScoreBtn.disabled = false;
-                            
-                            
-                            // Enable snap to grid now that we have score data
-                            const hasBeatGrid = beatGrid && beatGrid.beats;
-                            elements.snapToGridBtn.disabled = !hasBeatGrid;
+                            elements.exportMenuBtn.disabled = false;
                         }
                     }
                 } catch (error) {
@@ -1626,8 +1806,7 @@
                             throw new Error('无效的BPM数据结构');
                         }
                         
-                        elements.bpmValue.textContent = bmpData.bpm;
-                        elements.bmpConfidence.textContent = `置信度: ${(bmpData.confidence * 100).toFixed(1)}%`;
+                        elements.bpmValue.textContent = Math.round(bmpData.bpm);
                         elements.manualBpm.value = bmpData.bpm;
                         
                         // Update offset input with detected offset
@@ -1684,8 +1863,6 @@
                             `节拍网格生成成功: ${beatGrid.grid_metadata.total_beats} 个节拍, ${beatGrid.grid_metadata.total_measures} 个小节`, 
                             'success'
                         );
-                        
-                        // Enable auto-align only if we have score data
                     } else {
                         throw new Error(data.message);
                     }
@@ -1966,12 +2143,7 @@
                 }));
                 
                 renderScore();
-                elements.saveScoreBtn.disabled = false;
-                
-                
-                // Enable snap to grid now that we have score data
-                const hasBeatGrid = beatGrid && beatGrid.beats;
-                elements.snapToGridBtn.disabled = !hasBeatGrid;
+                elements.exportMenuBtn.disabled = false;
                 
                 toastManager.success(`从标记生成了 ${score.length} 个曲谱音符`);
             }
@@ -2006,8 +2178,7 @@
                 
                 if (annotations.length === 0) {
                     list.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">暂无标注</div>';
-                    elements.saveAnnotationsBtn.disabled = true;
-                    elements.exportAnnotationsBtn.disabled = true;
+                    elements.exportMenuBtn.disabled = true;
                     return;
                 }
 
@@ -2041,8 +2212,7 @@
                     list.appendChild(item);
                 });
 
-                elements.saveAnnotationsBtn.disabled = false;
-                elements.exportAnnotationsBtn.disabled = false;
+                elements.exportMenuBtn.disabled = false;
             }
 
             // Delete annotation
@@ -2151,34 +2321,26 @@
                 elements.loopBtn.disabled = false;
                 elements.zoomInBtn.disabled = false;
                 elements.zoomOutBtn.disabled = false;
-                elements.zoomFitBtn.disabled = false;
                 elements.detectBpmBtn.disabled = false;
                 
                 // Enable generate score button if we have annotations
                 if (annotations.length > 0) {
                     elements.generateScoreBtn.disabled = false;
+                    elements.exportMenuBtn.disabled = false;
                 }
                 
-                // Enable save score button if we have score data
+                // Enable export menu if we have score data
                 if (score.length > 0) {
-                    elements.saveScoreBtn.disabled = false;
+                    elements.exportMenuBtn.disabled = false;
                 }
                 
-                // Enable snap to grid if we have beat grid and score data
-                const hasScore = score.length > 0;
-                const hasBeatGrid = beatGrid && beatGrid.beats;
-                elements.snapToGridBtn.disabled = !(hasScore && hasBeatGrid);
             }
 
             // Initialize snap precision dropdown
             function initSnapPrecision() {
-                // Set initial display
-                elements.currentPrecisionDisplay.textContent = quantizeMode;
-                
                 // Add event listener for dropdown changes
                 elements.snapPrecisionSelect.addEventListener('change', () => {
                     quantizeMode = elements.snapPrecisionSelect.value;
-                    elements.currentPrecisionDisplay.textContent = quantizeMode;
                     
                     console.log(`[Snap] 吸附精度设置为: ${quantizeMode}`);
                     toastManager.info(`吸附精度: ${elements.snapPrecisionSelect.options[elements.snapPrecisionSelect.selectedIndex].text}`);
@@ -2196,9 +2358,64 @@
             elements.detectBpmBtn.addEventListener('click', detectBPM);
             elements.generateBeatsBtn.addEventListener('click', generateBeatGrid);
             elements.generateScoreBtn.addEventListener('click', generateScoreFromAnnotations);
-            elements.saveAnnotationsBtn.addEventListener('click', saveAnnotations);
-            elements.exportAnnotationsBtn.addEventListener('click', exportAudioSamples);
-            elements.saveScoreBtn.addEventListener('click', saveScore);
+            
+            // Export popup menu functionality
+            function toggleExportMenu() {
+                const isVisible = elements.exportPopupMenu.style.display !== 'none';
+                elements.exportPopupMenu.style.display = isVisible ? 'none' : 'block';
+            }
+            
+            function hideExportMenu() {
+                elements.exportPopupMenu.style.display = 'none';
+            }
+            
+            // Export menu button
+            elements.exportMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleExportMenu();
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', () => {
+                hideExportMenu();
+            });
+            
+            // Export menu item handlers
+            elements.saveAnnotationsMenuBtn.addEventListener('click', () => {
+                hideExportMenu();
+                saveAnnotations();
+            });
+            
+            elements.exportAudioSamplesMenuBtn.addEventListener('click', () => {
+                hideExportMenu();
+                exportAudioSamples();
+            });
+            
+            elements.saveScoreMenuBtn.addEventListener('click', () => {
+                hideExportMenu();
+                saveScore();
+            });
+            
+            elements.saveAllMenuBtn.addEventListener('click', async () => {
+                hideExportMenu();
+                showLoading('保存全部...');
+                try {
+                    await saveAnnotations();
+                    await saveScore(); 
+                    await exportAudioSamples();
+                    toastManager.success('全部保存完成！');
+                } catch (error) {
+                    toastManager.error(`保存失败: ${error.message}`);
+                } finally {
+                    hideLoading();
+                }
+            });
+
+            // Audio source select functionality
+            elements.audioSourceSelect.addEventListener('change', () => {
+                const selectedSource = elements.audioSourceSelect.value;
+                switchAudioSource(selectedSource);
+            });
 
             // Transport controls
             elements.playBtn.addEventListener('click', () => {
@@ -2241,20 +2458,6 @@
                 renderBeatGrid();
                 renderTimelineRuler();
                 renderScore();
-            });
-            
-            elements.zoomFitBtn.addEventListener('click', () => {
-                // 适应窗口：计算能显示整个音频的像素每秒
-                const duration = wavesurfer.getDuration();
-                const containerWidth = wavesurfer.getWrapper().clientWidth;
-                if (duration > 0) {
-                    currentPxPerSec = Math.max(containerWidth / duration, minPxPerSec);
-                    wavesurfer.zoom(currentPxPerSec);
-                    // Re-render all overlays with new zoom level and offset
-                    renderBeatGrid();
-                    renderTimelineRuler();
-                    renderScore();
-                }
             });
 
             // Tool selection
@@ -2417,7 +2620,6 @@
                 }
             }
 
-            elements.snapToGridBtn.addEventListener('click', snapToGrid);
 
             // Timeline click to add annotations
             elements.annotationTrack.addEventListener('click', (e) => {
@@ -2509,12 +2711,15 @@
             wavesurfer.on('ready', () => {
                 hideLoading();
                 
-                const duration = wavesurfer.getDuration();
-                const containerWidth = wavesurfer.getWrapper().clientWidth;
-                if (duration > 0) {
-                    const targetViewDuration = Math.min(duration, 15);
-                    currentPxPerSec = Math.max(containerWidth / targetViewDuration, minPxPerSec);
-                    wavesurfer.zoom(currentPxPerSec);
+                // 只有在非音频源切换时才进行自动缩放
+                if (!isSwitchingAudio) {
+                    const duration = wavesurfer.getDuration();
+                    const containerWidth = wavesurfer.getWrapper().clientWidth;
+                    if (duration > 0) {
+                        const targetViewDuration = Math.min(duration, 15);
+                        currentPxPerSec = Math.max(containerWidth / targetViewDuration, minPxPerSec);
+                        wavesurfer.zoom(currentPxPerSec);
+                    }
                 }
                 
                 // Initial render and sync
@@ -2633,6 +2838,7 @@
             initSnapPrecision();
             loadProjects();
             updateToolSelection();
+            updateAudioSourceDisplay();
         });
     </script>
 </body>
