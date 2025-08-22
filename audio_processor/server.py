@@ -56,6 +56,11 @@ def serve_daw_interface():
     """Serves the new DAW-style annotation interface."""
     return send_from_directory(ANNOTATOR_DIR, 'daw_interface.html')
 
+@app.route('/game')
+def serve_game_interface():
+    """Serves the rhythm game performance mode interface."""
+    return send_from_directory(PROJECT_ROOT, 'game_interface.html')
+
 @app.route('/favicon.ico')
 def favicon():
     """Return empty favicon to prevent 404 errors."""

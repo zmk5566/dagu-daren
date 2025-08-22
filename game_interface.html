@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大鼓达人 - 演奏模式</title>
+    <style>
+        /* CSS Variables for Colors */
+        :root {
+            --primary-red: #FF6B47;
+            --primary-blue: #4A90E2;
+            --bg-gradient: linear-gradient(45deg, #FFE5B4, #FFCCCB, #E6F3FF);
+            --text-white: #FFFFFF;
+            --text-dark: #333333;
+            --score-bg: rgba(255, 255, 255, 0.9);
+            --drum-shadow: rgba(0, 0, 0, 0.3);
+            --hit-effect: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Hiragino Kaku Gothic Pro', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-gradient);
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* Game Container */
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Section with Score and Progress */
+        .top-section {
+            height: 120px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Score Display */
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-red);
+        }
+
+        .combo-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-red), var(--primary-blue));
+            width: 0%;
+            transition: width 0.1s ease;
+            border-radius: 10px;
+        }
+
+        .song-info {
+            text-align: right;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .song-time {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        /* Main Game Area */
+        .game-area {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFCCCB 50%, #E6F3FF 100%);
+            overflow: hidden;
+        }
+
+        /* Beat Track - Horizontal scrolling area */
+        .beat-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 120px;
+            transform: translateY(-50%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Hit Target Zone */
+        .hit-target {
+            position: absolute;
+            left: 150px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary-red), var(--primary-blue));
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
+
+        /* Beat Notes Container */
+        .notes-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 10000px; /* Large width for scrolling */
+        }
+
+        /* Individual Beat Notes */
+        .beat-note {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 3px solid var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 15px var(--drum-shadow);
+            transition: transform 0.1s ease;
+        }
+
+        .beat-note.don {
+            background: radial-gradient(circle, var(--primary-red), #CC5238);
+        }
+
+        .beat-note.ka {
+            background: radial-gradient(circle, var(--primary-blue), #3A72B8);
+        }
+
+        .beat-note.hit {
+            transform: translateY(-50%) scale(1.3);
+            box-shadow: 0 0 30px var(--hit-effect);
+        }
+
+        /* Drum Kit */
+        .drum-kit {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .drum {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid var(--text-white);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.1s ease;
+            box-shadow: 0 8px 25px var(--drum-shadow);
+        }
+
+        .drum.don {
+            background: radial-gradient(circle at 30% 30%, var(--primary-red), #CC5238);
+        }
+
+        .drum.ka {
+            background: radial-gradient(circle at 30% 30%, var(--primary-blue), #3A72B8);
+        }
+
+        .drum:active,
+        .drum.hit {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px var(--drum-shadow);
+        }
+
+        .drum::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .drum-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* Hit Effects */
+        .hit-effect {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+            pointer-events: none;
+            animation: hitExplosion 0.3s ease-out forwards;
+        }
+
+        @keyframes hitExplosion {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Judgment Text */
+        .judgment {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            animation: judgmentFade 1s ease-out forwards;
+        }
+
+        .judgment.perfect {
+            color: #FFD700;
+        }
+
+        .judgment.good {
+            color: #32CD32;
+        }
+
+        .judgment.miss {
+            color: #FF4444;
+        }
+
+        @keyframes judgmentFade {
+            0% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-50px);
+            }
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--primary-blue);
+            border-radius: 20px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--primary-blue);
+            color: var(--text-white);
+        }
+
+        /* Project Selector */
+        .project-selector {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .project-select {
+            padding: 8px 12px;
+            border: 2px solid var(--primary-red);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* Game Over Screen */
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: var(--text-white);
+        }
+
+        .game-over h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #FFD700;
+        }
+
+        .final-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-red);
+        }
+
+        .stat-label {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .restart-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: var(--primary-red);
+            color: var(--text-white);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            background: #CC5238;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-section {
+                padding: 15px 20px;
+                height: 100px;
+            }
+
+            .score-value {
+                font-size: 24px;
+            }
+
+            .combo-display {
+                font-size: 28px;
+            }
+
+            .drum {
+                width: 100px;
+                height: 100px;
+            }
+
+            .beat-note {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .judgment {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">加载游戏中...</div>
+        </div>
+
+        <!-- Project Selector -->
+        <div class="project-selector">
+            <label>选择歌曲:</label>
+            <select class="project-select" id="projectSelect">
+                <option value="">-- 请选择 --</option>
+            </select>
+            <button class="control-btn" id="loadGameBtn">载入</button>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button class="control-btn" id="pauseBtn">暂停</button>
+            <button class="control-btn" id="restartBtn">重新开始</button>
+            <button class="control-btn" id="exitBtn">退出</button>
+        </div>
+
+        <!-- Top Section -->
+        <div class="top-section">
+            <div class="score-display">
+                <div class="score-item">
+                    <div class="score-label">得分</div>
+                    <div class="score-value" id="scoreValue">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">连击</div>
+                    <div class="combo-display" id="comboValue">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">准确率</div>
+                    <div class="score-value" id="accuracyValue">100%</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="song-info">
+                <div class="song-title" id="songTitle">选择歌曲开始游戏</div>
+                <div class="song-time">
+                    <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Area -->
+        <div class="game-area">
+            <!-- Beat Track -->
+            <div class="beat-track">
+                <div class="hit-target"></div>
+                <div class="notes-container" id="notesContainer">
+                    <!-- Beat notes will be generated here -->
+                </div>
+            </div>
+
+            <!-- Drum Kit -->
+            <div class="drum-kit">
+                <div class="drum don" id="donDrum" data-type="don">
+                    <div class="drum-label">咚 (F/J)</div>
+                </div>
+                <div class="drum ka" id="kaDrum" data-type="ka">
+                    <div class="drum-label">咔 (D/K)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="game-over" id="gameOverScreen" style="display: none;">
+            <h2>游戏结束！</h2>
+            <div class="final-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="finalScore">0</div>
+                    <div class="stat-label">最终得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maxCombo">0</div>
+                    <div class="stat-label">最大连击</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="finalAccuracy">0%</div>
+                    <div class="stat-label">准确率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="perfectHits">0</div>
+                    <div class="stat-label">完美击打</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="playAgainBtn">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            score: 0,
+            combo: 0,
+            maxCombo: 0,
+            totalNotes: 0,
+            hitNotes: 0,
+            perfectHits: 0,
+            goodHits: 0,
+            missedHits: 0,
+            isPlaying: false,
+            isPaused: false,
+            currentProject: null,
+            notes: [],
+            currentTime: 0,
+            duration: 0,
+            audio: null,
+            startTime: null,
+            animationId: null
+        };
+
+        // Game settings
+        const settings = {
+            scrollSpeed: 300, // pixels per second
+            hitTargetX: 150,
+            noteSpawnX: window.innerWidth,
+            hitWindow: {
+                perfect: 0.05, // 50ms
+                good: 0.1,     // 100ms
+                miss: 0.15     // 150ms
+            },
+            scoring: {
+                perfect: 1000,
+                good: 500,
+                miss: 0
+            }
+        };
+
+        // DOM elements
+        const elements = {
+            loadingScreen: document.getElementById('loadingScreen'),
+            projectSelect: document.getElementById('projectSelect'),
+            loadGameBtn: document.getElementById('loadGameBtn'),
+            pauseBtn: document.getElementById('pauseBtn'),
+            restartBtn: document.getElementById('restartBtn'),
+            exitBtn: document.getElementById('exitBtn'),
+            scoreValue: document.getElementById('scoreValue'),
+            comboValue: document.getElementById('comboValue'),
+            accuracyValue: document.getElementById('accuracyValue'),
+            progressFill: document.getElementById('progressFill'),
+            songTitle: document.getElementById('songTitle'),
+            currentTime: document.getElementById('currentTime'),
+            totalTime: document.getElementById('totalTime'),
+            notesContainer: document.getElementById('notesContainer'),
+            donDrum: document.getElementById('donDrum'),
+            kaDrum: document.getElementById('kaDrum'),
+            gameOverScreen: document.getElementById('gameOverScreen'),
+            finalScore: document.getElementById('finalScore'),
+            maxCombo: document.getElementById('maxCombo'),
+            finalAccuracy: document.getElementById('finalAccuracy'),
+            perfectHits: document.getElementById('perfectHits'),
+            playAgainBtn: document.getElementById('playAgainBtn')
+        };
+
+        // Initialize game
+        async function initGame() {
+            await loadProjects();
+            elements.loadingScreen.style.display = 'none';
+            setupEventListeners();
+        }
+
+        // Load available projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    elements.projectSelect.innerHTML = '<option value="">-- 请选择歌曲 --</option>';
+                    data.projects.forEach(project => {
+                        const option = document.createElement('option');
+                        option.value = project;
+                        option.textContent = project;
+                        elements.projectSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load projects:', error);
+            }
+        }
+
+        // Load game data for selected project
+        async function loadGame(projectName) {
+            if (!projectName) return;
+
+            elements.loadingScreen.style.display = 'flex';
+            gameState.currentProject = projectName;
+            elements.songTitle.textContent = projectName;
+
+            try {
+                // Load score data (beatmap)
+                const scoreResponse = await fetch(`/api/score/${projectName}`);
+                const scoreData = await scoreResponse.json();
+                
+                let notes = [];
+                if (scoreData.status === 'success' && scoreData.score) {
+                    if (Array.isArray(scoreData.score)) {
+                        notes = scoreData.score;
+                    } else if (scoreData.score.notes) {
+                        notes = scoreData.score.notes;
+                    }
+                }
+
+                // Load audio
+                const audioPath = `data/${projectName}/generated_audio/backing_track_no_drums.mp3`;
+                gameState.audio = new Audio(audioPath);
+                
+                await new Promise((resolve, reject) => {
+                    gameState.audio.onloadeddata = resolve;
+                    gameState.audio.onerror = reject;
+                });
+
+                gameState.duration = gameState.audio.duration;
+                gameState.notes = notes.sort((a, b) => a.time - b.time);
+                gameState.totalNotes = notes.length;
+
+                updateTimeDisplay();
+                generateNoteElements();
+                
+                elements.loadingScreen.style.display = 'none';
+                console.log(`Loaded ${notes.length} notes for ${projectName}`);
+                
+            } catch (error) {
+                console.error('Failed to load game:', error);
+                elements.loadingScreen.style.display = 'none';
+                alert('加载游戏失败: ' + error.message);
+            }
+        }
+
+        // Generate visual note elements
+        function generateNoteElements() {
+            elements.notesContainer.innerHTML = '';
+            
+            gameState.notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = `beat-note ${note.type}`;
+                noteElement.textContent = note.type === 'don' ? '咚' : '咔';
+                noteElement.dataset.noteIndex = index;
+                noteElement.dataset.time = note.time;
+                noteElement.dataset.hit = 'false';
+                
+                // Position note based on time
+                const initialX = settings.noteSpawnX + (note.time * settings.scrollSpeed);
+                noteElement.style.left = `${initialX}px`;
+                
+                elements.notesContainer.appendChild(noteElement);
+            });
+        }
+
+        // Start game
+        function startGame() {
+            if (!gameState.currentProject || !gameState.audio) return;
+
+            resetGameState();
+            gameState.isPlaying = true;
+            gameState.isPaused = false;
+            gameState.startTime = performance.now();
+            
+            gameState.audio.currentTime = 0;
+            gameState.audio.play();
+            
+            elements.pauseBtn.textContent = '暂停';
+            gameLoop();
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+
+            const now = performance.now();
+            gameState.currentTime = (now - gameState.startTime) / 1000;
+            
+            // Update audio sync
+            if (Math.abs(gameState.audio.currentTime - gameState.currentTime) > 0.1) {
+                gameState.currentTime = gameState.audio.currentTime;
+            }
+
+            updateNotePositions();
+            checkMissedNotes();
+            updateUI();
+
+            // Check if song finished
+            if (gameState.currentTime >= gameState.duration) {
+                endGame();
+                return;
+            }
+
+            gameState.animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Update note positions
+        function updateNotePositions() {
+            const notes = elements.notesContainer.querySelectorAll('.beat-note');
+            
+            notes.forEach(noteElement => {
+                if (noteElement.dataset.hit === 'true') return;
+                
+                const noteTime = parseFloat(noteElement.dataset.time);
+                const timeDiff = noteTime - gameState.currentTime;
+                const x = settings.hitTargetX + (timeDiff * settings.scrollSpeed);
+                
+                noteElement.style.left = `${x}px`;
+                
+                // Remove notes that are too far off screen
+                if (x < -100) {
+                    noteElement.remove();
+                }
+            });
+        }
+
+        // Check for missed notes
+        function checkMissedNotes() {
+            const notes = elements.notesContainer.querySelectorAll('.beat-note');
+            
+            notes.forEach(noteElement => {
+                if (noteElement.dataset.hit === 'true') return;
+                
+                const noteTime = parseFloat(noteElement.dataset.time);
+                const timeDiff = Math.abs(noteTime - gameState.currentTime);
+                
+                if (gameState.currentTime > noteTime + settings.hitWindow.miss) {
+                    // Note missed
+                    noteElement.dataset.hit = 'true';
+                    gameState.missedHits++;
+                    gameState.combo = 0;
+                    showJudgment('miss');
+                }
+            });
+        }
+
+        // Handle drum hits
+        function hitDrum(type) {
+            const notes = elements.notesContainer.querySelectorAll('.beat-note');
+            let bestNote = null;
+            let bestTimeDiff = Infinity;
+            
+            // Find the closest note of matching type
+            notes.forEach(noteElement => {
+                if (noteElement.dataset.hit === 'true') return;
+                if (!noteElement.textContent.includes(type === 'don' ? '咚' : '咔')) return;
+                
+                const noteTime = parseFloat(noteElement.dataset.time);
+                const timeDiff = Math.abs(noteTime - gameState.currentTime);
+                
+                if (timeDiff <= settings.hitWindow.miss && timeDiff < bestTimeDiff) {
+                    bestNote = noteElement;
+                    bestTimeDiff = timeDiff;
+                }
+            });
+            
+            if (bestNote) {
+                // Hit successful
+                bestNote.dataset.hit = 'true';
+                bestNote.classList.add('hit');
+                
+                let judgment, points;
+                if (bestTimeDiff <= settings.hitWindow.perfect) {
+                    judgment = 'perfect';
+                    points = settings.scoring.perfect;
+                    gameState.perfectHits++;
+                } else if (bestTimeDiff <= settings.hitWindow.good) {
+                    judgment = 'good';
+                    points = settings.scoring.good;
+                    gameState.goodHits++;
+                } else {
+                    judgment = 'miss';
+                    points = settings.scoring.miss;
+                    gameState.missedHits++;
+                }
+                
+                if (judgment !== 'miss') {
+                    gameState.combo++;
+                    gameState.maxCombo = Math.max(gameState.maxCombo, gameState.combo);
+                    gameState.hitNotes++;
+                } else {
+                    gameState.combo = 0;
+                }
+                
+                gameState.score += points + (gameState.combo * 10); // Combo bonus
+                showJudgment(judgment);
+                createHitEffect(type);
+                
+                // Remove note after hit
+                setTimeout(() => {
+                    bestNote.remove();
+                }, 300);
+            }
+            
+            // Visual drum feedback
+            const drum = type === 'don' ? elements.donDrum : elements.kaDrum;
+            drum.classList.add('hit');
+            setTimeout(() => {
+                drum.classList.remove('hit');
+            }, 150);
+        }
+
+        // Show judgment text
+        function showJudgment(type) {
+            // Remove existing judgment
+            const existingJudgment = document.querySelector('.judgment');
+            if (existingJudgment) {
+                existingJudgment.remove();
+            }
+            
+            const judgment = document.createElement('div');
+            judgment.className = `judgment ${type}`;
+            
+            switch (type) {
+                case 'perfect':
+                    judgment.textContent = 'PERFECT!';
+                    break;
+                case 'good':
+                    judgment.textContent = 'GOOD!';
+                    break;
+                case 'miss':
+                    judgment.textContent = 'MISS...';
+                    break;
+            }
+            
+            document.querySelector('.game-area').appendChild(judgment);
+        }
+
+        // Create hit effect
+        function createHitEffect(type) {
+            const effect = document.createElement('div');
+            effect.className = 'hit-effect';
+            effect.style.left = `${settings.hitTargetX - 40}px`;
+            effect.style.top = '50%';
+            effect.style.transform = 'translateY(-50%)';
+            
+            document.querySelector('.beat-track').appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 300);
+        }
+
+        // Update UI
+        function updateUI() {
+            elements.scoreValue.textContent = gameState.score.toLocaleString();
+            elements.comboValue.textContent = gameState.combo;
+            
+            const accuracy = gameState.totalNotes > 0 ? 
+                Math.round((gameState.hitNotes / Math.max(gameState.hitNotes + gameState.missedHits, 1)) * 100) : 100;
+            elements.accuracyValue.textContent = `${accuracy}%`;
+            
+            const progress = (gameState.currentTime / gameState.duration) * 100;
+            elements.progressFill.style.width = `${Math.min(progress, 100)}%`;
+            
+            updateTimeDisplay();
+        }
+
+        // Update time display
+        function updateTimeDisplay() {
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+            
+            elements.currentTime.textContent = formatTime(gameState.currentTime);
+            elements.totalTime.textContent = formatTime(gameState.duration);
+        }
+
+        // Reset game state
+        function resetGameState() {
+            gameState.score = 0;
+            gameState.combo = 0;
+            gameState.maxCombo = 0;
+            gameState.hitNotes = 0;
+            gameState.perfectHits = 0;
+            gameState.goodHits = 0;
+            gameState.missedHits = 0;
+            gameState.currentTime = 0;
+            
+            if (gameState.animationId) {
+                cancelAnimationFrame(gameState.animationId);
+            }
+            
+            generateNoteElements();
+        }
+
+        // End game
+        function endGame() {
+            gameState.isPlaying = false;
+            if (gameState.audio) {
+                gameState.audio.pause();
+            }
+            if (gameState.animationId) {
+                cancelAnimationFrame(gameState.animationId);
+            }
+            
+            showGameOverScreen();
+        }
+
+        // Show game over screen
+        function showGameOverScreen() {
+            const accuracy = gameState.totalNotes > 0 ? 
+                Math.round((gameState.hitNotes / Math.max(gameState.hitNotes + gameState.missedHits, 1)) * 100) : 100;
+            
+            elements.finalScore.textContent = gameState.score.toLocaleString();
+            elements.maxCombo.textContent = gameState.maxCombo;
+            elements.finalAccuracy.textContent = `${accuracy}%`;
+            elements.perfectHits.textContent = gameState.perfectHits;
+            
+            elements.gameOverScreen.style.display = 'flex';
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Project loading
+            elements.loadGameBtn.addEventListener('click', () => {
+                const selectedProject = elements.projectSelect.value;
+                if (selectedProject) {
+                    loadGame(selectedProject);
+                }
+            });
+            
+            // Game controls
+            elements.pauseBtn.addEventListener('click', () => {
+                if (!gameState.currentProject) return;
+                
+                if (gameState.isPlaying && !gameState.isPaused) {
+                    // Pause
+                    gameState.isPaused = true;
+                    gameState.audio.pause();
+                    elements.pauseBtn.textContent = '继续';
+                } else if (gameState.isPlaying && gameState.isPaused) {
+                    // Resume
+                    gameState.isPaused = false;
+                    gameState.startTime = performance.now() - (gameState.currentTime * 1000);
+                    gameState.audio.play();
+                    elements.pauseBtn.textContent = '暂停';
+                    gameLoop();
+                } else {
+                    // Start new game
+                    startGame();
+                }
+            });
+            
+            elements.restartBtn.addEventListener('click', () => {
+                if (gameState.currentProject) {
+                    elements.gameOverScreen.style.display = 'none';
+                    startGame();
+                }
+            });
+            
+            elements.exitBtn.addEventListener('click', () => {
+                if (confirm('确定要退出游戏吗？')) {
+                    location.href = '/daw';
+                }
+            });
+            
+            // Drum clicks
+            elements.donDrum.addEventListener('click', () => hitDrum('don'));
+            elements.kaDrum.addEventListener('click', () => hitDrum('ka'));
+            
+            // Game over screen
+            elements.playAgainBtn.addEventListener('click', () => {
+                elements.gameOverScreen.style.display = 'none';
+                startGame();
+            });
+            
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (e.repeat) return;
+                
+                switch (e.key.toLowerCase()) {
+                    case 'f':
+                    case 'j':
+                        e.preventDefault();
+                        hitDrum('don');
+                        break;
+                    case 'd':
+                    case 'k':
+                        e.preventDefault();
+                        hitDrum('ka');
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        elements.pauseBtn.click();
+                        break;
+                    case 'r':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            elements.restartBtn.click();
+                        }
+                        break;
+                }
+            });
+            
+            // Prevent context menu on drums
+            elements.donDrum.addEventListener('contextmenu', e => e.preventDefault());
+            elements.kaDrum.addEventListener('contextmenu', e => e.preventDefault());
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
