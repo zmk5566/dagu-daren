@@ -143,6 +143,30 @@
             overflow: hidden;
         }
 
+        /* Beat Grid Lines */
+        .beat-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 10000px; /* Large width for scrolling */
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .beat-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .beat-line.measure {
+            background: rgba(255, 255, 255, 0.6);
+            width: 2px;
+        }
+
         /* Hit Target Zone */
         .hit-target {
             position: absolute;
@@ -162,6 +186,7 @@
             left: 0;
             height: 100%;
             width: 10000px; /* Large width for scrolling */
+            z-index: 2;
         }
 
         /* Individual Beat Notes */
@@ -541,6 +566,9 @@
         <div class="game-area">
             <!-- Beat Track -->
             <div class="beat-track">
+                <div class="beat-grid" id="beatGrid">
+                    <!-- Beat grid lines will be generated here -->
+                </div>
                 <div class="hit-target"></div>
                 <div class="notes-container" id="notesContainer">
                     <!-- Beat notes will be generated here -->
@@ -550,10 +578,10 @@
             <!-- Drum Kit -->
             <div class="drum-kit">
                 <div class="drum don" id="donDrum" data-type="don">
-                    <div class="drum-label">咚 (F/J)</div>
+                    <div class="drum-label">咚 (空格)</div>
                 </div>
                 <div class="drum ka" id="kaDrum" data-type="ka">
-                    <div class="drum-label">咔 (D/K)</div>
+                    <div class="drum-label">咔 (字母键)</div>
                 </div>
             </div>
         </div>
@@ -622,34 +650,38 @@
             }
         };
 
-        // DOM elements
-        const elements = {
-            loadingScreen: document.getElementById('loadingScreen'),
-            projectSelect: document.getElementById('projectSelect'),
-            loadGameBtn: document.getElementById('loadGameBtn'),
-            pauseBtn: document.getElementById('pauseBtn'),
-            restartBtn: document.getElementById('restartBtn'),
-            exitBtn: document.getElementById('exitBtn'),
-            scoreValue: document.getElementById('scoreValue'),
-            comboValue: document.getElementById('comboValue'),
-            accuracyValue: document.getElementById('accuracyValue'),
-            progressFill: document.getElementById('progressFill'),
-            songTitle: document.getElementById('songTitle'),
-            currentTime: document.getElementById('currentTime'),
-            totalTime: document.getElementById('totalTime'),
-            notesContainer: document.getElementById('notesContainer'),
-            donDrum: document.getElementById('donDrum'),
-            kaDrum: document.getElementById('kaDrum'),
-            gameOverScreen: document.getElementById('gameOverScreen'),
-            finalScore: document.getElementById('finalScore'),
-            maxCombo: document.getElementById('maxCombo'),
-            finalAccuracy: document.getElementById('finalAccuracy'),
-            perfectHits: document.getElementById('perfectHits'),
-            playAgainBtn: document.getElementById('playAgainBtn')
-        };
+        // DOM elements - will be initialized in initGame
+        let elements = {};
 
         // Initialize game
         async function initGame() {
+            // Initialize DOM elements
+            elements = {
+                loadingScreen: document.getElementById('loadingScreen'),
+                projectSelect: document.getElementById('projectSelect'),
+                loadGameBtn: document.getElementById('loadGameBtn'),
+                pauseBtn: document.getElementById('pauseBtn'),
+                restartBtn: document.getElementById('restartBtn'),
+                exitBtn: document.getElementById('exitBtn'),
+                scoreValue: document.getElementById('scoreValue'),
+                comboValue: document.getElementById('comboValue'),
+                accuracyValue: document.getElementById('accuracyValue'),
+                progressFill: document.getElementById('progressFill'),
+                songTitle: document.getElementById('songTitle'),
+                currentTime: document.getElementById('currentTime'),
+                totalTime: document.getElementById('totalTime'),
+                notesContainer: document.getElementById('notesContainer'),
+                beatGrid: document.getElementById('beatGrid'),
+                donDrum: document.getElementById('donDrum'),
+                kaDrum: document.getElementById('kaDrum'),
+                gameOverScreen: document.getElementById('gameOverScreen'),
+                finalScore: document.getElementById('finalScore'),
+                maxCombo: document.getElementById('maxCombo'),
+                finalAccuracy: document.getElementById('finalAccuracy'),
+                perfectHits: document.getElementById('perfectHits'),
+                playAgainBtn: document.getElementById('playAgainBtn')
+            };
+
             await loadProjects();
             elements.loadingScreen.style.display = 'none';
             setupEventListeners();
@@ -697,6 +729,19 @@
                     }
                 }
 
+                // Load beat grid data for measure lines
+                let beatGrid = null;
+                try {
+                    const metadataResponse = await fetch(`/api/metadata/${projectName}`);
+                    const metadataData = await metadataResponse.json();
+                    if (metadataData.status === 'success' && metadataData.metadata) {
+                        gameState.metadata = metadataData.metadata;
+                        beatGrid = metadataData.metadata.beat_grid;
+                    }
+                } catch (metaError) {
+                    console.warn('Could not load beat grid data:', metaError);
+                }
+
                 // Load audio
                 const audioPath = `data/${projectName}/generated_audio/backing_track_no_drums.mp3`;
                 gameState.audio = new Audio(audioPath);
@@ -712,6 +757,7 @@
 
                 updateTimeDisplay();
                 generateNoteElements();
+                generateBeatGrid(beatGrid);
                 
                 elements.loadingScreen.style.display = 'none';
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
@@ -740,6 +786,77 @@
                 noteElement.style.left = `${initialX}px`;
                 
                 elements.notesContainer.appendChild(noteElement);
+            });
+        }
+
+        // Generate beat grid lines
+        function generateBeatGrid(beatGrid) {
+            console.log('generateBeatGrid called with:', beatGrid);
+            console.log('elements.beatGrid:', elements.beatGrid);
+            
+            if (!elements.beatGrid) {
+                console.error('beatGrid element not found!');
+                return;
+            }
+            
+            elements.beatGrid.innerHTML = '';
+            
+            if (!beatGrid || !gameState.duration) {
+                console.log('No beatGrid data or duration, skipping grid generation');
+                return;
+            }
+
+            // Extract beat data
+            const beats = beatGrid.beats || [];
+            const downbeats = beatGrid.downbeats || [];
+            
+            // Generate measure lines (downbeats)
+            downbeats.forEach((time, index) => {
+                if (time <= gameState.duration) {
+                    const measureLine = document.createElement('div');
+                    measureLine.className = 'beat-line measure';
+                    measureLine.dataset.time = time;
+                    measureLine.dataset.measure = index + 1;
+                    
+                    // Position based on time
+                    const initialX = settings.noteSpawnX + (time * settings.scrollSpeed);
+                    measureLine.style.left = `${initialX}px`;
+                    
+                    elements.beatGrid.appendChild(measureLine);
+                }
+            });
+
+            // Generate beat lines (quarter notes)
+            beats.forEach(time => {
+                if (time <= gameState.duration && !downbeats.includes(time)) {
+                    const beatLine = document.createElement('div');
+                    beatLine.className = 'beat-line';
+                    beatLine.dataset.time = time;
+                    
+                    // Position based on time
+                    const initialX = settings.noteSpawnX + (time * settings.scrollSpeed);
+                    beatLine.style.left = `${initialX}px`;
+                    
+                    elements.beatGrid.appendChild(beatLine);
+                }
+            });
+        }
+
+        // Update beat grid positions during game
+        function updateBeatGrid() {
+            const gridLines = elements.beatGrid.querySelectorAll('.beat-line');
+            
+            gridLines.forEach(line => {
+                const lineTime = parseFloat(line.dataset.time);
+                const timeDiff = lineTime - gameState.currentTime;
+                const x = settings.hitTargetX + (timeDiff * settings.scrollSpeed);
+                
+                line.style.left = `${x}px`;
+                
+                // Remove lines that are too far off screen
+                if (x < -50) {
+                    line.remove();
+                }
             });
         }
 
@@ -772,6 +889,7 @@
             }
 
             updateNotePositions();
+            updateBeatGrid();
             checkMissedNotes();
             updateUI();
 
@@ -789,7 +907,10 @@
             const notes = elements.notesContainer.querySelectorAll('.beat-note');
             
             notes.forEach(noteElement => {
-                if (noteElement.dataset.hit === 'true') return;
+                // Skip notes that are already hit but still animating
+                if (noteElement.dataset.hit === 'true' && !noteElement.classList.contains('hit')) {
+                    return;
+                }
                 
                 const noteTime = parseFloat(noteElement.dataset.time);
                 const timeDiff = noteTime - gameState.currentTime;
@@ -797,7 +918,7 @@
                 
                 noteElement.style.left = `${x}px`;
                 
-                // Remove notes that are too far off screen
+                // Remove notes that are too far off screen (left side)
                 if (x < -100) {
                     noteElement.remove();
                 }
@@ -812,7 +933,6 @@
                 if (noteElement.dataset.hit === 'true') return;
                 
                 const noteTime = parseFloat(noteElement.dataset.time);
-                const timeDiff = Math.abs(noteTime - gameState.currentTime);
                 
                 if (gameState.currentTime > noteTime + settings.hitWindow.miss) {
                     // Note missed
@@ -820,6 +940,13 @@
                     gameState.missedHits++;
                     gameState.combo = 0;
                     showJudgment('miss');
+                    
+                    // Remove missed note after brief delay
+                    setTimeout(() => {
+                        if (noteElement.parentNode) {
+                            noteElement.remove();
+                        }
+                    }, 500);
                 }
             });
         }
@@ -876,9 +1003,11 @@
                 showJudgment(judgment);
                 createHitEffect(type);
                 
-                // Remove note after hit
+                // Remove note after hit animation
                 setTimeout(() => {
-                    bestNote.remove();
+                    if (bestNote.parentNode) {
+                        bestNote.remove();
+                    }
                 }, 300);
             }
             
@@ -974,6 +1103,11 @@
             }
             
             generateNoteElements();
+            
+            // Regenerate beat grid if we have metadata
+            if (gameState.metadata && gameState.metadata.beat_grid) {
+                generateBeatGrid(gameState.metadata.beat_grid);
+            }
         }
 
         // End game
@@ -1061,27 +1195,34 @@
             document.addEventListener('keydown', (e) => {
                 if (e.repeat) return;
                 
-                switch (e.key.toLowerCase()) {
-                    case 'f':
-                    case 'j':
-                        e.preventDefault();
-                        hitDrum('don');
-                        break;
-                    case 'd':
-                    case 'k':
-                        e.preventDefault();
-                        hitDrum('ka');
-                        break;
-                    case ' ':
-                        e.preventDefault();
-                        elements.pauseBtn.click();
-                        break;
-                    case 'r':
-                        if (e.ctrlKey) {
-                            e.preventDefault();
-                            elements.restartBtn.click();
-                        }
-                        break;
+                const key = e.key.toLowerCase();
+                
+                // Space bar for Don (咚)
+                if (key === ' ') {
+                    e.preventDefault();
+                    hitDrum('don');
+                    return;
+                }
+                
+                // Enter for pause/resume
+                if (key === 'enter') {
+                    e.preventDefault();
+                    elements.pauseBtn.click();
+                    return;
+                }
+                
+                // Letter keys for Ka (咔)
+                const kaKeys = ['s', 'd', 'f', 'j', 'k', 'l', 'a', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
+                if (kaKeys.includes(key)) {
+                    e.preventDefault();
+                    hitDrum('ka');
+                    return;
+                }
+                
+                // Special shortcuts
+                if (key === 'escape') {
+                    e.preventDefault();
+                    elements.exitBtn.click();
                 }
             });
             
