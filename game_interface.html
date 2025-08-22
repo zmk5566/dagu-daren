@@ -176,67 +176,118 @@
             top: 0;
             bottom: 0;
             width: 4px;
+            transform: translateX(-50%); /* Center the line at 150px */
             background: linear-gradient(180deg, var(--primary-red), var(--primary-blue));
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 10px rgba(255, 107, 71, 0.6),
+                0 0 5px rgba(74, 144, 226, 0.6);
             z-index: 10;
+            animation: judgmentLineGlow 1.5s ease-in-out infinite alternate;
         }
 
-        /* Target Drum */
+        @keyframes judgmentLineGlow {
+            0% {
+                box-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.8),
+                    0 0 10px rgba(255, 107, 71, 0.6),
+                    0 0 5px rgba(74, 144, 226, 0.6);
+            }
+            100% {
+                box-shadow: 
+                    0 0 25px rgba(255, 255, 255, 1),
+                    0 0 15px rgba(255, 107, 71, 0.8),
+                    0 0 10px rgba(74, 144, 226, 0.8);
+            }
+        }
+
+        /* Target Drum - Simplified transparent ring */
         .target-drum {
             position: absolute;
-            left: 120px; /* Center on hit target (150px - 30px) */
+            left: 150px; /* Align with hit target line */
             top: 50%;
-            transform: translateY(-50%);
-            width: 80px;
-            height: 80px;
+            transform: translateY(-50%) translateX(-50%);
+            width: 70px;
+            height: 70px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
             z-index: 5; /* Behind notes but above beat grid */
+            animation: targetPulse 2s ease-in-out infinite;
         }
 
-        .target-drum-don {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, var(--primary-red), #CC5238);
-            border: 4px solid var(--text-white);
-            box-shadow: 0 8px 25px var(--drum-shadow);
-            z-index: 1;
+        @keyframes targetPulse {
+            0%, 100% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-50%) translateX(-50%) scale(1.05);
+                opacity: 1;
+            }
         }
 
-        .target-drum-ka {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, var(--primary-blue), #3A72B8);
-            border: 3px solid var(--text-white);
-            box-shadow: 0 4px 15px var(--drum-shadow);
-            z-index: 2;
+        /* Target drum hit feedback - Don (Red) */
+        .target-drum.hit-feedback-don {
+            animation: targetHitFeedbackDon 0.2s ease-out;
         }
 
-        .target-drum-center {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 3;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        @keyframes targetHitFeedbackDon {
+            0% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                border-color: rgba(255, 255, 255, 0.8);
+                box-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                transform: translateY(-50%) translateX(-50%) scale(1.15);
+                border-color: rgba(255, 107, 71, 1);
+                box-shadow: 
+                    0 0 40px rgba(255, 107, 71, 0.8),
+                    inset 0 0 30px rgba(255, 107, 71, 0.3),
+                    0 0 60px rgba(255, 107, 71, 0.4);
+            }
+            100% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                border-color: rgba(255, 255, 255, 0.8);
+                box-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
         }
 
-        .target-drum-text {
-            font-size: 8px;
-            font-weight: bold;
-            color: var(--text-dark);
-            text-align: center;
-            line-height: 1;
+        /* Target drum hit feedback - Ka (Blue) */
+        .target-drum.hit-feedback-ka {
+            animation: targetHitFeedbackKa 0.2s ease-out;
+        }
+
+        @keyframes targetHitFeedbackKa {
+            0% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                border-color: rgba(255, 255, 255, 0.8);
+                box-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                transform: translateY(-50%) translateX(-50%) scale(1.15);
+                border-color: rgba(74, 144, 226, 1);
+                box-shadow: 
+                    0 0 40px rgba(74, 144, 226, 0.8),
+                    inset 0 0 30px rgba(74, 144, 226, 0.3),
+                    0 0 60px rgba(74, 144, 226, 0.4);
+            }
+            100% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                border-color: rgba(255, 255, 255, 0.8);
+                box-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
         }
 
         /* Beat Notes Container */
@@ -634,13 +685,7 @@
                 </div>
                 <div class="hit-target"></div>
                 <!-- Target Drum -->
-                <div class="target-drum">
-                    <div class="target-drum-don"></div>
-                    <div class="target-drum-ka"></div>
-                    <div class="target-drum-center">
-                        <span class="target-drum-text">击鼓</span>
-                    </div>
-                </div>
+                <div class="target-drum"></div>
                 <div class="notes-container" id="notesContainer">
                     <!-- Beat notes will be generated here -->
                 </div>
@@ -845,8 +890,8 @@
                     console.warn('Could not load beat grid data:', metaError);
                 }
 
-                // Load audio
-                const audioPath = `data/${projectName}/generated_audio/backing_track_no_drums.mp3`;
+                // Load audio - use original song instead of backing track
+                const audioPath = `data/${projectName}/${projectName}.mp3`;
                 gameState.audio = new Audio(audioPath);
                 
                 await new Promise((resolve, reject) => {
@@ -1156,6 +1201,16 @@
 
         // Handle drum hits
         function hitDrum(type) {
+            // Trigger target drum feedback animation with color based on type
+            const targetDrum = document.querySelector('.target-drum');
+            if (targetDrum) {
+                const feedbackClass = type === 'don' ? 'hit-feedback-don' : 'hit-feedback-ka';
+                targetDrum.classList.add(feedbackClass);
+                setTimeout(() => {
+                    targetDrum.classList.remove(feedbackClass);
+                }, 200);
+            }
+            
             const notes = elements.notesContainer.querySelectorAll('.beat-note');
             let bestNote = null;
             let bestTimeDiff = Infinity;
@@ -1252,9 +1307,9 @@
         function createHitEffect(type) {
             const effect = document.createElement('div');
             effect.className = 'hit-effect';
-            effect.style.left = `${settings.hitTargetX - 40}px`;
+            effect.style.left = `${settings.hitTargetX}px`;
             effect.style.top = '50%';
-            effect.style.transform = 'translateY(-50%)';
+            effect.style.transform = 'translateY(-50%) translateX(-50%)';
             
             document.querySelector('.beat-track').appendChild(effect);
             
