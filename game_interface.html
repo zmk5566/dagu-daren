@@ -157,14 +157,16 @@
         .beat-line {
             position: absolute;
             top: 0;
-            width: 1px;
+            width: 2px;
             height: 100%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
         }
 
         .beat-line.measure {
-            background: rgba(255, 255, 255, 0.6);
-            width: 2px;
+            background: rgba(255, 215, 0, 0.8);
+            width: 3px;
+            box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
         }
 
         /* Hit Target Zone */
@@ -630,7 +632,8 @@
             duration: 0,
             audio: null,
             startTime: null,
-            animationId: null
+            animationId: null,
+            audioOffset: 0.0  // BPM detection offset for alignment
         };
 
         // Game settings
@@ -729,14 +732,45 @@
                     }
                 }
 
-                // Load beat grid data for measure lines
+                // Generate uniform beat grid from BPM data
                 let beatGrid = null;
                 try {
                     const metadataResponse = await fetch(`/api/metadata/${projectName}`);
                     const metadataData = await metadataResponse.json();
-                    if (metadataData.status === 'success' && metadataData.metadata) {
+                    console.log('Metadata response:', metadataData);
+                    
+                    if (metadataData.metadata && metadataData.metadata.bpm_data) {
                         gameState.metadata = metadataData.metadata;
-                        beatGrid = metadataData.metadata.beat_grid;
+                        
+                        // Get BPM and offset from metadata
+                        const bpm = metadataData.metadata.bpm_data.bpm;
+                        gameState.audioOffset = metadataData.metadata.bpm_data.offset || 0.0;
+                        console.log(`[Beat Grid] Using BPM: ${bpm}, Offset: ${gameState.audioOffset.toFixed(3)}s`);
+                        
+                        if (bpm && gameState.duration) {
+                            // Generate uniform beat grid based on BPM
+                            const beatInterval = 60 / bpm; // seconds per beat
+                            const beats = [];
+                            const downbeats = [];
+                            
+                            // Generate beats from 0 to duration
+                            for (let time = 0; time < gameState.duration; time += beatInterval) {
+                                beats.push(time);
+                                
+                                // Every 4th beat is a downbeat (measure line)
+                                const beatIndex = Math.round(time / beatInterval);
+                                if (beatIndex % 4 === 0) {
+                                    downbeats.push(time);
+                                }
+                            }
+                            
+                            beatGrid = { 
+                                beats, 
+                                downbeats,
+                                beat_interval: beatInterval 
+                            };
+                            console.log(`[Beat Grid] Generated uniform grid: ${beats.length} beats, ${downbeats.length} measures`);
+                        }
                     }
                 } catch (metaError) {
                     console.warn('Could not load beat grid data:', metaError);
@@ -757,7 +791,9 @@
 
                 updateTimeDisplay();
                 generateNoteElements();
-                generateBeatGrid(beatGrid);
+                
+                // Now generate beat grid with available duration
+                generateUniformBeatGrid();
                 
                 elements.loadingScreen.style.display = 'none';
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
@@ -789,75 +825,171 @@
             });
         }
 
-        // Generate beat grid lines
-        function generateBeatGrid(beatGrid) {
-            console.log('generateBeatGrid called with:', beatGrid);
-            console.log('elements.beatGrid:', elements.beatGrid);
-            
-            if (!elements.beatGrid) {
-                console.error('beatGrid element not found!');
-                return;
-            }
-            
-            elements.beatGrid.innerHTML = '';
+        // Beat grid optimization
+        let beatGridData = null;
+        let activeBeatLines = new Map(); // Track active beat lines
+        let beatLinePool = []; // Pool of reusable beat line elements
+        
+        // Initialize beat grid data without rendering
+        function initializeBeatGrid(beatGrid) {
+            console.log('initializeBeatGrid called with:', beatGrid);
             
             if (!beatGrid || !gameState.duration) {
-                console.log('No beatGrid data or duration, skipping grid generation');
+                console.log('No beatGrid data or duration, skipping grid initialization');
+                beatGridData = null;
                 return;
             }
 
-            // Extract beat data
-            const beats = beatGrid.beats || [];
-            const downbeats = beatGrid.downbeats || [];
+            // Store beat data for lazy loading
+            beatGridData = {
+                beats: beatGrid.beats || [],
+                downbeats: beatGrid.downbeats || []
+            };
             
-            // Generate measure lines (downbeats)
-            downbeats.forEach((time, index) => {
-                if (time <= gameState.duration) {
-                    const measureLine = document.createElement('div');
-                    measureLine.className = 'beat-line measure';
-                    measureLine.dataset.time = time;
-                    measureLine.dataset.measure = index + 1;
-                    
-                    // Position based on time
-                    const initialX = settings.noteSpawnX + (time * settings.scrollSpeed);
-                    measureLine.style.left = `${initialX}px`;
-                    
-                    elements.beatGrid.appendChild(measureLine);
-                }
-            });
-
-            // Generate beat lines (quarter notes)
-            beats.forEach(time => {
-                if (time <= gameState.duration && !downbeats.includes(time)) {
-                    const beatLine = document.createElement('div');
-                    beatLine.className = 'beat-line';
-                    beatLine.dataset.time = time;
-                    
-                    // Position based on time
-                    const initialX = settings.noteSpawnX + (time * settings.scrollSpeed);
-                    beatLine.style.left = `${initialX}px`;
-                    
-                    elements.beatGrid.appendChild(beatLine);
-                }
-            });
+            console.log('Beat grid initialized with', beatGridData.beats.length, 'beats and', beatGridData.downbeats.length, 'downbeats');
+            console.log('Beat grid optimization: using viewport rendering instead of creating', (beatGridData.beats.length + beatGridData.downbeats.length), 'DOM elements at once');
         }
 
-        // Update beat grid positions during game
-        function updateBeatGrid() {
-            const gridLines = elements.beatGrid.querySelectorAll('.beat-line');
+        // Create or reuse a beat line element
+        function createBeatLine(time, isMeasure = false) {
+            let beatLine;
             
-            gridLines.forEach(line => {
-                const lineTime = parseFloat(line.dataset.time);
-                const timeDiff = lineTime - gameState.currentTime;
-                const x = settings.hitTargetX + (timeDiff * settings.scrollSpeed);
-                
-                line.style.left = `${x}px`;
-                
-                // Remove lines that are too far off screen
-                if (x < -50) {
-                    line.remove();
+            if (beatLinePool.length > 0) {
+                beatLine = beatLinePool.pop();
+            } else {
+                beatLine = document.createElement('div');
+            }
+            
+            beatLine.className = isMeasure ? 'beat-line measure' : 'beat-line';
+            beatLine.dataset.time = time;
+            beatLine.style.display = 'block';
+            
+            return beatLine;
+        }
+
+        // Return beat line to pool
+        function recycleBeatLine(beatLine) {
+            beatLine.style.display = 'none';
+            beatLinePool.push(beatLine);
+        }
+
+        // Update visible beat lines based on current viewport
+        function updateBeatGridViewport() {
+            if (!beatGridData || !elements.beatGrid) return;
+            
+            const currentTime = gameState.currentTime;
+            const viewportStart = currentTime - 2; // Show 2 seconds before current time
+            const viewportEnd = currentTime + 10;  // Show 10 seconds ahead
+            
+            // Remove lines that are outside viewport
+            for (const [timeKey, beatLine] of activeBeatLines) {
+                const lineTime = parseFloat(timeKey);
+                if (lineTime < viewportStart || lineTime > viewportEnd) {
+                    elements.beatGrid.removeChild(beatLine);
+                    recycleBeatLine(beatLine);
+                    activeBeatLines.delete(timeKey);
+                }
+            }
+            
+            // Add lines that should be visible
+            const linesToAdd = [];
+            
+            // Check downbeats (measures)
+            beatGridData.downbeats.forEach(time => {
+                if (time >= viewportStart && time <= viewportEnd && !activeBeatLines.has(time.toString())) {
+                    linesToAdd.push({ time, isMeasure: true });
                 }
             });
+            
+            // Check regular beats
+            beatGridData.beats.forEach(time => {
+                if (time >= viewportStart && time <= viewportEnd && 
+                    !activeBeatLines.has(time.toString()) && 
+                    !beatGridData.downbeats.includes(time)) {
+                    linesToAdd.push({ time, isMeasure: false });
+                }
+            });
+            
+            // Add new lines in batches to avoid blocking
+            if (linesToAdd.length > 0) {
+                const batchSize = 10;
+                for (let i = 0; i < Math.min(batchSize, linesToAdd.length); i++) {
+                    const { time, isMeasure } = linesToAdd[i];
+                    const beatLine = createBeatLine(time, isMeasure);
+                    
+                    // Position based on time (no offset)
+                    const timeDiff = time - currentTime;
+                    const x = settings.hitTargetX + (timeDiff * settings.scrollSpeed);
+                    beatLine.style.left = `${x}px`;
+                    
+                    elements.beatGrid.appendChild(beatLine);
+                    activeBeatLines.set(time.toString(), beatLine);
+                }
+            }
+        }
+
+        // Update beat grid positions and viewport
+        function updateBeatGrid() {
+            if (!beatGridData) return;
+            
+            // Update viewport every few frames to avoid excessive computation
+            if (gameState.currentTime % 0.1 < 0.05) { // Approximately every 100ms
+                updateBeatGridViewport();
+            }
+            
+            // Update positions of active beat lines
+            for (const [timeKey, beatLine] of activeBeatLines) {
+                const lineTime = parseFloat(timeKey);
+                const timeDiff = lineTime - gameState.currentTime;
+                const x = settings.hitTargetX + (timeDiff * settings.scrollSpeed);
+                beatLine.style.left = `${x}px`;
+            }
+        }
+
+        // Generate uniform beat grid from metadata BPM
+        function generateUniformBeatGrid() {
+            if (!gameState.metadata || !gameState.metadata.bpm_data || !gameState.duration) {
+                console.log('[Beat Grid] Cannot generate: missing metadata or duration');
+                return;
+            }
+            
+            const bpm = gameState.metadata.bpm_data.bpm;
+            console.log(`[Beat Grid] Generating uniform grid: BPM=${bpm}, Duration=${gameState.duration.toFixed(2)}s`);
+            
+            // Generate uniform beat grid based on BPM
+            const beatInterval = 60 / bpm; // seconds per beat
+            const beats = [];
+            const downbeats = [];
+            
+            // Generate beats from 0 to duration
+            for (let time = 0; time < gameState.duration; time += beatInterval) {
+                beats.push(time);
+                
+                // Every 4th beat is a downbeat (measure line)
+                const beatIndex = Math.round(time / beatInterval);
+                if (beatIndex % 4 === 0) {
+                    downbeats.push(time);
+                }
+            }
+            
+            const beatGrid = { 
+                beats, 
+                downbeats,
+                beat_interval: beatInterval 
+            };
+            
+            console.log(`[Beat Grid] Generated: ${beats.length} beats, ${downbeats.length} measures (interval: ${beatInterval.toFixed(6)}s)`);
+            initializeBeatGrid(beatGrid);
+        }
+
+        // Clear beat grid
+        function clearBeatGrid() {
+            // Return all active beat lines to pool
+            for (const [timeKey, beatLine] of activeBeatLines) {
+                elements.beatGrid.removeChild(beatLine);
+                recycleBeatLine(beatLine);
+            }
+            activeBeatLines.clear();
         }
 
         // Start game
@@ -1102,12 +1234,13 @@
                 cancelAnimationFrame(gameState.animationId);
             }
             
+            // Clear beat grid
+            clearBeatGrid();
+            
             generateNoteElements();
             
-            // Regenerate beat grid if we have metadata
-            if (gameState.metadata && gameState.metadata.beat_grid) {
-                generateBeatGrid(gameState.metadata.beat_grid);
-            }
+            // Regenerate uniform beat grid
+            generateUniformBeatGrid();
         }
 
         // End game
