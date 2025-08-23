@@ -461,6 +461,26 @@
             }
         }
 
+        /* Particle Effects */
+        .hit-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 16;
+        }
+
+        .particle-golden {
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            box-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+        }
+
+        .particle-white {
+            background: radial-gradient(circle, #FFFFFF, #E0E0E0);
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+        }
+
         /* Judgment Text */
         .judgment {
             position: absolute;
@@ -924,6 +944,9 @@
             audioOffset: 0.0  // BPM detection offset for alignment
         };
 
+        // Particle system
+        let particles = [];
+
         // Game settings
         const settings = {
             scrollSpeed: 300, // pixels per second
@@ -1381,6 +1404,7 @@
             updateBeatGrid();
             checkMissedNotes();
             updateUI();
+            updateParticles();
 
             // Check if song finished
             if (gameState.currentTime >= gameState.duration) {
@@ -1583,12 +1607,94 @@
             }, 300);
         }
 
+        // Create particles for hit effects
+        function createParticles(type, count = 8) {
+            const targetDrum = document.querySelector('.target-drum');
+            const drumRect = targetDrum.getBoundingClientRect();
+            const beatTrack = document.querySelector('.beat-track');
+            const beatTrackRect = beatTrack.getBoundingClientRect();
+            
+            // Calculate center position within beat-track
+            const centerX = drumRect.left + drumRect.width/2 - beatTrackRect.left;
+            const centerY = drumRect.top + drumRect.height/2 - beatTrackRect.top;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = `hit-particle particle-${type}`;
+                
+                // Random initial position around the center (slight spread)
+                const spread = 15;
+                const startX = centerX + (Math.random() - 0.5) * spread;
+                const startY = centerY + (Math.random() - 0.5) * spread;
+                
+                particle.style.left = `${startX}px`;
+                particle.style.top = `${startY}px`;
+                
+                beatTrack.appendChild(particle);
+                
+                // Create particle object for animation
+                const particleObj = {
+                    element: particle,
+                    startX: startX,
+                    startY: startY,
+                    // Random velocity components (overall rightward)
+                    velocityX: 2 + Math.random() * 4, // 2-6 rightward base speed
+                    velocityY: (Math.random() - 0.5) * 3, // -1.5 to 1.5 vertical speed
+                    // Random wave parameters for sin/cos motion
+                    waveAmplitude: 20 + Math.random() * 30, // 20-50 wave height
+                    waveFrequency: 0.05 + Math.random() * 0.1, // wave frequency
+                    // Lifecycle
+                    life: 1.0,
+                    decay: 0.015 + Math.random() * 0.015, // 0.015-0.03 decay per frame
+                    startTime: performance.now()
+                };
+                
+                particles.push(particleObj);
+            }
+        }
+
+        // Update all particles
+        function updateParticles() {
+            const currentTime = performance.now();
+            
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                const elapsed = (currentTime - particle.startTime) / 1000; // seconds
+                
+                // Update position using sin/cos for wave motion
+                const baseX = particle.startX + particle.velocityX * elapsed * 60; // 60fps base
+                const baseY = particle.startY + particle.velocityY * elapsed * 60;
+                const waveY = Math.sin(elapsed * particle.waveFrequency * Math.PI * 2) * particle.waveAmplitude * particle.life;
+                
+                const finalX = baseX;
+                const finalY = baseY + waveY;
+                
+                // Update particle position
+                particle.element.style.left = `${finalX}px`;
+                particle.element.style.top = `${finalY}px`;
+                
+                // Update life and opacity
+                particle.life -= particle.decay;
+                particle.element.style.opacity = Math.max(0, particle.life);
+                particle.element.style.transform = `scale(${0.5 + particle.life * 0.5})`;
+                
+                // Remove dead particles
+                if (particle.life <= 0) {
+                    particle.element.remove();
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
         // Create golden hit effect for perfect hits
         function createHitEffect_Golden() {
             const targetDrum = document.querySelector('.target-drum');
             
             // Add golden effect only to target drum
             targetDrum.classList.add('golden-hit');
+            
+            // Create golden particles
+            createParticles('golden', 12);
             
             // Remove effects after animation
             setTimeout(() => {
@@ -1602,6 +1708,9 @@
             
             // Add white effect only to target drum
             targetDrum.classList.add('white-hit');
+            
+            // Create white particles
+            createParticles('white', 8);
             
             // Remove effects after animation
             setTimeout(() => {
@@ -1659,6 +1768,14 @@
             
             // Clear beat grid
             clearBeatGrid();
+            
+            // Clear all particles
+            particles.forEach(particle => {
+                if (particle.element && particle.element.parentNode) {
+                    particle.element.remove();
+                }
+            });
+            particles = [];
             
             generateNoteElements();
             
