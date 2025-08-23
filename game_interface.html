@@ -148,6 +148,55 @@
             min-width: 60px;
         }
 
+        /* Spirit System Display - Horizontal Bar */
+        .spirit-system {
+            position: absolute;
+            right: 0px;
+            top: calc(30% - 85px); /* 15px above game-track-container (30% - 65px container half-height - 20px spirit height) */
+            width: 50vw; /* 50% of viewport width */
+            max-width: 400px; /* Maximum width */
+            height: 20px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .spirit-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4A90E2, #0066CC, #4CAF50);
+            transition: width 0.3s ease;
+        }
+
+        /* Critical threshold marker at 60% */
+        .spirit-threshold {
+            position: absolute;
+            top: -5px;
+            left: 60%;
+            width: 3px;
+            height: 30px;
+            background: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            z-index: 16;
+        }
+
+
+        .spirit-label {
+            position: absolute;
+            right: calc(50vw + 10px); /* Responsive positioning (adjusted for right: 0px) */
+            top: calc(30% - 85px + 10px); /* Align with spirit bar */
+            transform: translateY(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+        }
+
         /* Main Game Area - Full screen */
         .game-area {
             position: absolute;
@@ -829,6 +878,13 @@
         <!-- Score Display -->
         <div class="score-bar" id="scoreBar">得分: 0</div>
 
+        <!-- Spirit System -->
+        <div class="spirit-system" id="spiritSystem">
+            <div class="spirit-bar" id="spiritBar"></div>
+            <div class="spirit-threshold"></div>
+            <div class="spirit-label" id="spiritLabel">灵: 0%</div>
+        </div>
+
         <!-- Pause Menu (Enter key popup) -->
         <div class="pause-menu" id="pauseMenu">
             <div class="pause-menu-content">
@@ -941,11 +997,110 @@
             audio: null,
             startTime: null,
             animationId: null,
-            audioOffset: 0.0  // BPM detection offset for alignment
+            audioOffset: 0.0,  // BPM detection offset for alignment
+            spiritValue: 0,    // Spirit value (0-100%)
+            spiritCombo: 0,    // Current combo for spirit calculation
+            maxSpiritCombo: 0, // Maximum spirit combo achieved
+            challengeFailed: false // Whether challenge failed
         };
 
         // Particle system
         let particles = [];
+
+        // Spirit System Functions
+        function updateSpiritValue(hitType) {
+            if (hitType === 'miss') {
+                // Miss reduces spirit value (1.5x original)
+                gameState.spiritValue = Math.max(0, gameState.spiritValue - 7.5);
+                gameState.spiritCombo = 0;
+            } else {
+                // Successful hit increases spirit combo
+                gameState.spiritCombo++;
+                gameState.maxSpiritCombo = Math.max(gameState.maxSpiritCombo, gameState.spiritCombo);
+                
+                // Calculate spirit gain based on hit type and combo
+                let spiritGain;
+                
+                if (hitType === 'perfect') {
+                    // Perfect hit: ~1.67% base + combo bonus
+                    spiritGain = 1.67;
+                } else {
+                    // Good hit: ~1.33% base + combo bonus  
+                    spiritGain = 1.33;
+                }
+                
+                // Combo bonus: more combo = faster spirit gain
+                if (gameState.spiritCombo >= 10) {
+                    spiritGain += Math.floor(gameState.spiritCombo / 15); // Reduced combo bonus
+                }
+                
+                // Backend value can exceed 85%, but frontend display caps at 85%
+                gameState.spiritValue += spiritGain;
+            }
+            
+            updateSpiritDisplay();
+            checkChallengeStatus();
+        }
+
+        function updateSpiritDisplay() {
+            // Update spirit label with actual value
+            spiritElements.label.textContent = `灵: ${Math.round(gameState.spiritValue)}%`;
+            
+            // Update horizontal bar width (capped at 85% for display)
+            const displayValue = Math.min(gameState.spiritValue, 85);
+            const barWidth = (displayValue / 85) * 100;
+            spiritElements.bar.style.width = `${barWidth}%`;
+            
+            // Special visual effects for full spirit (85% or above)
+            if (gameState.spiritValue >= 85) {
+                spiritElements.system.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.6)';
+                spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #4CAF50)';
+            } else {
+                spiritElements.system.style.boxShadow = 'none';
+                spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #0066CC, #4CAF50)';
+            }
+        }
+
+        function checkChallengeStatus() {
+            // Check if challenge failed (spirit below 60% at song end)
+            if (gameState.currentTime >= gameState.duration - 1) {
+                if (gameState.spiritValue < 60 && !gameState.challengeFailed) {
+                    gameState.challengeFailed = true;
+                    showChallengeFailed();
+                }
+            }
+        }
+
+        function showChallengeFailed() {
+            // Create challenge failed message
+            const judgment = document.createElement('div');
+            judgment.className = 'judgment miss';
+            judgment.textContent = '挑战失败';
+            judgment.style.fontSize = '24px';
+            judgment.style.color = '#FF6B6B';
+            
+            document.querySelector('.game-area').appendChild(judgment);
+            
+            // Remove after delay
+            setTimeout(() => {
+                if (judgment.parentNode) {
+                    judgment.remove();
+                }
+            }, 3000);
+        }
+
+        function resetSpiritSystem() {
+            gameState.spiritValue = 0;
+            gameState.spiritCombo = 0;
+            gameState.maxSpiritCombo = 0;
+            gameState.challengeFailed = false;
+            
+            // Reset visual display
+            spiritElements.bar.style.width = '0%';
+            spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #0066CC, #4CAF50)';
+            spiritElements.label.textContent = '灵: 0%';
+            spiritElements.system.style.boxShadow = 'none';
+        }
 
         // Game settings
         const settings = {
@@ -967,6 +1122,7 @@
         // DOM elements - will be initialized in initGame
         let elements = {};
         let donElements = {};
+        let spiritElements = {};
 
         // Initialize game
         async function initGame() {
@@ -1002,6 +1158,12 @@
             donElements = {
                 donFace: document.getElementById('donFace'),
                 donCombo: document.getElementById('donCombo')
+            };
+
+            spiritElements = {
+                system: document.getElementById('spiritSystem'),
+                bar: document.getElementById('spiritBar'),
+                label: document.getElementById('spiritLabel')
             };
 
             await loadProjects();
@@ -1454,6 +1616,9 @@
                     gameState.combo = 0;
                     showJudgment('miss');
                     
+                    // Update Spirit system for miss
+                    updateSpiritValue('miss');
+                    
                     // Remove missed note after brief delay
                     setTimeout(() => {
                         if (noteElement.parentNode) {
@@ -1518,6 +1683,9 @@
                 gameState.score += points + (gameState.combo * 10); // Combo bonus
                 showJudgment(judgment);
                 createHitEffect(type);
+                
+                // Update Spirit system
+                updateSpiritValue(judgment);
                 
                 // Add hit effect for successful hits with different colors
                 if (judgment === 'perfect') {
@@ -1761,6 +1929,9 @@
             gameState.goodHits = 0;
             gameState.missedHits = 0;
             gameState.currentTime = 0;
+            
+            // Reset Spirit system
+            resetSpiritSystem();
             
             if (gameState.animationId) {
                 cancelAnimationFrame(gameState.animationId);
