@@ -449,15 +449,16 @@
         /* Judgment Text */
         .judgment {
             position: absolute;
-            top: 30%;
-            left: 50%;
+            top: 40%;
+            left: 150px;
             transform: translateX(-50%);
-            font-size: 48px;
+            font-size: 20px;
             font-weight: bold;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             pointer-events: none;
             animation: judgmentFade 1s ease-out forwards;
             z-index: 12; /* Above target drum and notes */
+            text-align: center;
         }
 
         .judgment.perfect {
@@ -465,11 +466,11 @@
         }
 
         .judgment.good {
-            color: #32CD32;
+            color: white;
         }
 
         .judgment.miss {
-            color: #FF4444;
+            color: #CCCCCC;
         }
 
         @keyframes judgmentFade {
@@ -1393,13 +1394,13 @@
             
             switch (type) {
                 case 'perfect':
-                    judgment.textContent = 'PERFECT!';
+                    judgment.textContent = '优';
                     break;
                 case 'good':
-                    judgment.textContent = 'GOOD!';
+                    judgment.textContent = '良';
                     break;
                 case 'miss':
-                    judgment.textContent = 'MISS...';
+                    judgment.textContent = '不可';
                     break;
             }
             
