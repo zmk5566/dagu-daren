@@ -68,16 +68,40 @@
             position: relative;
         }
 
-        .don-face.hit-don {
-            background: linear-gradient(45deg, #FF6B47, #FF4500);
-            color: white;
-            transform: scale(1.1);
+        /* 外圈 - Ka区域 */
+        .don-face::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            transition: all 0.2s ease;
+            z-index: 1;
         }
 
-        .don-face.hit-ka {
+        /* 内圈 - Don区域 */
+        .don-face::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: inherit;
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        /* Ka击打效果 - 外圈亮蓝 */
+        .don-face.hit-ka::before {
             background: linear-gradient(45deg, #4A90E2, #0066CC);
-            color: white;
-            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+        }
+
+        /* Don击打效果 - 内圈亮红 */
+        .don-face.hit-don::after {
+            background: linear-gradient(45deg, #FF6B47, #FF4500);
+            box-shadow: 0 0 15px rgba(255, 107, 71, 0.8);
         }
 
         .don-combo {
@@ -92,7 +116,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2;
+            z-index: 3;
         }
 
         /* Score Bar - Top of screen */
@@ -321,54 +345,81 @@
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
         }
 
-        .drum {
-            width: 120px;
-            height: 120px;
+        .drum.unified {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             border: 5px solid var(--text-white);
             cursor: pointer;
             position: relative;
             transition: all 0.1s ease;
             box-shadow: 0 8px 25px var(--drum-shadow);
+            background: #4A90E2; /* 整个鼓面是蓝色 - Ka区域 */
         }
 
-        .drum.don {
-            background: radial-gradient(circle at 30% 30%, var(--primary-red), #CC5238);
-        }
-
-        .drum.ka {
-            background: radial-gradient(circle at 30% 30%, var(--primary-blue), #3A72B8);
-        }
-
-        .drum:active,
-        .drum.hit {
-            transform: scale(0.95);
-            box-shadow: 0 4px 15px var(--drum-shadow);
-        }
-
-        .drum::before {
+        /* 内圈 - Don区域（奶油白色） */
+        .drum.unified::after {
             content: '';
             position: absolute;
-            top: 20%;
-            left: 20%;
-            width: 60%;
-            height: 60%;
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            z-index: 2;
         }
 
-        .drum-label {
+        /* Don击打效果 - 内圈放大 */
+        .drum.unified.hit-don::after {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: linear-gradient(45deg, #FFE5B4, #FFF8E1);
+        }
+
+        /* Ka击打效果 - 外圈放大 */
+        .drum.unified.hit-ka {
+            transform: scale(1.1);
+            background: #5BA0E8;
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.6);
+        }
+
+        /* 按下效果 */
+        .drum.unified:active {
+            transform: scale(0.98);
+        }
+
+        /* Don标签 - 显示在内圈中心 */
+        .drum-label-don {
             position: absolute;
-            bottom: -30px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Ka标签 - 显示在外圈环形区域 */
+        .drum-label-ka {
+            position: absolute;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 14px;
+            font-size: 9px;
             font-weight: bold;
-            color: var(--text-dark);
+            color: white;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            z-index: 3;
+            pointer-events: none;
         }
 
         /* Hit Effects */
@@ -710,11 +761,9 @@
 
             <!-- Drum Kit -->
             <div class="drum-kit">
-                <div class="drum don" id="donDrum" data-type="don">
-                    <div class="drum-label">咚 (空格)</div>
-                </div>
-                <div class="drum ka" id="kaDrum" data-type="ka">
-                    <div class="drum-label">咔 (字母键)</div>
+                <div class="drum unified" id="unifiedDrum">
+                    <div class="drum-label-don">咚<br>空格</div>
+                    <div class="drum-label-ka">咔<br>字母</div>
                 </div>
             </div>
         </div>
@@ -804,8 +853,7 @@
                 exitBtn: document.getElementById('exitBtn'),
                 notesContainer: document.getElementById('notesContainer'),
                 beatGrid: document.getElementById('beatGrid'),
-                donDrum: document.getElementById('donDrum'),
-                kaDrum: document.getElementById('kaDrum'),
+                unifiedDrum: document.getElementById('unifiedDrum'),
                 gameOverScreen: document.getElementById('gameOverScreen'),
                 finalScore: document.getElementById('finalScore'),
                 maxCombo: document.getElementById('maxCombo'),
@@ -1294,10 +1342,10 @@
             }
             
             // Visual drum feedback
-            const drum = type === 'don' ? elements.donDrum : elements.kaDrum;
-            drum.classList.add('hit');
+            const hitClass = type === 'don' ? 'hit-don' : 'hit-ka';
+            elements.unifiedDrum.classList.add(hitClass);
             setTimeout(() => {
-                drum.classList.remove('hit');
+                elements.unifiedDrum.classList.remove(hitClass);
             }, 150);
         }
 
@@ -1346,11 +1394,13 @@
         function updateDonDisplay(type) {
             if (!donElements.donFace) return;
             
-            // Only change color, don't show text
+            // 根据击打类型亮起对应区域
             if (type === 'don') {
+                // Don - 内圈亮红
                 donElements.donFace.classList.remove('hit-ka');
                 donElements.donFace.classList.add('hit-don');
             } else if (type === 'ka') {
+                // Ka - 外圈亮蓝  
                 donElements.donFace.classList.remove('hit-don');
                 donElements.donFace.classList.add('hit-ka');
             }
@@ -1478,9 +1528,24 @@
                 }
             });
             
-            // Drum clicks
-            elements.donDrum.addEventListener('click', () => hitDrum('don'));
-            elements.kaDrum.addEventListener('click', () => hitDrum('ka'));
+            // Unified drum clicks - detect click position
+            elements.unifiedDrum.addEventListener('click', (e) => {
+                const rect = elements.unifiedDrum.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                // Calculate distance from center
+                const distanceFromCenter = Math.sqrt(
+                    Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+                );
+                
+                // If clicked within inner circle (30px radius), it's Don; otherwise Ka
+                if (distanceFromCenter <= 30) {
+                    hitDrum('don');
+                } else {
+                    hitDrum('ka');
+                }
+            });
             
             // Game over screen
             elements.playAgainBtn.addEventListener('click', () => {
@@ -1533,9 +1598,8 @@
                 }
             });
             
-            // Prevent context menu on drums
-            elements.donDrum.addEventListener('contextmenu', e => e.preventDefault());
-            elements.kaDrum.addEventListener('contextmenu', e => e.preventDefault());
+            // Prevent context menu on drum
+            elements.unifiedDrum.addEventListener('contextmenu', e => e.preventDefault());
         }
 
         // Initialize when page loads
