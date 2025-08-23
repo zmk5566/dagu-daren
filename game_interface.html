@@ -25,7 +25,7 @@
 
         body {
             font-family: 'Arial', 'Hiragino Kaku Gothic Pro', 'Microsoft YaHei', sans-serif;
-            background: var(--bg-gradient);
+            background: #1a0f1f;
             overflow: hidden;
             height: 100vh;
             user-select: none;
@@ -36,6 +36,17 @@
             width: 100vw;
             height: 100vh;
             position: relative;
+        }
+
+        /* Game Track Container */
+        .game-track-container {
+            position: absolute;
+            top: 30%;
+            left: 0;
+            right: 0;
+            height: 130px; /* Increased by 10px */
+            transform: translateY(-50%);
+            z-index: 5;
         }
 
         /* Don Character Display (Left of beat track like Taiko) */
@@ -120,19 +131,21 @@
             z-index: 3;
         }
 
-        /* Score Bar - Top of screen */
+        /* Score Display - Above Game Track Container Bottom Border */
         .score-bar {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border: 3px solid var(--primary-red);
-            font-size: 24px;
+            left: 60px; /* Center relative to don face (20px + 40px center) */
+            top: calc(30% + 62px); /* Just above the bottom border of game track container (130px/2 - 3px) */
+            transform: translateX(-50%) translateY(-100%); /* Position above the line */
+            background: transparent;
+            padding: 3px 8px;
+            font-size: 10px; /* Very small font */
             font-weight: bold;
-            color: var(--primary-red);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
             z-index: 15;
+            text-align: center;
+            min-width: 60px;
         }
 
         /* Main Game Area - Full screen */
@@ -142,19 +155,18 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, #FFE5B4 0%, #FFCCCB 50%, #E6F3FF 100%);
+            background: transparent;
             overflow: hidden;
         }
 
         /* Beat Track - Horizontal scrolling area */
         .beat-track {
             position: absolute;
-            top: 50%;
+            top: 0;
             left: 0;
             right: 0;
-            height: 120px;
-            transform: translateY(-50%);
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+            height: 130px; /* Increased by 10px */
+            background: rgba(0, 0, 0, 0.6);
             border: 3px solid rgba(255, 255, 255, 0.8);
             overflow: hidden;
         }
@@ -316,113 +328,6 @@
             box-shadow: 0 0 30px var(--hit-effect);
         }
 
-        /* Touch Drum Toggle Control */
-        .touch-drum-toggle {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
-            border: 2px solid #4A90E2;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            z-index: 25;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        .touch-drum-toggle:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.02);
-        }
-
-        .touch-drum-checkbox {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #4A90E2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            transition: all 0.2s ease;
-        }
-
-        .touch-drum-checkbox.checked {
-            background: #4A90E2;
-            color: white;
-        }
-
-        .touch-drum-checkbox::after {
-            content: '✓';
-            font-size: 12px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .touch-drum-checkbox.checked::after {
-            opacity: 1;
-        }
-
-        /* Hit Target Toggle Control */
-        .hit-target-toggle {
-            position: absolute;
-            bottom: 20px;
-            left: 180px; /* Position next to touch drum toggle */
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
-            border: 2px solid #FF6B47;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            z-index: 25;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        .hit-target-toggle:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.02);
-        }
-
-        .hit-target-checkbox {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #FF6B47;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            transition: all 0.2s ease;
-        }
-
-        .hit-target-checkbox.checked {
-            background: #FF6B47;
-            color: white;
-        }
-
-        .hit-target-checkbox::after {
-            content: '✓';
-            font-size: 12px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .hit-target-checkbox.checked::after {
-            opacity: 1;
-        }
 
         /* Drum Kit */
         .drum-kit {
@@ -559,7 +464,7 @@
         /* Judgment Text */
         .judgment {
             position: absolute;
-            top: 40%;
+            top: calc(30% - 80px); /* Position above the game track container */
             left: 150px;
             transform: translateX(-50%);
             font-size: 20px;
@@ -685,6 +590,78 @@
         .pause-menu-btn:hover, .pause-menu-btn.selected {
             background: var(--primary-blue);
             color: white;
+        }
+
+        /* Pause Menu Settings */
+        .pause-menu-settings {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pause-menu-settings h3 {
+            font-size: 20px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            margin-top: 0;
+        }
+
+        .setting-item {
+            margin-bottom: 10px;
+        }
+
+        .setting-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .setting-toggle:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary-blue);
+            transform: scale(1.02);
+        }
+
+        .setting-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .setting-checkbox.checked {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .setting-checkbox::after {
+            content: '✓';
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .setting-checkbox.checked::after {
+            opacity: 1;
         }
 
         /* Loading Screen */
@@ -836,6 +813,24 @@
         <div class="pause-menu" id="pauseMenu">
             <div class="pause-menu-content">
                 <h2>游戏菜单</h2>
+                
+                <!-- Settings Section -->
+                <div class="pause-menu-settings">
+                    <h3>游戏设置</h3>
+                    <div class="setting-item">
+                        <div class="setting-toggle" id="pauseTouchDrumToggle">
+                            <div class="setting-checkbox" id="pauseTouchDrumCheckbox"></div>
+                            <span>显示触控鼓</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-toggle" id="pauseHitTargetToggle">
+                            <div class="setting-checkbox" id="pauseHitTargetCheckbox"></div>
+                            <span>显示命中线</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <button class="pause-menu-btn" id="pauseBtn">继续</button>
                 <button class="pause-menu-btn" id="restartBtn">重新开始</button>
                 <button class="pause-menu-btn" id="selectSongBtn">选择歌曲</button>
@@ -845,37 +840,29 @@
 
         <!-- Main Game Area -->
         <div class="game-area">
-            <!-- Don Character Display (Left of beat track) -->
-            <div class="don-display">
-                <div class="don-face" id="donFace">
-                    <div class="don-combo" id="donCombo">0</div>
+            <!-- Game Track Container (Don + Beat Track) -->
+            <div class="game-track-container">
+                <!-- Don Character Display (Left of beat track) -->
+                <div class="don-display">
+                    <div class="don-face" id="donFace">
+                        <div class="don-combo" id="donCombo">0</div>
+                    </div>
+                </div>
+
+                <!-- Beat Track -->
+                <div class="beat-track">
+                    <div class="beat-grid" id="beatGrid">
+                        <!-- Beat grid lines will be generated here -->
+                    </div>
+                    <div class="hit-target"></div>
+                    <!-- Target Drum -->
+                    <div class="target-drum"></div>
+                    <div class="notes-container" id="notesContainer">
+                        <!-- Beat notes will be generated here -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Beat Track -->
-            <div class="beat-track">
-                <div class="beat-grid" id="beatGrid">
-                    <!-- Beat grid lines will be generated here -->
-                </div>
-                <div class="hit-target"></div>
-                <!-- Target Drum -->
-                <div class="target-drum"></div>
-                <div class="notes-container" id="notesContainer">
-                    <!-- Beat notes will be generated here -->
-                </div>
-            </div>
-
-            <!-- Touch Drum Toggle Control -->
-            <div class="touch-drum-toggle" id="touchDrumToggle">
-                <div class="touch-drum-checkbox" id="touchDrumCheckbox"></div>
-                <span>显示触控鼓</span>
-            </div>
-
-            <!-- Hit Target Toggle Control -->
-            <div class="hit-target-toggle" id="hitTargetToggle">
-                <div class="hit-target-checkbox" id="hitTargetCheckbox"></div>
-                <span>显示命中线</span>
-            </div>
 
             <!-- Drum Kit -->
             <div class="drum-kit" id="drumKit">
@@ -977,10 +964,10 @@
                 unifiedDrum: document.getElementById('unifiedDrum'),
                 drumDon: document.getElementById('drumDon'),
                 drumKit: document.getElementById('drumKit'),
-                touchDrumToggle: document.getElementById('touchDrumToggle'),
-                touchDrumCheckbox: document.getElementById('touchDrumCheckbox'),
-                hitTargetToggle: document.getElementById('hitTargetToggle'),
-                hitTargetCheckbox: document.getElementById('hitTargetCheckbox'),
+                pauseTouchDrumToggle: document.getElementById('pauseTouchDrumToggle'),
+                pauseTouchDrumCheckbox: document.getElementById('pauseTouchDrumCheckbox'),
+                pauseHitTargetToggle: document.getElementById('pauseHitTargetToggle'),
+                pauseHitTargetCheckbox: document.getElementById('pauseHitTargetCheckbox'),
                 gameOverScreen: document.getElementById('gameOverScreen'),
                 finalScore: document.getElementById('finalScore'),
                 maxCombo: document.getElementById('maxCombo'),
@@ -997,58 +984,62 @@
             await loadProjects();
             elements.loadingScreen.style.display = 'none';
             setupEventListeners();
-            initTouchDrumToggle();
-            initHitTargetToggle();
+            initPauseMenuToggles();
         }
 
-        // Initialize touch drum toggle functionality
-        function initTouchDrumToggle() {
-            // Get saved state from localStorage or default to checked
-            const isEnabled = localStorage.getItem('touchDrumEnabled') !== 'false';
-            setTouchDrumEnabled(isEnabled);
+        // Initialize pause menu toggles functionality
+        function initPauseMenuToggles() {
+            // Initialize touch drum toggle
+            const touchDrumEnabled = localStorage.getItem('touchDrumEnabled') !== 'false';
+            setTouchDrumEnabled(touchDrumEnabled);
+            updatePauseMenuCheckbox(elements.pauseTouchDrumCheckbox, touchDrumEnabled);
 
-            // Add click event listener
-            elements.touchDrumToggle.addEventListener('click', () => {
-                const currentState = !elements.touchDrumCheckbox.classList.contains('checked');
+            // Initialize hit target toggle
+            const hitTargetEnabled = localStorage.getItem('hitTargetEnabled') === 'true';
+            setHitTargetEnabled(hitTargetEnabled);
+            updatePauseMenuCheckbox(elements.pauseHitTargetCheckbox, hitTargetEnabled);
+
+            // Add click event listeners
+            elements.pauseTouchDrumToggle.addEventListener('click', () => {
+                const currentState = !elements.pauseTouchDrumCheckbox.classList.contains('checked');
                 setTouchDrumEnabled(currentState);
+                updatePauseMenuCheckbox(elements.pauseTouchDrumCheckbox, currentState);
                 localStorage.setItem('touchDrumEnabled', currentState);
+            });
+
+            elements.pauseHitTargetToggle.addEventListener('click', () => {
+                const currentState = !elements.pauseHitTargetCheckbox.classList.contains('checked');
+                setHitTargetEnabled(currentState);
+                updatePauseMenuCheckbox(elements.pauseHitTargetCheckbox, currentState);
+                localStorage.setItem('hitTargetEnabled', currentState);
             });
         }
 
         // Set touch drum enabled/disabled state
         function setTouchDrumEnabled(enabled) {
             if (enabled) {
-                elements.touchDrumCheckbox.classList.add('checked');
                 elements.drumKit.classList.remove('hidden');
             } else {
-                elements.touchDrumCheckbox.classList.remove('checked');
                 elements.drumKit.classList.add('hidden');
             }
-        }
-
-        // Initialize hit target toggle functionality
-        function initHitTargetToggle() {
-            // Get saved state from localStorage or default to unchecked (hidden)
-            const isEnabled = localStorage.getItem('hitTargetEnabled') === 'true';
-            setHitTargetEnabled(isEnabled);
-
-            // Add click event listener
-            elements.hitTargetToggle.addEventListener('click', () => {
-                const currentState = !elements.hitTargetCheckbox.classList.contains('checked');
-                setHitTargetEnabled(currentState);
-                localStorage.setItem('hitTargetEnabled', currentState);
-            });
         }
 
         // Set hit target enabled/disabled state
         function setHitTargetEnabled(enabled) {
             const hitTarget = document.querySelector('.hit-target');
             if (enabled) {
-                elements.hitTargetCheckbox.classList.add('checked');
                 hitTarget.classList.add('visible');
             } else {
-                elements.hitTargetCheckbox.classList.remove('checked');
                 hitTarget.classList.remove('visible');
+            }
+        }
+
+        // Update pause menu checkbox visual state
+        function updatePauseMenuCheckbox(checkbox, enabled) {
+            if (enabled) {
+                checkbox.classList.add('checked');
+            } else {
+                checkbox.classList.remove('checked');
             }
         }
 
@@ -1571,9 +1562,19 @@
         function createHitEffect(type) {
             const effect = document.createElement('div');
             effect.className = 'hit-effect';
-            effect.style.left = `${settings.hitTargetX}px`;
-            effect.style.top = '50%';
-            effect.style.transform = 'translateY(-50%) translateX(-50%)';
+            
+            // Position exactly at target drum center
+            const targetDrum = document.querySelector('.target-drum');
+            const drumRect = targetDrum.getBoundingClientRect();
+            const beatTrackRect = document.querySelector('.beat-track').getBoundingClientRect();
+            
+            // Calculate relative position within beat-track
+            const relativeLeft = drumRect.left + drumRect.width/2 - beatTrackRect.left;
+            const relativeTop = drumRect.top + drumRect.height/2 - beatTrackRect.top;
+            
+            effect.style.left = `${relativeLeft}px`;
+            effect.style.top = `${relativeTop}px`;
+            effect.style.transform = 'translate(-50%, -50%)';
             
             document.querySelector('.beat-track').appendChild(effect);
             
