@@ -454,6 +454,36 @@
             transform: translateY(-50%) scale(1.1);
         }
 
+        .score-marker.dragging {
+            opacity: 0.7;
+            transform: translateY(-50%) scale(1.3);
+            z-index: 1000;
+            cursor: grabbing !important;
+        }
+
+        /* Drop target indicator */
+        .drop-target-indicator {
+            position: absolute;
+            top: 50%;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s;
+            transform: translateY(-50%);
+            border: 3px dashed rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            pointer-events: none;
+        }
+
         /* Form Controls */
         .form-group {
             margin-bottom: 14px;
@@ -1391,6 +1421,14 @@
             let scoreOffset = 0.0;  // Keep for backward compatibility (unused)
             let currentAudioSource = 'drums';  // Current audio source: drums, backing, original
             let isSwitchingAudio = false;  // Flag to prevent auto-zoom during audio switching
+            
+            // Drag and drop state
+            let isDragging = false;
+            let draggedScoreItem = null;
+            let draggedElement = null;
+            let dropTargetIndicator = null;
+            let dragStartX = 0;
+            let dragStartTime = 0;
 
             // DOM elements
             const elements = {
@@ -2114,13 +2152,47 @@
                     // Center the circle on the time position (subtract half the width)
                     marker.style.left = `${position - 15}px`; // 15px = half of 30px width
                     
-                    marker.addEventListener('click', () => selectScore(scoreItem, marker));
+                    marker.addEventListener('click', (e) => {
+                        if (!isDragging) {
+                            selectScore(scoreItem, marker);
+                        }
+                    });
+                    
+                    // Add drag event listeners
+                    marker.addEventListener('mousedown', (e) => {
+                        if (e.button === 0) { // Left mouse button only
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            isDragging = true;
+                            draggedScoreItem = scoreItem;
+                            draggedElement = marker;
+                            dragStartX = e.clientX;
+                            dragStartTime = scoreItem.time;
+                            
+                            marker.classList.add('dragging');
+                            marker.style.cursor = 'grabbing';
+                            
+                            // Prevent text selection during drag
+                            document.body.style.userSelect = 'none';
+                            
+                            console.log(`[Drag] 开始拖拽音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                        }
+                    });
+                    
+                    marker.style.cursor = 'grab';
                     
                     content.appendChild(marker);
                 });
                 
                 elements.scoreTrack.innerHTML = '';
                 elements.scoreTrack.appendChild(content);
+                
+                // Apply current scroll transformation to maintain proper positioning
+                const scrollLeft = wavesurfer.getScroll();
+                if (scrollLeft !== undefined) {
+                    content.style.transform = `translateX(-${scrollLeft}px)`;
+                }
             }
 
             // Select score item
@@ -2563,6 +2635,79 @@
                 return snapPoints;
             }
 
+            // Find nearest snap point for dragging
+            function findNearestSnapPoint(timePosition) {
+                if (!beatGrid || !beatGrid.beats) {
+                    return timePosition; // No snapping if no beat grid
+                }
+                
+                const snapPoints = generateSnapGrid();
+                if (snapPoints.length === 0) {
+                    return timePosition;
+                }
+                
+                let nearestPoint = snapPoints[0];
+                let minDistance = Math.abs(timePosition - nearestPoint);
+                
+                for (const snapPoint of snapPoints) {
+                    const distance = Math.abs(timePosition - snapPoint);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestPoint = snapPoint;
+                    }
+                }
+                
+                return nearestPoint;
+            }
+
+            // Convert pixel position to time
+            function pixelToTime(pixelX, trackElement) {
+                const rect = trackElement.getBoundingClientRect();
+                const relativeX = pixelX - rect.left;
+                const scrollLeft = wavesurfer.getScroll();
+                const adjustedX = relativeX + scrollLeft;
+                return adjustedX / currentPxPerSec;
+            }
+
+            // Convert time to pixel position 
+            function timeToPixel(time) {
+                return time * currentPxPerSec;
+            }
+
+            // Create drop target indicator
+            function createDropTargetIndicator(time, type) {
+                if (dropTargetIndicator) {
+                    dropTargetIndicator.remove();
+                }
+                
+                const indicator = document.createElement('div');
+                indicator.className = 'drop-target-indicator';
+                indicator.textContent = type === 'don' ? '咚' : '咔';
+                
+                const position = timeToPixel(time);
+                indicator.style.left = `${position - 17}px`; // Center the indicator
+                
+                // Add color based on type
+                if (type === 'don') {
+                    indicator.style.borderColor = 'rgba(255, 99, 71, 0.8)';
+                    indicator.style.background = 'rgba(255, 99, 71, 0.3)';
+                } else {
+                    indicator.style.borderColor = 'rgba(65, 105, 225, 0.8)';
+                    indicator.style.background = 'rgba(65, 105, 225, 0.3)';
+                }
+                
+                dropTargetIndicator = indicator;
+                return indicator;
+            }
+
+            // Remove drop target indicator
+            function removeDropTargetIndicator() {
+                if (dropTargetIndicator) {
+                    dropTargetIndicator.remove();
+                    dropTargetIndicator = null;
+                }
+            }
+
             // Simple Snap to Grid functionality
             function snapToGrid() {
                 if (!beatGrid || !beatGrid.beats || score.length === 0) {
@@ -2823,6 +2968,69 @@
                         minPxPerSec
                     );
                     wavesurfer.zoom(currentPxPerSec);
+                }
+            });
+
+            // Global mouse move handler for dragging
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && draggedScoreItem && draggedElement) {
+                    e.preventDefault();
+                    
+                    // Calculate new time position based on mouse movement
+                    const deltaX = e.clientX - dragStartX;
+                    const deltaTime = deltaX / currentPxPerSec;
+                    const newTime = Math.max(0, dragStartTime + deltaTime);
+                    
+                    // Find nearest snap point
+                    const snappedTime = findNearestSnapPoint(newTime);
+                    
+                    // Update dragged element position 
+                    const newPosition = timeToPixel(snappedTime);
+                    draggedElement.style.left = `${newPosition - 15}px`;
+                    
+                    // Show drop target indicator
+                    const indicator = createDropTargetIndicator(snappedTime, draggedScoreItem.type);
+                    elements.scoreTrack.appendChild(indicator);
+                    
+                    console.log(`[Drag] 移动到: ${snappedTime.toFixed(3)}s (吸附: ${(newTime - snappedTime).toFixed(3)}s)`);
+                }
+            });
+
+            // Global mouse up handler for dropping
+            document.addEventListener('mouseup', (e) => {
+                if (isDragging && draggedScoreItem && draggedElement) {
+                    e.preventDefault();
+                    
+                    // Calculate final position
+                    const deltaX = e.clientX - dragStartX;
+                    const deltaTime = deltaX / currentPxPerSec;
+                    const newTime = Math.max(0, dragStartTime + deltaTime);
+                    const finalTime = findNearestSnapPoint(newTime);
+                    
+                    // Update the score data model
+                    draggedScoreItem.time = finalTime;
+                    
+                    // Clean up drag state
+                    draggedElement.classList.remove('dragging');
+                    draggedElement.style.cursor = 'grab';
+                    document.body.style.userSelect = '';
+                    removeDropTargetIndicator();
+                    
+                    // Re-render score to ensure correct positioning
+                    renderScore();
+                    
+                    // Force sync timeline scroll to fix display issues
+                    syncTimelineScroll();
+                    
+                    console.log(`[Drag] 音符移动完成: ${draggedScoreItem.type} -> ${finalTime.toFixed(3)}s`);
+                    toastManager.info(`音符移动到 ${finalTime.toFixed(3)}s`);
+                    
+                    // Reset drag state
+                    isDragging = false;
+                    draggedScoreItem = null;
+                    draggedElement = null;
+                    dragStartX = 0;
+                    dragStartTime = 0;
                 }
             });
 
