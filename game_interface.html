@@ -235,65 +235,6 @@
             z-index: 5; /* Behind notes but above beat grid */
         }
 
-        /* Target drum hit feedback - Don (Red) */
-        .target-drum.hit-feedback-don {
-            animation: targetHitFeedbackDon 0.2s ease-out;
-        }
-
-        @keyframes targetHitFeedbackDon {
-            0% {
-                transform: translateY(-50%) translateX(-50%) scale(1);
-                border-color: rgba(255, 255, 255, 0.8);
-                box-shadow: 
-                    0 0 20px rgba(255, 255, 255, 0.3),
-                    inset 0 0 20px rgba(255, 255, 255, 0.1);
-            }
-            50% {
-                transform: translateY(-50%) translateX(-50%) scale(1.15);
-                border-color: rgba(255, 107, 71, 1);
-                box-shadow: 
-                    0 0 40px rgba(255, 107, 71, 0.8),
-                    inset 0 0 30px rgba(255, 107, 71, 0.3),
-                    0 0 60px rgba(255, 107, 71, 0.4);
-            }
-            100% {
-                transform: translateY(-50%) translateX(-50%) scale(1);
-                border-color: rgba(255, 255, 255, 0.8);
-                box-shadow: 
-                    0 0 20px rgba(255, 255, 255, 0.3),
-                    inset 0 0 20px rgba(255, 255, 255, 0.1);
-            }
-        }
-
-        /* Target drum hit feedback - Ka (Blue) */
-        .target-drum.hit-feedback-ka {
-            animation: targetHitFeedbackKa 0.2s ease-out;
-        }
-
-        @keyframes targetHitFeedbackKa {
-            0% {
-                transform: translateY(-50%) translateX(-50%) scale(1);
-                border-color: rgba(255, 255, 255, 0.8);
-                box-shadow: 
-                    0 0 20px rgba(255, 255, 255, 0.3),
-                    inset 0 0 20px rgba(255, 255, 255, 0.1);
-            }
-            50% {
-                transform: translateY(-50%) translateX(-50%) scale(1.15);
-                border-color: rgba(74, 144, 226, 1);
-                box-shadow: 
-                    0 0 40px rgba(74, 144, 226, 0.8),
-                    inset 0 0 30px rgba(74, 144, 226, 0.3),
-                    0 0 60px rgba(74, 144, 226, 0.4);
-            }
-            100% {
-                transform: translateY(-50%) translateX(-50%) scale(1);
-                border-color: rgba(255, 255, 255, 0.8);
-                box-shadow: 
-                    0 0 20px rgba(255, 255, 255, 0.3),
-                    inset 0 0 20px rgba(255, 255, 255, 0.1);
-            }
-        }
 
         /* Beat Notes Container */
         .notes-container {
@@ -446,17 +387,30 @@
             background: linear-gradient(45deg, #FFE5B4, #FFF8E1);
         }
 
-        /* Ka击打效果 - 外圈放大 */
+        /* Ka击打效果 - 外圈变大变色，Don区域保持原大小 */
         .drum.unified.hit-ka {
             transform: scaleX(1.1) scaleY(1.1);
             background: #5BA0E8;
+            box-shadow: 0 0 20px rgba(91, 160, 232, 0.6);
         }
 
-        /* 按下效果 */
+        /* 当Ka变大时，Don区域反向缩放保持原始大小 */
+        .drum.unified.hit-ka .drum-don {
+            transform: translate(-50%, -50%) scale(0.909); /* 1/1.1 ≈ 0.909 */
+        }
+
+        /* Ka区域按下效果 - 变小变色，Don区域保持原大小 */
         .drum.unified:active {
             transform: scaleX(0.98) scaleY(0.98);
+            background: #3A80D2;
+        }
+
+        /* 当Ka被按下时，Don区域反向缩放保持原始大小 */
+        .drum.unified:active .drum-don {
+            transform: translate(-50%, -50%) scale(1.02); /* 1/0.98 ≈ 1.02 */
         }
         
+        /* Don区域按下效果 */
         .drum-don:active {
             transform: translate(-50%, -50%) scale(0.95);
         }
@@ -1381,15 +1335,6 @@
         function hitDrum(type) {
             // Update Don character display
             updateDonDisplay(type);
-            // Trigger target drum feedback animation with color based on type
-            const targetDrum = document.querySelector('.target-drum');
-            if (targetDrum) {
-                const feedbackClass = type === 'don' ? 'hit-feedback-don' : 'hit-feedback-ka';
-                targetDrum.classList.add(feedbackClass);
-                setTimeout(() => {
-                    targetDrum.classList.remove(feedbackClass);
-                }, 200);
-            }
             
             const notes = elements.notesContainer.querySelectorAll('.beat-note');
             let bestNote = null;
