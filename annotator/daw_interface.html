@@ -484,6 +484,52 @@
             pointer-events: none;
         }
 
+        /* Score Context Menu */
+        .score-context-menu {
+            position: absolute;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            min-width: 120px;
+            padding: 4px 0;
+            backdrop-filter: blur(8px);
+        }
+
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .context-menu-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .context-menu-item.danger:hover {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .context-menu-item .menu-icon {
+            width: 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+
         /* Form Controls */
         .form-group {
             margin-bottom: 14px;
@@ -1428,7 +1474,13 @@
             let draggedElement = null;
             let dropTargetIndicator = null;
             let dragStartX = 0;
+            let dragStartY = 0;
             let dragStartTime = 0;
+            let dragThreshold = 5; // Pixels threshold to distinguish between click and drag
+            
+            // Context menu state
+            let currentContextMenu = null;
+            let contextMenuScoreItem = null;
 
             // DOM elements
             const elements = {
@@ -2164,19 +2216,22 @@
                             e.preventDefault();
                             e.stopPropagation();
                             
-                            isDragging = true;
+                            // Hide any existing context menu
+                            hideScoreContextMenu();
+                            
+                            // Record initial position for drag detection
                             draggedScoreItem = scoreItem;
                             draggedElement = marker;
                             dragStartX = e.clientX;
+                            dragStartY = e.clientY;
                             dragStartTime = scoreItem.time;
                             
-                            marker.classList.add('dragging');
-                            marker.style.cursor = 'grabbing';
+                            // Don't set isDragging yet - wait for movement
                             
-                            // Prevent text selection during drag
+                            // Prevent text selection
                             document.body.style.userSelect = 'none';
                             
-                            console.log(`[Drag] 开始拖拽音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                            console.log(`[Interaction] 鼠标按下音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
                         }
                     });
                     
@@ -2451,8 +2506,13 @@
             });
             
             // Close menu when clicking outside
-            document.addEventListener('click', () => {
+            document.addEventListener('click', (e) => {
                 hideExportMenu();
+                
+                // Hide context menu if clicking outside of it
+                if (currentContextMenu && !currentContextMenu.contains(e.target)) {
+                    hideScoreContextMenu();
+                }
             });
             
             // Export menu item handlers
@@ -2708,6 +2768,126 @@
                 }
             }
 
+            // Create and show context menu
+            function showScoreContextMenu(scoreItem, marker, x, y) {
+                hideScoreContextMenu(); // Hide any existing menu
+                
+                const menu = document.createElement('div');
+                menu.className = 'score-context-menu';
+                
+                // Position the menu near the marker
+                const rect = elements.scoreTrack.getBoundingClientRect();
+                const menuX = Math.min(x - rect.left, window.innerWidth - 150); // Prevent overflow
+                const menuY = Math.max(y - rect.top - 80, 10); // Show above the marker
+                
+                menu.style.left = `${menuX}px`;
+                menu.style.top = `${menuY}px`;
+                
+                // Menu items
+                const items = [
+                    {
+                        icon: '🗑️',
+                        text: '删除',
+                        action: 'delete',
+                        class: 'danger'
+                    },
+                    { divider: true },
+                    {
+                        icon: '🔴',
+                        text: '改为咚',
+                        action: 'change-don',
+                        disabled: scoreItem.type === 'don'
+                    },
+                    {
+                        icon: '🔵', 
+                        text: '改为咔',
+                        action: 'change-ka',
+                        disabled: scoreItem.type === 'ka'
+                    }
+                ];
+                
+                items.forEach(item => {
+                    if (item.divider) {
+                        const divider = document.createElement('div');
+                        divider.className = 'context-menu-divider';
+                        menu.appendChild(divider);
+                    } else {
+                        const menuItem = document.createElement('div');
+                        menuItem.className = `context-menu-item ${item.class || ''}`;
+                        if (item.disabled) {
+                            menuItem.style.opacity = '0.5';
+                            menuItem.style.cursor = 'not-allowed';
+                        }
+                        
+                        menuItem.innerHTML = `
+                            <span class="menu-icon">${item.icon}</span>
+                            <span>${item.text}</span>
+                        `;
+                        
+                        if (!item.disabled) {
+                            menuItem.addEventListener('click', () => {
+                                handleContextMenuAction(item.action, scoreItem, marker);
+                                hideScoreContextMenu();
+                            });
+                        }
+                        
+                        menu.appendChild(menuItem);
+                    }
+                });
+                
+                elements.scoreTrack.appendChild(menu);
+                currentContextMenu = menu;
+                contextMenuScoreItem = scoreItem;
+                
+                console.log(`[Context] 显示上下文菜单: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+            }
+
+            // Hide context menu
+            function hideScoreContextMenu() {
+                if (currentContextMenu) {
+                    currentContextMenu.remove();
+                    currentContextMenu = null;
+                    contextMenuScoreItem = null;
+                }
+            }
+
+            // Handle context menu actions
+            function handleContextMenuAction(action, scoreItem, marker) {
+                switch (action) {
+                    case 'delete':
+                        deleteScoreItem(scoreItem);
+                        toastManager.success(`删除了音符: ${scoreItem.type}`);
+                        break;
+                        
+                    case 'change-don':
+                        scoreItem.type = 'don';
+                        renderScore();
+                        syncTimelineScroll();
+                        toastManager.info(`音符改为: 咚`);
+                        console.log(`[Context] 音符类型改为: don`);
+                        break;
+                        
+                    case 'change-ka':
+                        scoreItem.type = 'ka';
+                        renderScore();
+                        syncTimelineScroll();
+                        toastManager.info(`音符改为: 咔`);
+                        console.log(`[Context] 音符类型改为: ka`);
+                        break;
+                }
+            }
+
+            // Delete score item
+            function deleteScoreItem(scoreItem) {
+                const index = score.findIndex(item => item === scoreItem);
+                if (index !== -1) {
+                    score.splice(index, 1);
+                    renderScore();
+                    syncTimelineScroll();
+                    console.log(`[Context] 删除音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                }
+            }
+
             // Simple Snap to Grid functionality
             function snapToGrid() {
                 if (!beatGrid || !beatGrid.beats || score.length === 0) {
@@ -2915,13 +3095,13 @@
 
             // Timeline ruler vertical drag zoom
             let isDragZooming = false;
-            let dragStartY = 0;
+            let timelineRulerDragStartY = 0;
             let dragStartZoom = 0;
 
             elements.timelineRuler.addEventListener('mousedown', (e) => {
                 if (e.button === 0) { // Left mouse button
                     isDragZooming = true;
-                    dragStartY = e.clientY;
+                    timelineRulerDragStartY = e.clientY;
                     dragStartZoom = currentPxPerSec;
                     
                     // Prevent text selection during drag
@@ -2933,7 +3113,7 @@
 
             document.addEventListener('mousemove', (e) => {
                 if (isDragZooming) {
-                    const deltaY = dragStartY - e.clientY; // Negative for up, positive for down
+                    const deltaY = timelineRulerDragStartY - e.clientY; // Negative for up, positive for down
                     const sensitivity = 0.01; // Adjust zoom sensitivity
                     const zoomFactor = 1 + (deltaY * sensitivity);
                     
@@ -2973,63 +3153,86 @@
 
             // Global mouse move handler for dragging
             document.addEventListener('mousemove', (e) => {
-                if (isDragging && draggedScoreItem && draggedElement) {
-                    e.preventDefault();
+                if (draggedScoreItem && draggedElement) {
+                    // Calculate movement distance
+                    const deltaX = Math.abs(e.clientX - dragStartX);
+                    const deltaY = Math.abs(e.clientY - dragStartY);
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                     
-                    // Calculate new time position based on mouse movement
-                    const deltaX = e.clientX - dragStartX;
-                    const deltaTime = deltaX / currentPxPerSec;
-                    const newTime = Math.max(0, dragStartTime + deltaTime);
+                    // Check if we should start dragging
+                    if (!isDragging && distance >= dragThreshold) {
+                        isDragging = true;
+                        draggedElement.classList.add('dragging');
+                        draggedElement.style.cursor = 'grabbing';
+                        console.log(`[Drag] 开始拖拽音符: ${draggedScoreItem.type}`);
+                    }
                     
-                    // Find nearest snap point
-                    const snappedTime = findNearestSnapPoint(newTime);
-                    
-                    // Update dragged element position 
-                    const newPosition = timeToPixel(snappedTime);
-                    draggedElement.style.left = `${newPosition - 15}px`;
-                    
-                    // Show drop target indicator
-                    const indicator = createDropTargetIndicator(snappedTime, draggedScoreItem.type);
-                    elements.scoreTrack.appendChild(indicator);
-                    
-                    console.log(`[Drag] 移动到: ${snappedTime.toFixed(3)}s (吸附: ${(newTime - snappedTime).toFixed(3)}s)`);
+                    if (isDragging) {
+                        e.preventDefault();
+                        
+                        // Calculate new time position based on mouse movement
+                        const timeX = e.clientX - dragStartX;
+                        const deltaTime = timeX / currentPxPerSec;
+                        const newTime = Math.max(0, dragStartTime + deltaTime);
+                        
+                        // Find nearest snap point
+                        const snappedTime = findNearestSnapPoint(newTime);
+                        
+                        // Update dragged element position 
+                        const newPosition = timeToPixel(snappedTime);
+                        draggedElement.style.left = `${newPosition - 15}px`;
+                        
+                        // Show drop target indicator
+                        const indicator = createDropTargetIndicator(snappedTime, draggedScoreItem.type);
+                        elements.scoreTrack.appendChild(indicator);
+                        
+                        console.log(`[Drag] 移动到: ${snappedTime.toFixed(3)}s (吸附: ${(newTime - snappedTime).toFixed(3)}s)`);
+                    }
                 }
             });
 
             // Global mouse up handler for dropping
             document.addEventListener('mouseup', (e) => {
-                if (isDragging && draggedScoreItem && draggedElement) {
+                if (draggedScoreItem && draggedElement) {
                     e.preventDefault();
                     
-                    // Calculate final position
-                    const deltaX = e.clientX - dragStartX;
-                    const deltaTime = deltaX / currentPxPerSec;
-                    const newTime = Math.max(0, dragStartTime + deltaTime);
-                    const finalTime = findNearestSnapPoint(newTime);
+                    if (isDragging) {
+                        // Handle drag completion
+                        const deltaX = e.clientX - dragStartX;
+                        const deltaTime = deltaX / currentPxPerSec;
+                        const newTime = Math.max(0, dragStartTime + deltaTime);
+                        const finalTime = findNearestSnapPoint(newTime);
+                        
+                        // Update the score data model
+                        draggedScoreItem.time = finalTime;
+                        
+                        // Clean up drag state
+                        draggedElement.classList.remove('dragging');
+                        draggedElement.style.cursor = 'grab';
+                        removeDropTargetIndicator();
+                        
+                        // Re-render score to ensure correct positioning
+                        renderScore();
+                        syncTimelineScroll();
+                        
+                        console.log(`[Drag] 音符移动完成: ${draggedScoreItem.type} -> ${finalTime.toFixed(3)}s`);
+                        toastManager.info(`音符移动到 ${finalTime.toFixed(3)}s`);
+                        
+                    } else {
+                        // Handle click (no drag occurred) - show context menu
+                        console.log(`[Context] 显示上下文菜单 - 位置未改变`);
+                        showScoreContextMenu(draggedScoreItem, draggedElement, e.clientX, e.clientY);
+                    }
                     
-                    // Update the score data model
-                    draggedScoreItem.time = finalTime;
-                    
-                    // Clean up drag state
-                    draggedElement.classList.remove('dragging');
-                    draggedElement.style.cursor = 'grab';
+                    // Clean up common state
                     document.body.style.userSelect = '';
-                    removeDropTargetIndicator();
-                    
-                    // Re-render score to ensure correct positioning
-                    renderScore();
-                    
-                    // Force sync timeline scroll to fix display issues
-                    syncTimelineScroll();
-                    
-                    console.log(`[Drag] 音符移动完成: ${draggedScoreItem.type} -> ${finalTime.toFixed(3)}s`);
-                    toastManager.info(`音符移动到 ${finalTime.toFixed(3)}s`);
                     
                     // Reset drag state
                     isDragging = false;
                     draggedScoreItem = null;
                     draggedElement = null;
                     dragStartX = 0;
+                    dragStartY = 0;
                     dragStartTime = 0;
                 }
             });
