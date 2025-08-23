@@ -536,6 +536,32 @@
             margin: 4px 0;
         }
 
+        /* Hover indicator line */
+        .hover-indicator-line {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--accent-primary);
+            opacity: 0.7;
+            z-index: 100;
+            pointer-events: none;
+            transition: left 0.1s ease-out;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+        }
+
+        .hover-indicator-line::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -3px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(0, 123, 255, 0.8);
+        }
+
         /* Form Controls */
         .form-group {
             margin-bottom: 14px;
@@ -1487,6 +1513,10 @@
             // Context menu state
             let currentContextMenu = null;
             let contextMenuScoreItem = null;
+            
+            // Track hover state
+            let hoverIndicatorLine = null;
+            let currentHoverTime = 0;
 
             // DOM elements
             const elements = {
@@ -2268,6 +2298,12 @@
                 if (scrollLeft !== undefined) {
                     content.style.transform = `translateX(-${scrollLeft}px)`;
                 }
+                
+                // Re-create hover indicator if it existed
+                if (currentHoverTime > 0) {
+                    hoverIndicatorLine = null; // Reset reference
+                    createHoverIndicatorLine(currentHoverTime);
+                }
             }
 
             // Select score item
@@ -2789,8 +2825,8 @@
                 }
             }
 
-            // Create and show context menu
-            function showScoreContextMenu(scoreItem, marker, x, y) {
+            // Create and show context menu (for existing score items or track insertion)
+            function showScoreContextMenu(scoreItem, marker, x, y, insertMode = false) {
                 hideScoreContextMenu(); // Hide any existing menu
                 
                 const menu = document.createElement('div');
@@ -2819,28 +2855,46 @@
                 menu.style.top = `${menuY}px`;
                 menu.style.zIndex = '2000';
                 
-                // Menu items
-                const items = [
-                    {
-                        icon: '🗑️',
-                        text: '删除',
-                        action: 'delete',
-                        class: 'danger'
-                    },
-                    { divider: true },
-                    {
-                        icon: '🔴',
-                        text: '改为咚',
-                        action: 'change-don',
-                        disabled: scoreItem.type === 'don'
-                    },
-                    {
-                        icon: '🔵', 
-                        text: '改为咔',
-                        action: 'change-ka',
-                        disabled: scoreItem.type === 'ka'
-                    }
-                ];
+                // Menu items - different for insert mode vs edit mode
+                let items;
+                if (insertMode) {
+                    // Insert mode - add new notes
+                    items = [
+                        {
+                            icon: '🔴',
+                            text: '添加咚',
+                            action: 'insert-don'
+                        },
+                        {
+                            icon: '🔵',
+                            text: '添加咔', 
+                            action: 'insert-ka'
+                        }
+                    ];
+                } else {
+                    // Edit mode - modify existing notes
+                    items = [
+                        {
+                            icon: '🗑️',
+                            text: '删除',
+                            action: 'delete',
+                            class: 'danger'
+                        },
+                        { divider: true },
+                        {
+                            icon: '🔴',
+                            text: '改为咚',
+                            action: 'change-don',
+                            disabled: scoreItem && scoreItem.type === 'don'
+                        },
+                        {
+                            icon: '🔵', 
+                            text: '改为咔',
+                            action: 'change-ka',
+                            disabled: scoreItem && scoreItem.type === 'ka'
+                        }
+                    ];
+                }
                 
                 items.forEach(item => {
                     if (item.divider) {
@@ -2862,7 +2916,11 @@
                         
                         if (!item.disabled) {
                             menuItem.addEventListener('click', () => {
-                                handleContextMenuAction(item.action, scoreItem, marker);
+                                if (insertMode) {
+                                    handleContextMenuAction(item.action, null, null, currentHoverTime);
+                                } else {
+                                    handleContextMenuAction(item.action, scoreItem, marker);
+                                }
                                 hideScoreContextMenu();
                             });
                         }
@@ -2875,7 +2933,11 @@
                 currentContextMenu = menu;
                 contextMenuScoreItem = scoreItem;
                 
-                console.log(`[Context] 显示上下文菜单: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s (位置: ${menuX}, ${menuY})`);
+                if (insertMode) {
+                    console.log(`[Context] 显示插入菜单 at ${currentHoverTime.toFixed(3)}s (位置: ${menuX}, ${menuY})`);
+                } else {
+                    console.log(`[Context] 显示编辑菜单: ${scoreItem ? scoreItem.type : 'unknown'} at ${scoreItem ? scoreItem.time.toFixed(3) : 0}s (位置: ${menuX}, ${menuY})`);
+                }
                 console.log(`[Context] 菜单DOM:`, menu);
                 console.log(`[Context] 菜单样式:`, menu.style.cssText);
                 console.log(`[Context] 菜单子元素数量:`, menu.children.length);
@@ -2901,7 +2963,7 @@
             }
 
             // Handle context menu actions
-            function handleContextMenuAction(action, scoreItem, marker) {
+            function handleContextMenuAction(action, scoreItem, marker, insertTime = null) {
                 switch (action) {
                     case 'delete':
                         deleteScoreItem(scoreItem);
@@ -2923,6 +2985,14 @@
                         toastManager.info(`音符改为: 咔`);
                         console.log(`[Context] 音符类型改为: ka`);
                         break;
+                        
+                    case 'insert-don':
+                        addScoreItem(insertTime, 'don');
+                        break;
+                        
+                    case 'insert-ka':
+                        addScoreItem(insertTime, 'ka');
+                        break;
                 }
             }
 
@@ -2935,6 +3005,53 @@
                     syncTimelineScroll();
                     console.log(`[Context] 删除音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
                 }
+            }
+
+            // Create hover indicator line
+            function createHoverIndicatorLine(time) {
+                if (!hoverIndicatorLine) {
+                    hoverIndicatorLine = document.createElement('div');
+                    hoverIndicatorLine.className = 'hover-indicator-line';
+                    
+                    // Add to the score track content, not the track itself
+                    const scoreContent = elements.scoreTrack.firstChild;
+                    if (scoreContent) {
+                        scoreContent.appendChild(hoverIndicatorLine);
+                    } else {
+                        elements.scoreTrack.appendChild(hoverIndicatorLine);
+                    }
+                }
+                
+                const position = timeToPixel(time);
+                hoverIndicatorLine.style.left = `${position - 1}px`; // Center the 2px line
+                currentHoverTime = time;
+                
+                // console.log(`[Hover] 创建高亮线 at ${time.toFixed(3)}s, 位置: ${position}px, zoom: ${currentPxPerSec}`);
+            }
+
+            // Remove hover indicator line
+            function removeHoverIndicatorLine() {
+                if (hoverIndicatorLine) {
+                    hoverIndicatorLine.remove();
+                    hoverIndicatorLine = null;
+                    currentHoverTime = 0;
+                }
+            }
+
+            // Add new score item at specified time
+            function addScoreItem(time, type) {
+                const newScoreItem = {
+                    id: `score-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    time: time,
+                    type: type
+                };
+                
+                score.push(newScoreItem);
+                renderScore();
+                syncTimelineScroll();
+                
+                console.log(`[Insert] 添加音符: ${type} at ${time.toFixed(3)}s`);
+                toastManager.success(`添加了 ${type === 'don' ? '咚' : '咔'} 音符`);
             }
 
             // Simple Snap to Grid functionality
@@ -3008,6 +3125,50 @@
                     wavesurfer.seekTo(timePosition / wavesurfer.getDuration());
                     addAnnotation(currentTool);
                 }
+            });
+
+            // Score track mouse events for hover and right-click insertion
+            elements.scoreTrack.addEventListener('mousemove', (e) => {
+                if (!wavesurfer.getDuration()) return;
+                
+                // Calculate mouse position in time
+                const rect = elements.scoreTrack.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const scrollLeft = wavesurfer.getScroll() || 0;
+                const timePosition = Math.max(0, (x + scrollLeft) / currentPxPerSec);
+                
+                // Ensure we don't exceed duration
+                const maxTime = wavesurfer.getDuration();
+                const clampedTime = Math.min(timePosition, maxTime);
+                
+                // Snap to grid
+                const snappedTime = findNearestSnapPoint(clampedTime);
+                
+                // Show hover indicator
+                createHoverIndicatorLine(snappedTime);
+                
+                // Debug log (uncomment for debugging)
+                // console.log(`[Hover] 鼠标位置: ${timePosition.toFixed(3)}s, 吸附到: ${snappedTime.toFixed(3)}s, zoom: ${currentPxPerSec}, scroll: ${scrollLeft}`);
+            });
+
+            elements.scoreTrack.addEventListener('mouseleave', () => {
+                removeHoverIndicatorLine();
+            });
+
+            elements.scoreTrack.addEventListener('contextmenu', (e) => {
+                if (!wavesurfer.getDuration()) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Only show insert menu if we're not clicking on an existing note
+                const target = e.target;
+                if (target.classList.contains('score-marker')) {
+                    return; // Let the note's own context menu handle this
+                }
+                
+                console.log(`[Insert] 右键点击轨道，准备插入音符 at ${currentHoverTime.toFixed(3)}s`);
+                showScoreContextMenu(null, null, e.clientX, e.clientY, true); // insertMode = true
             });
 
             // Keyboard shortcuts
@@ -3115,6 +3276,13 @@
                 renderAnnotations();
                 renderScore();
                 syncTimelineScroll();
+                
+                // Update hover indicator position if it exists
+                if (hoverIndicatorLine && currentHoverTime > 0) {
+                    const position = timeToPixel(currentHoverTime);
+                    hoverIndicatorLine.style.left = `${position - 1}px`;
+                    // console.log(`[Hover] Zoom更新高亮线位置: ${position}px`);
+                }
             });
 
             wavesurfer.on('scroll', () => {
