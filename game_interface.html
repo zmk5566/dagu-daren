@@ -339,70 +339,139 @@
             box-shadow: 0 0 30px var(--hit-effect);
         }
 
+        /* Touch Drum Toggle Control */
+        .touch-drum-toggle {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #4A90E2;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            z-index: 25;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .touch-drum-toggle:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+        }
+
+        .touch-drum-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #4A90E2;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .touch-drum-checkbox.checked {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .touch-drum-checkbox::after {
+            content: '✓';
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .touch-drum-checkbox.checked::after {
+            opacity: 1;
+        }
+
         /* Drum Kit */
         .drum-kit {
             position: absolute;
-            bottom: 80px;
+            bottom: -150px; /* 调整位置适应更大的鼓 */
             left: 50%;
             transform: translateX(-50%);
+            width: 450px; /* 2倍大小：225 * 2 */
+            height: 300px; /* 2倍大小：150 * 2 */
+            overflow: hidden; /* 隐藏下半部分 */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .drum-kit.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .drum.unified {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid var(--text-white);
+            width: 450px; /* 2倍大小：225 * 2 */
+            height: 300px; /* 2倍大小：150 * 2 */
+            border-radius: 450px 450px 0 0; /* 2倍大小：225 * 2 */
+            border: 10px solid var(--text-white); /* 2倍大小：5 * 2 */
+            border-bottom: none; /* 移除底部边框 */
             cursor: pointer;
             position: relative;
             transition: all 0.1s ease;
-            box-shadow: 0 8px 25px var(--drum-shadow);
             background: #4A90E2; /* 整个鼓面是蓝色 - Ka区域 */
         }
 
-        /* 内圈 - Don区域（奶油白色） */
-        .drum.unified::after {
-            content: '';
+        /* Don区域 - 独立的可点击元素 */
+        .drum-don {
             position: absolute;
-            top: 50%;
+            top: 40%; /* 保持相同的相对位置 */
             left: 50%;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
+            width: 270px; /* 2倍大小：135 * 2 */
+            height: 180px; /* 2倍大小：90 * 2 */
+            border-radius: 270px 270px 0 0; /* 2倍大小：135 * 2 */
             background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
             transform: translate(-50%, -50%);
             transition: all 0.1s ease;
-            z-index: 2;
+            z-index: 3; /* 高于Ka区域 */
+            cursor: pointer;
         }
 
-        /* Don击打效果 - 内圈放大 */
-        .drum.unified.hit-don::after {
+        /* Don击打效果 - Don区域放大 */
+        .drum-don.hit {
             transform: translate(-50%, -50%) scale(1.2);
             background: linear-gradient(45deg, #FFE5B4, #FFF8E1);
         }
 
         /* Ka击打效果 - 外圈放大 */
         .drum.unified.hit-ka {
-            transform: scale(1.1);
+            transform: scaleX(1.1) scaleY(1.1);
             background: #5BA0E8;
-            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.6);
         }
 
         /* 按下效果 */
         .drum.unified:active {
-            transform: scale(0.98);
+            transform: scaleX(0.98) scaleY(0.98);
+        }
+        
+        .drum-don:active {
+            transform: translate(-50%, -50%) scale(0.95);
         }
 
         /* Don标签 - 显示在内圈中心 */
         .drum-label-don {
             position: absolute;
-            top: 50%;
+            top: 40%; /* 调整位置适应半圆 */
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 10px;
+            font-size: 20px; /* 2倍大小：10 * 2 */
             font-weight: bold;
             color: white;
             text-align: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 2倍大小：1px -> 2px */
             z-index: 3;
             pointer-events: none;
         }
@@ -410,14 +479,14 @@
         /* Ka标签 - 显示在外圈环形区域 */
         .drum-label-ka {
             position: absolute;
-            top: 15px;
+            top: 40px; /* 2倍大小：20 * 2 */
             left: 50%;
             transform: translateX(-50%);
-            font-size: 9px;
+            font-size: 18px; /* 2倍大小：9 * 2 */
             font-weight: bold;
             color: white;
             text-align: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 2倍大小：1px -> 2px */
             z-index: 3;
             pointer-events: none;
         }
@@ -759,10 +828,19 @@
                 </div>
             </div>
 
+            <!-- Touch Drum Toggle Control -->
+            <div class="touch-drum-toggle" id="touchDrumToggle">
+                <div class="touch-drum-checkbox" id="touchDrumCheckbox"></div>
+                <span>显示触控鼓</span>
+            </div>
+
             <!-- Drum Kit -->
-            <div class="drum-kit">
+            <div class="drum-kit" id="drumKit">
                 <div class="drum unified" id="unifiedDrum">
-                    <div class="drum-label-don">咚<br>空格</div>
+                    <!-- Don区域 - 独立元素 -->
+                    <div class="drum-don" id="drumDon">
+                        <div class="drum-label-don">咚<br>空格</div>
+                    </div>
                     <div class="drum-label-ka">咔<br>字母</div>
                 </div>
             </div>
@@ -854,6 +932,10 @@
                 notesContainer: document.getElementById('notesContainer'),
                 beatGrid: document.getElementById('beatGrid'),
                 unifiedDrum: document.getElementById('unifiedDrum'),
+                drumDon: document.getElementById('drumDon'),
+                drumKit: document.getElementById('drumKit'),
+                touchDrumToggle: document.getElementById('touchDrumToggle'),
+                touchDrumCheckbox: document.getElementById('touchDrumCheckbox'),
                 gameOverScreen: document.getElementById('gameOverScreen'),
                 finalScore: document.getElementById('finalScore'),
                 maxCombo: document.getElementById('maxCombo'),
@@ -870,6 +952,32 @@
             await loadProjects();
             elements.loadingScreen.style.display = 'none';
             setupEventListeners();
+            initTouchDrumToggle();
+        }
+
+        // Initialize touch drum toggle functionality
+        function initTouchDrumToggle() {
+            // Get saved state from localStorage or default to checked
+            const isEnabled = localStorage.getItem('touchDrumEnabled') !== 'false';
+            setTouchDrumEnabled(isEnabled);
+
+            // Add click event listener
+            elements.touchDrumToggle.addEventListener('click', () => {
+                const currentState = !elements.touchDrumCheckbox.classList.contains('checked');
+                setTouchDrumEnabled(currentState);
+                localStorage.setItem('touchDrumEnabled', currentState);
+            });
+        }
+
+        // Set touch drum enabled/disabled state
+        function setTouchDrumEnabled(enabled) {
+            if (enabled) {
+                elements.touchDrumCheckbox.classList.add('checked');
+                elements.drumKit.classList.remove('hidden');
+            } else {
+                elements.touchDrumCheckbox.classList.remove('checked');
+                elements.drumKit.classList.add('hidden');
+            }
         }
 
         // Load available projects
@@ -1341,12 +1449,18 @@
                 }, 300);
             }
             
-            // Visual drum feedback
-            const hitClass = type === 'don' ? 'hit-don' : 'hit-ka';
-            elements.unifiedDrum.classList.add(hitClass);
-            setTimeout(() => {
-                elements.unifiedDrum.classList.remove(hitClass);
-            }, 150);
+            // Visual drum feedback - updated for separate elements
+            if (type === 'don') {
+                elements.drumDon.classList.add('hit');
+                setTimeout(() => {
+                    elements.drumDon.classList.remove('hit');
+                }, 150);
+            } else {
+                elements.unifiedDrum.classList.add('hit-ka');
+                setTimeout(() => {
+                    elements.unifiedDrum.classList.remove('hit-ka');
+                }, 150);
+            }
         }
 
         // Show judgment text
@@ -1528,23 +1642,32 @@
                 }
             });
             
-            // Unified drum clicks - detect click position
+            // Don区域点击 - 简单直接
+            elements.drumDon.addEventListener('click', (e) => {
+                console.log('Don被点击了');
+                e.stopPropagation(); // 防止冒泡到Ka区域
+                hitDrum('don');
+            });
+            
+            // Don区域触控
+            elements.drumDon.addEventListener('touchstart', (e) => {
+                console.log('Don被触控了');
+                e.preventDefault();
+                e.stopPropagation();
+                hitDrum('don');
+            });
+            
+            // Ka区域点击（整个鼓面减去Don区域）
             elements.unifiedDrum.addEventListener('click', (e) => {
-                const rect = elements.unifiedDrum.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                // Calculate distance from center
-                const distanceFromCenter = Math.sqrt(
-                    Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
-                );
-                
-                // If clicked within inner circle (30px radius), it's Don; otherwise Ka
-                if (distanceFromCenter <= 30) {
-                    hitDrum('don');
-                } else {
-                    hitDrum('ka');
-                }
+                console.log('Ka被点击了');
+                hitDrum('ka');
+            });
+            
+            // Ka区域触控
+            elements.unifiedDrum.addEventListener('touchstart', (e) => {
+                console.log('Ka被触控了');
+                e.preventDefault();
+                hitDrum('ka');
             });
             
             // Game over screen
