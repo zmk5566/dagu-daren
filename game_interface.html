@@ -36,95 +36,88 @@
             width: 100vw;
             height: 100vh;
             position: relative;
+        }
+
+        /* Don Character Display (Left of beat track like Taiko) */
+        .don-display {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-        }
-
-        /* Top Section with Score and Progress */
-        .top-section {
-            height: 120px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            gap: 10px;
+            z-index: 10;
         }
 
-        /* Score Display */
-        .score-display {
+        .don-face {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
+            border: 4px solid #8B4513;
             display: flex;
             align-items: center;
-            gap: 30px;
-        }
-
-        .score-item {
-            text-align: center;
-        }
-
-        .score-label {
-            font-size: 14px;
-            color: var(--text-dark);
+            justify-content: center;
+            font-size: 24px;
             font-weight: bold;
-            margin-bottom: 5px;
+            color: #8B4513;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
-        .score-value {
-            font-size: 28px;
+        .don-face.hit-don {
+            background: linear-gradient(45deg, #FF6B47, #FF4500);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .don-face.hit-ka {
+            background: linear-gradient(45deg, #4A90E2, #0066CC);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .don-combo {
+            font-size: 20px;
+            font-weight: 900;
+            color: #8B4513;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /* Score Bar - Top of screen */
+        .score-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 3px solid var(--primary-red);
+            font-size: 24px;
             font-weight: bold;
             color: var(--primary-red);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 15;
         }
 
-        .combo-display {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-blue);
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 40px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-red), var(--primary-blue));
-            width: 0%;
-            transition: width 0.1s ease;
-            border-radius: 10px;
-        }
-
-        .song-info {
-            text-align: right;
-        }
-
-        .song-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-dark);
-            margin-bottom: 5px;
-        }
-
-        .song-time {
-            font-size: 14px;
-            color: var(--text-dark);
-        }
-
-        /* Main Game Area */
+        /* Main Game Area - Full screen */
         .game-area {
-            flex: 1;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(135deg, #FFE5B4 0%, #FFCCCB 50%, #E6F3FF 100%);
             overflow: hidden;
         }
@@ -207,8 +200,8 @@
             left: 150px; /* Align with hit target line */
             top: 50%;
             transform: translateY(-50%) translateX(-50%);
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border: 3px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
@@ -216,18 +209,6 @@
                 0 0 20px rgba(255, 255, 255, 0.3),
                 inset 0 0 20px rgba(255, 255, 255, 0.1);
             z-index: 5; /* Behind notes but above beat grid */
-            animation: targetPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes targetPulse {
-            0%, 100% {
-                transform: translateY(-50%) translateX(-50%) scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50%) translateX(-50%) scale(1.05);
-                opacity: 1;
-            }
         }
 
         /* Target drum hit feedback - Don (Red) */
@@ -450,48 +431,102 @@
             }
         }
 
-        /* Control Panel */
-        .control-panel {
+        /* Song Selector - Floating in top left */
+        .song-selector {
             position: absolute;
             top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid var(--primary-blue);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+            display: none;
         }
 
-        .control-btn {
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid var(--primary-blue);
-            border-radius: 20px;
+        .song-selector.show {
+            display: block;
+        }
+
+        .song-selector select {
+            padding: 8px 12px;
+            border: 2px solid var(--primary-red);
+            border-radius: 8px;
+            background: white;
             font-weight: bold;
+            color: var(--text-dark);
+            margin-right: 10px;
+            min-width: 200px;
+        }
+
+        .song-selector button {
+            padding: 8px 16px;
+            background: var(--primary-red);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .song-selector button:hover {
+            background: #CC5238;
+        }
+
+        /* Pause Menu - Enter key popup */
+        .pause-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .pause-menu.show {
+            display: flex;
+        }
+
+        .pause-menu-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            padding: 40px;
+            border-radius: 20px;
+            border: 4px solid var(--primary-blue);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .pause-menu-content h2 {
+            font-size: 32px;
+            color: var(--primary-blue);
+            margin-bottom: 30px;
+        }
+
+        .pause-menu-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid var(--primary-blue);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
             color: var(--primary-blue);
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .control-btn:hover {
+        .pause-menu-btn:hover, .pause-menu-btn.selected {
             background: var(--primary-blue);
-            color: var(--text-white);
-        }
-
-        /* Project Selector */
-        .project-selector {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .project-select {
-            padding: 8px 12px;
-            border: 2px solid var(--primary-red);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            font-weight: bold;
-            color: var(--text-dark);
+            color: white;
         }
 
         /* Loading Screen */
@@ -629,55 +664,37 @@
             <div class="loading-text">加载游戏中...</div>
         </div>
 
-        <!-- Project Selector -->
-        <div class="project-selector">
-            <label>选择歌曲:</label>
-            <select class="project-select" id="projectSelect">
-                <option value="">-- 请选择 --</option>
+        <!-- Song Selector (Floating) -->
+        <div class="song-selector" id="songSelector">
+            <select id="projectSelect">
+                <option value="">-- 选择歌曲 --</option>
             </select>
-            <button class="control-btn" id="loadGameBtn">载入</button>
+            <button id="loadGameBtn">载入</button>
         </div>
 
-        <!-- Control Panel -->
-        <div class="control-panel">
-            <button class="control-btn" id="pauseBtn">暂停</button>
-            <button class="control-btn" id="restartBtn">重新开始</button>
-            <button class="control-btn" id="exitBtn">退出</button>
-        </div>
+        <!-- Score Display -->
+        <div class="score-bar" id="scoreBar">得分: 0</div>
 
-        <!-- Top Section -->
-        <div class="top-section">
-            <div class="score-display">
-                <div class="score-item">
-                    <div class="score-label">得分</div>
-                    <div class="score-value" id="scoreValue">0</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-label">连击</div>
-                    <div class="combo-display" id="comboValue">0</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-label">准确率</div>
-                    <div class="score-value" id="accuracyValue">100%</div>
-                </div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </div>
-            
-            <div class="song-info">
-                <div class="song-title" id="songTitle">选择歌曲开始游戏</div>
-                <div class="song-time">
-                    <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
-                </div>
+        <!-- Pause Menu (Enter key popup) -->
+        <div class="pause-menu" id="pauseMenu">
+            <div class="pause-menu-content">
+                <h2>游戏菜单</h2>
+                <button class="pause-menu-btn" id="pauseBtn">继续</button>
+                <button class="pause-menu-btn" id="restartBtn">重新开始</button>
+                <button class="pause-menu-btn" id="selectSongBtn">选择歌曲</button>
+                <button class="pause-menu-btn" id="exitBtn">退出</button>
             </div>
         </div>
 
         <!-- Main Game Area -->
         <div class="game-area">
+            <!-- Don Character Display (Left of beat track) -->
+            <div class="don-display">
+                <div class="don-face" id="donFace">
+                    <div class="don-combo" id="donCombo">0</div>
+                </div>
+            </div>
+
             <!-- Beat Track -->
             <div class="beat-track">
                 <div class="beat-grid" id="beatGrid">
@@ -769,6 +786,7 @@
 
         // DOM elements - will be initialized in initGame
         let elements = {};
+        let donElements = {};
 
         // Initialize game
         async function initGame() {
@@ -777,16 +795,13 @@
                 loadingScreen: document.getElementById('loadingScreen'),
                 projectSelect: document.getElementById('projectSelect'),
                 loadGameBtn: document.getElementById('loadGameBtn'),
+                songSelector: document.getElementById('songSelector'),
+                scoreBar: document.getElementById('scoreBar'),
+                pauseMenu: document.getElementById('pauseMenu'),
                 pauseBtn: document.getElementById('pauseBtn'),
                 restartBtn: document.getElementById('restartBtn'),
+                selectSongBtn: document.getElementById('selectSongBtn'),
                 exitBtn: document.getElementById('exitBtn'),
-                scoreValue: document.getElementById('scoreValue'),
-                comboValue: document.getElementById('comboValue'),
-                accuracyValue: document.getElementById('accuracyValue'),
-                progressFill: document.getElementById('progressFill'),
-                songTitle: document.getElementById('songTitle'),
-                currentTime: document.getElementById('currentTime'),
-                totalTime: document.getElementById('totalTime'),
                 notesContainer: document.getElementById('notesContainer'),
                 beatGrid: document.getElementById('beatGrid'),
                 donDrum: document.getElementById('donDrum'),
@@ -797,6 +812,11 @@
                 finalAccuracy: document.getElementById('finalAccuracy'),
                 perfectHits: document.getElementById('perfectHits'),
                 playAgainBtn: document.getElementById('playAgainBtn')
+            };
+
+            donElements = {
+                donFace: document.getElementById('donFace'),
+                donCombo: document.getElementById('donCombo')
             };
 
             await loadProjects();
@@ -830,7 +850,6 @@
 
             elements.loadingScreen.style.display = 'flex';
             gameState.currentProject = projectName;
-            elements.songTitle.textContent = projectName;
 
             try {
                 // Load score data (beatmap)
@@ -903,7 +922,6 @@
                 gameState.notes = notes.sort((a, b) => a.time - b.time);
                 gameState.totalNotes = notes.length;
 
-                updateTimeDisplay();
                 generateNoteElements();
                 
                 // Now generate beat grid with available duration
@@ -911,6 +929,11 @@
                 
                 elements.loadingScreen.style.display = 'none';
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
+                
+                // Auto-start the game after loading
+                setTimeout(() => {
+                    startGame();
+                }, 500); // Small delay to ensure everything is ready
                 
             } catch (error) {
                 console.error('Failed to load game:', error);
@@ -1120,7 +1143,6 @@
             gameState.audio.currentTime = 0;
             gameState.audio.play();
             
-            elements.pauseBtn.textContent = '暂停';
             gameLoop();
         }
 
@@ -1201,6 +1223,8 @@
 
         // Handle drum hits
         function hitDrum(type) {
+            // Update Don character display
+            updateDonDisplay(type);
             // Trigger target drum feedback animation with color based on type
             const targetDrum = document.querySelector('.target-drum');
             if (targetDrum) {
@@ -1318,32 +1342,36 @@
             }, 300);
         }
 
-        // Update UI
-        function updateUI() {
-            elements.scoreValue.textContent = gameState.score.toLocaleString();
-            elements.comboValue.textContent = gameState.combo;
+        // Update Don character display
+        function updateDonDisplay(type) {
+            if (!donElements.donFace) return;
             
-            const accuracy = gameState.totalNotes > 0 ? 
-                Math.round((gameState.hitNotes / Math.max(gameState.hitNotes + gameState.missedHits, 1)) * 100) : 100;
-            elements.accuracyValue.textContent = `${accuracy}%`;
+            // Only change color, don't show text
+            if (type === 'don') {
+                donElements.donFace.classList.remove('hit-ka');
+                donElements.donFace.classList.add('hit-don');
+            } else if (type === 'ka') {
+                donElements.donFace.classList.remove('hit-don');
+                donElements.donFace.classList.add('hit-ka');
+            }
             
-            const progress = (gameState.currentTime / gameState.duration) * 100;
-            elements.progressFill.style.width = `${Math.min(progress, 100)}%`;
-            
-            updateTimeDisplay();
+            // Reset after animation
+            setTimeout(() => {
+                donElements.donFace.classList.remove('hit-don', 'hit-ka');
+            }, 200);
         }
 
-        // Update time display
-        function updateTimeDisplay() {
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-            };
+        // Update UI
+        function updateUI() {
+            // Update score bar
+            elements.scoreBar.textContent = `得分: ${gameState.score.toLocaleString()}`;
             
-            elements.currentTime.textContent = formatTime(gameState.currentTime);
-            elements.totalTime.textContent = formatTime(gameState.duration);
+            // Update Don combo display
+            if (donElements.donCombo) {
+                donElements.donCombo.textContent = gameState.combo;
+            }
         }
+
 
         // Reset game state
         function resetGameState() {
@@ -1402,29 +1430,30 @@
                 const selectedProject = elements.projectSelect.value;
                 if (selectedProject) {
                     loadGame(selectedProject);
+                    // Hide song selector after loading
+                    elements.songSelector.classList.remove('show');
                 }
             });
             
-            // Game controls
+            // Show song selector initially
+            elements.songSelector.classList.add('show');
+            
+            // Game controls in pause menu
             elements.pauseBtn.addEventListener('click', () => {
-                if (!gameState.currentProject) return;
-                
-                if (gameState.isPlaying && !gameState.isPaused) {
-                    // Pause
-                    gameState.isPaused = true;
-                    gameState.audio.pause();
-                    elements.pauseBtn.textContent = '继续';
-                } else if (gameState.isPlaying && gameState.isPaused) {
+                if (gameState.isPlaying && gameState.isPaused) {
                     // Resume
                     gameState.isPaused = false;
                     gameState.startTime = performance.now() - (gameState.currentTime * 1000);
                     gameState.audio.play();
-                    elements.pauseBtn.textContent = '暂停';
                     gameLoop();
                 } else {
-                    // Start new game
-                    startGame();
+                    // Start new game if not playing
+                    if (!gameState.isPlaying) {
+                        startGame();
+                    }
                 }
+                // Hide pause menu
+                elements.pauseMenu.classList.remove('show');
             });
             
             elements.restartBtn.addEventListener('click', () => {
@@ -1432,6 +1461,15 @@
                     elements.gameOverScreen.style.display = 'none';
                     startGame();
                 }
+                // Hide pause menu
+                elements.pauseMenu.classList.remove('show');
+            });
+            
+            elements.selectSongBtn.addEventListener('click', () => {
+                // Show song selector
+                elements.songSelector.classList.add('show');
+                // Hide pause menu
+                elements.pauseMenu.classList.remove('show');
             });
             
             elements.exitBtn.addEventListener('click', () => {
@@ -1463,10 +1501,18 @@
                     return;
                 }
                 
-                // Enter for pause/resume
+                // Enter for pause menu
                 if (key === 'enter') {
                     e.preventDefault();
-                    elements.pauseBtn.click();
+                    if (gameState.isPlaying) {
+                        // Pause game and show menu
+                        gameState.isPaused = true;
+                        gameState.audio.pause();
+                        elements.pauseMenu.classList.add('show');
+                    } else {
+                        // Show song selector if no game running
+                        elements.songSelector.classList.add('show');
+                    }
                     return;
                 }
                 
@@ -1481,7 +1527,9 @@
                 // Special shortcuts
                 if (key === 'escape') {
                     e.preventDefault();
-                    elements.exitBtn.click();
+                    // Hide any open menus
+                    elements.pauseMenu.classList.remove('show');
+                    elements.songSelector.classList.remove('show');
                 }
             });
             
