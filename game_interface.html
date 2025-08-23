@@ -213,6 +213,109 @@
                 0 0 20px rgba(255, 255, 255, 0.3),
                 inset 0 0 20px rgba(255, 255, 255, 0.1);
             z-index: 5; /* Behind notes but above beat grid */
+            transition: all 0.1s ease;
+        }
+
+        /* Golden Hit Effects */
+        .hit-target.golden-hit {
+            background: linear-gradient(180deg, #FFD700, #FFA500);
+            box-shadow: 
+                0 0 15px rgba(255, 215, 0, 0.8),
+                0 0 25px rgba(255, 165, 0, 0.6);
+            animation: goldenPulse 0.8s ease-out;
+        }
+
+        .target-drum.golden-hit {
+            border-color: #FFD700;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.6), rgba(255, 165, 0, 0.3));
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.8),
+                inset 0 0 25px rgba(255, 215, 0, 0.4);
+            animation: goldenFillAndFade 0.8s ease-out;
+        }
+
+        @keyframes goldenPulse {
+            0% {
+                transform: translateX(-50%) scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-50%) scaleY(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(-50%) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes goldenFillAndFade {
+            0% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                background: radial-gradient(circle, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.6));
+                opacity: 1;
+            }
+            30% {
+                transform: translateY(-50%) translateX(-50%) scale(1.1);
+                background: radial-gradient(circle, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.7));
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                background: radial-gradient(circle, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+                opacity: 0.3;
+            }
+        }
+
+        /* White Hit Effects for Good hits */
+        .hit-target.white-hit {
+            background: linear-gradient(180deg, #FFFFFF, #F0F0F0);
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.9),
+                0 0 25px rgba(255, 255, 255, 0.6);
+            animation: whitePulse 0.8s ease-out;
+        }
+
+        .target-drum.white-hit {
+            border-color: #FFFFFF;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+            box-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.8),
+                inset 0 0 25px rgba(255, 255, 255, 0.5);
+            animation: whiteFillAndFade 0.8s ease-out;
+        }
+
+        @keyframes whitePulse {
+            0% {
+                transform: translateX(-50%) scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-50%) scaleY(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(-50%) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes whiteFillAndFade {
+            0% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+                opacity: 1;
+            }
+            30% {
+                transform: translateY(-50%) translateX(-50%) scale(1.1);
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) translateX(-50%) scale(1);
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+                opacity: 0.3;
+            }
         }
 
 
@@ -1359,12 +1462,27 @@
                 showJudgment(judgment);
                 createHitEffect(type);
                 
-                // Remove note after hit animation
-                setTimeout(() => {
+                // Add hit effect for successful hits with different colors
+                if (judgment === 'perfect') {
+                    createHitEffect_Golden();
+                } else if (judgment === 'good') {
+                    createHitEffect_White();
+                }
+                
+                // Remove note immediately if hit successfully, otherwise after animation
+                if (judgment === 'perfect' || judgment === 'good') {
+                    // Immediately remove successful hits
                     if (bestNote.parentNode) {
                         bestNote.remove();
                     }
-                }, 300);
+                } else {
+                    // Keep original delay for miss
+                    setTimeout(() => {
+                        if (bestNote.parentNode) {
+                            bestNote.remove();
+                        }
+                    }, 300);
+                }
             }
             
             // Visual drum feedback - updated for separate elements
@@ -1420,6 +1538,42 @@
             setTimeout(() => {
                 effect.remove();
             }, 300);
+        }
+
+        // Create golden hit effect for perfect hits
+        function createHitEffect_Golden() {
+            const hitTarget = document.querySelector('.hit-target');
+            const targetDrum = document.querySelector('.target-drum');
+            
+            // Add golden effect to hit target
+            hitTarget.classList.add('golden-hit');
+            
+            // Add golden effect to target drum
+            targetDrum.classList.add('golden-hit');
+            
+            // Remove effects after animation
+            setTimeout(() => {
+                hitTarget.classList.remove('golden-hit');
+                targetDrum.classList.remove('golden-hit');
+            }, 800);
+        }
+
+        // Create white hit effect for good hits
+        function createHitEffect_White() {
+            const hitTarget = document.querySelector('.hit-target');
+            const targetDrum = document.querySelector('.target-drum');
+            
+            // Add white effect to hit target
+            hitTarget.classList.add('white-hit');
+            
+            // Add white effect to target drum
+            targetDrum.classList.add('white-hit');
+            
+            // Remove effects after animation
+            setTimeout(() => {
+                hitTarget.classList.remove('white-hit');
+                targetDrum.classList.remove('white-hit');
+            }, 800);
         }
 
         // Update Don character display
