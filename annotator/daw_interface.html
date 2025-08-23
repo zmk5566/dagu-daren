@@ -486,36 +486,42 @@
 
         /* Score Context Menu */
         .score-context-menu {
-            position: absolute;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            z-index: 2000;
-            min-width: 120px;
-            padding: 4px 0;
-            backdrop-filter: blur(8px);
+            position: fixed !important;
+            background: #2d2d2d !important;
+            border: 2px solid #666666 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+            z-index: 10000 !important;
+            min-width: 140px !important;
+            padding: 8px 0 !important;
+            backdrop-filter: blur(8px) !important;
+            /* Make sure it's visible */
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
         }
 
         .context-menu-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 13px;
-            font-weight: 500;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            padding: 10px 16px !important;
+            color: #ffffff !important;
+            cursor: pointer !important;
+            transition: background-color 0.2s !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            white-space: nowrap !important;
         }
 
         .context-menu-item:hover {
-            background: var(--bg-tertiary);
+            background: #3d3d3d !important;
         }
 
         .context-menu-item.danger:hover {
-            background: var(--error-color);
-            color: white;
+            background: #d13438 !important;
+            color: white !important;
         }
 
         .context-menu-item .menu-icon {
@@ -2210,7 +2216,7 @@
                         }
                     });
                     
-                    // Add drag event listeners
+                    // Add drag event listeners (left click)
                     marker.addEventListener('mousedown', (e) => {
                         if (e.button === 0) { // Left mouse button only
                             e.preventDefault();
@@ -2226,13 +2232,27 @@
                             dragStartY = e.clientY;
                             dragStartTime = scoreItem.time;
                             
-                            // Don't set isDragging yet - wait for movement
-                            
                             // Prevent text selection
                             document.body.style.userSelect = 'none';
                             
-                            console.log(`[Interaction] 鼠标按下音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                            console.log(`[Interaction] 左键按下音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
                         }
+                    });
+
+                    // Add right-click context menu
+                    marker.addEventListener('contextmenu', (e) => {
+                        e.preventDefault(); // Prevent browser context menu
+                        e.stopPropagation();
+                        
+                        // Hide any existing context menu
+                        hideScoreContextMenu();
+                        
+                        // Select this score item
+                        selectScore(scoreItem, marker);
+                        
+                        // Show context menu at mouse position
+                        console.log(`[Context] 右键点击音符: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                        showScoreContextMenu(scoreItem, marker, e.clientX, e.clientY);
                     });
                     
                     marker.style.cursor = 'grab';
@@ -2511,6 +2531,7 @@
                 
                 // Hide context menu if clicking outside of it
                 if (currentContextMenu && !currentContextMenu.contains(e.target)) {
+                    console.log('[Context] 点击外部区域，隐藏上下文菜单');
                     hideScoreContextMenu();
                 }
             });
@@ -2775,13 +2796,28 @@
                 const menu = document.createElement('div');
                 menu.className = 'score-context-menu';
                 
-                // Position the menu near the marker
-                const rect = elements.scoreTrack.getBoundingClientRect();
-                const menuX = Math.min(x - rect.left, window.innerWidth - 150); // Prevent overflow
-                const menuY = Math.max(y - rect.top - 80, 10); // Show above the marker
+                // Position the menu relative to the viewport (fixed positioning)
+                let menuX = x - 10; // Slightly to the left of cursor
+                let menuY = y - 10; // Slightly above the cursor
                 
+                // Prevent menu from going off-screen
+                if (menuX + 150 > window.innerWidth) {
+                    menuX = x - 160; // Show to the left if no space on right
+                }
+                if (menuX < 10) {
+                    menuX = 10; // Don't go off left edge
+                }
+                if (menuY < 10) {
+                    menuY = y + 10; // Show below if no space above
+                }
+                if (menuY + 120 > window.innerHeight) {
+                    menuY = y - 130; // Show above if no space below
+                }
+                
+                menu.style.position = 'fixed';
                 menu.style.left = `${menuX}px`;
                 menu.style.top = `${menuY}px`;
+                menu.style.zIndex = '2000';
                 
                 // Menu items
                 const items = [
@@ -2835,19 +2871,32 @@
                     }
                 });
                 
-                elements.scoreTrack.appendChild(menu);
+                document.body.appendChild(menu);
                 currentContextMenu = menu;
                 contextMenuScoreItem = scoreItem;
                 
-                console.log(`[Context] 显示上下文菜单: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s`);
+                console.log(`[Context] 显示上下文菜单: ${scoreItem.type} at ${scoreItem.time.toFixed(3)}s (位置: ${menuX}, ${menuY})`);
+                console.log(`[Context] 菜单DOM:`, menu);
+                console.log(`[Context] 菜单样式:`, menu.style.cssText);
+                console.log(`[Context] 菜单子元素数量:`, menu.children.length);
+                
+                // Force a repaint
+                menu.offsetHeight;
+                
+                // No need for menuJustCreated flag with right-click
+                
+                console.log(`[Context] 菜单显示在鼠标位置: (${menuX}, ${menuY})`);
             }
 
             // Hide context menu
             function hideScoreContextMenu() {
                 if (currentContextMenu) {
+                    console.log('[Context] 隐藏上下文菜单');
                     currentContextMenu.remove();
                     currentContextMenu = null;
                     contextMenuScoreItem = null;
+                } else {
+                    console.log('[Context] 尝试隐藏菜单，但没有活动菜单');
                 }
             }
 
@@ -3159,7 +3208,7 @@
                     const deltaY = Math.abs(e.clientY - dragStartY);
                     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                     
-                    // Check if we should start dragging
+                    // Check if we should start dragging (lower threshold for immediate drag)
                     if (!isDragging && distance >= dragThreshold) {
                         isDragging = true;
                         draggedElement.classList.add('dragging');
@@ -3219,9 +3268,9 @@
                         toastManager.info(`音符移动到 ${finalTime.toFixed(3)}s`);
                         
                     } else {
-                        // Handle click (no drag occurred) - show context menu
-                        console.log(`[Context] 显示上下文菜单 - 位置未改变`);
-                        showScoreContextMenu(draggedScoreItem, draggedElement, e.clientX, e.clientY);
+                        // Handle simple click - just select the score item
+                        console.log(`[Click] 左键点击选中音符: ${draggedScoreItem.type} at ${draggedScoreItem.time.toFixed(3)}s`);
+                        selectScore(draggedScoreItem, draggedElement);
                     }
                     
                     // Clean up common state
