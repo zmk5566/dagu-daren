@@ -562,6 +562,22 @@
             box-shadow: 0 0 6px rgba(0, 123, 255, 0.8);
         }
 
+        /* Selected time indicator (more prominent when menu is open) */
+        .hover-indicator-line.selected {
+            background: var(--warning-color);
+            opacity: 0.9;
+            width: 3px;
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.7);
+        }
+
+        .hover-indicator-line.selected::before {
+            background: var(--warning-color);
+            width: 10px;
+            height: 10px;
+            left: -4px;
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.9);
+        }
+
         /* Form Controls */
         .form-group {
             margin-bottom: 14px;
@@ -1517,6 +1533,8 @@
             // Track hover state
             let hoverIndicatorLine = null;
             let currentHoverTime = 0;
+            let selectedTime = 0; // Persistent selected time for insertion
+            let isMenuOpen = false; // Track if context menu is open
 
             // DOM elements
             const elements = {
@@ -2302,7 +2320,7 @@
                 // Re-create hover indicator if it existed
                 if (currentHoverTime > 0) {
                     hoverIndicatorLine = null; // Reset reference
-                    createHoverIndicatorLine(currentHoverTime);
+                    createHoverIndicatorLine(currentHoverTime, isMenuOpen);
                 }
             }
 
@@ -2932,6 +2950,13 @@
                 document.body.appendChild(menu);
                 currentContextMenu = menu;
                 contextMenuScoreItem = scoreItem;
+                isMenuOpen = true;
+                
+                // If in insert mode, mark the current hover time as selected
+                if (insertMode && hoverIndicatorLine) {
+                    hoverIndicatorLine.classList.add('selected');
+                    selectedTime = currentHoverTime;
+                }
                 
                 if (insertMode) {
                     console.log(`[Context] 显示插入菜单 at ${currentHoverTime.toFixed(3)}s (位置: ${menuX}, ${menuY})`);
@@ -2957,6 +2982,12 @@
                     currentContextMenu.remove();
                     currentContextMenu = null;
                     contextMenuScoreItem = null;
+                    isMenuOpen = false;
+                    
+                    // Remove selected state from hover line
+                    if (hoverIndicatorLine) {
+                        hoverIndicatorLine.classList.remove('selected');
+                    }
                 } else {
                     console.log('[Context] 尝试隐藏菜单，但没有活动菜单');
                 }
@@ -2987,11 +3018,11 @@
                         break;
                         
                     case 'insert-don':
-                        addScoreItem(insertTime, 'don');
+                        addScoreItem(selectedTime, 'don');
                         break;
                         
                     case 'insert-ka':
-                        addScoreItem(insertTime, 'ka');
+                        addScoreItem(selectedTime, 'ka');
                         break;
                 }
             }
@@ -3008,7 +3039,7 @@
             }
 
             // Create hover indicator line
-            function createHoverIndicatorLine(time) {
+            function createHoverIndicatorLine(time, selected = false) {
                 if (!hoverIndicatorLine) {
                     hoverIndicatorLine = document.createElement('div');
                     hoverIndicatorLine.className = 'hover-indicator-line';
@@ -3022,11 +3053,22 @@
                     }
                 }
                 
+                // Update position and style
                 const position = timeToPixel(time);
-                hoverIndicatorLine.style.left = `${position - 1}px`; // Center the 2px line
+                const lineWidth = selected ? 3 : 2;
+                hoverIndicatorLine.style.left = `${position - Math.floor(lineWidth/2)}px`;
+                
+                // Toggle selected class
+                if (selected) {
+                    hoverIndicatorLine.classList.add('selected');
+                    selectedTime = time;
+                } else {
+                    hoverIndicatorLine.classList.remove('selected');
+                }
+                
                 currentHoverTime = time;
                 
-                // console.log(`[Hover] 创建高亮线 at ${time.toFixed(3)}s, 位置: ${position}px, zoom: ${currentPxPerSec}`);
+                // console.log(`[Hover] 创建高亮线 at ${time.toFixed(3)}s, 位置: ${position}px, zoom: ${currentPxPerSec}, selected: ${selected}`);
             }
 
             // Remove hover indicator line
@@ -3129,7 +3171,7 @@
 
             // Score track mouse events for hover and right-click insertion
             elements.scoreTrack.addEventListener('mousemove', (e) => {
-                if (!wavesurfer.getDuration()) return;
+                if (!wavesurfer.getDuration() || isMenuOpen) return; // Don't update when menu is open
                 
                 // Calculate mouse position in time
                 const rect = elements.scoreTrack.getBoundingClientRect();
@@ -3152,7 +3194,9 @@
             });
 
             elements.scoreTrack.addEventListener('mouseleave', () => {
-                removeHoverIndicatorLine();
+                if (!isMenuOpen) { // Don't remove when menu is open
+                    removeHoverIndicatorLine();
+                }
             });
 
             elements.scoreTrack.addEventListener('contextmenu', (e) => {
