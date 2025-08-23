@@ -56,7 +56,7 @@
             height: 80px;
             border-radius: 50%;
             background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
-            border: 4px solid #8B4513;
+            border: 4px solid #F5F5DC;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,6 +88,7 @@
             height: 50px;
             border-radius: 50%;
             background: inherit;
+            border: 2px solid #FFF8E1;
             transition: all 0.2s ease;
             z-index: 2;
         }
@@ -126,7 +127,6 @@
             right: 20px;
             background: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
-            border-radius: 25px;
             border: 3px solid var(--primary-red);
             font-size: 24px;
             font-weight: bold;
@@ -156,7 +156,6 @@
             transform: translateY(-50%);
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
             border: 3px solid rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -194,29 +193,10 @@
             bottom: 0;
             width: 4px;
             transform: translateX(-50%); /* Center the line at 150px */
-            background: linear-gradient(180deg, var(--primary-red), var(--primary-blue));
-            box-shadow: 
-                0 0 20px rgba(255, 255, 255, 0.8),
-                0 0 10px rgba(255, 107, 71, 0.6),
-                0 0 5px rgba(74, 144, 226, 0.6);
+            background: white;
             z-index: 10;
-            animation: judgmentLineGlow 1.5s ease-in-out infinite alternate;
         }
 
-        @keyframes judgmentLineGlow {
-            0% {
-                box-shadow: 
-                    0 0 20px rgba(255, 255, 255, 0.8),
-                    0 0 10px rgba(255, 107, 71, 0.6),
-                    0 0 5px rgba(74, 144, 226, 0.6);
-            }
-            100% {
-                box-shadow: 
-                    0 0 25px rgba(255, 255, 255, 1),
-                    0 0 15px rgba(255, 107, 71, 0.8),
-                    0 0 10px rgba(74, 144, 226, 0.8);
-            }
-        }
 
         /* Target Drum - Simplified transparent ring */
         .target-drum {
@@ -290,7 +270,6 @@
             gap: 8px;
             background: rgba(255, 255, 255, 0.9);
             padding: 8px 12px;
-            border-radius: 8px;
             border: 2px solid #4A90E2;
             font-size: 14px;
             font-weight: bold;
@@ -311,7 +290,6 @@
             width: 16px;
             height: 16px;
             border: 2px solid #4A90E2;
-            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -512,7 +490,6 @@
             left: 20px;
             background: rgba(255, 255, 255, 0.95);
             padding: 15px;
-            border-radius: 15px;
             border: 3px solid var(--primary-blue);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             z-index: 20;
@@ -526,7 +503,6 @@
         .song-selector select {
             padding: 8px 12px;
             border: 2px solid var(--primary-red);
-            border-radius: 8px;
             background: white;
             font-weight: bold;
             color: var(--text-dark);
@@ -538,7 +514,6 @@
             padding: 8px 16px;
             background: var(--primary-red);
             border: none;
-            border-radius: 8px;
             font-weight: bold;
             color: white;
             cursor: pointer;
@@ -570,7 +545,6 @@
         .pause-menu-content {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
             padding: 40px;
-            border-radius: 20px;
             border: 4px solid var(--primary-blue);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             text-align: center;
@@ -591,7 +565,6 @@
             font-size: 18px;
             font-weight: bold;
             border: 3px solid var(--primary-blue);
-            border-radius: 25px;
             background: rgba(255, 255, 255, 0.9);
             color: var(--primary-blue);
             cursor: pointer;
@@ -688,7 +661,6 @@
             background: var(--primary-red);
             color: var(--text-white);
             border: none;
-            border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s ease;
