@@ -1144,6 +1144,274 @@
             font-size: 14px;
             font-weight: 500;
         }
+
+        /* Image Summary Styles */
+        .image-summary {
+            margin-top: 10px;
+        }
+
+        .image-summary-preview {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .image-summary-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .image-summary-thumbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            min-height: 40px;
+            align-items: center;
+        }
+
+        .image-summary-thumb {
+            width: 32px;
+            height: 24px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-summary-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-summary-thumb:empty::before {
+            content: '📷';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Image Editor Modal Styles */
+        .image-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-editor-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .image-editor-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-editor-header {
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .image-editor-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .image-editor-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .image-editor-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .image-editor-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .image-editor-footer {
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Modal Image Category Styles */
+        .image-editor-modal .image-category {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .image-editor-modal .image-category-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .image-editor-modal .image-slots {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .image-editor-modal .image-slot {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .image-slot-info {
+            margin-bottom: 12px;
+        }
+
+        .image-editor-modal .image-slot-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .image-slot-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .image-editor-modal .image-preview {
+            width: 120px;
+            height: 90px;
+            background: var(--bg-tertiary);
+            border: 2px dashed var(--border-color);
+            border-radius: 4px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 24px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-editor-modal .image-preview:empty::before {
+            content: '📷';
+        }
+
+        .image-editor-modal .image-preview.has-image {
+            border-style: solid;
+            border-color: var(--accent-primary);
+        }
+
+        .image-editor-modal .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .image-input {
+            display: none;
+        }
+
+        .image-editor-modal .image-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .upload-btn {
+            background: var(--accent-primary);
+            color: var(--text-white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .upload-btn:hover {
+            background: var(--accent-secondary);
+        }
+
+        .remove-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: var(--error-color);
+            color: var(--text-white);
+            border-color: var(--error-color);
+        }
     </style>
 </head>
 <body>
@@ -1207,9 +1475,20 @@
                         </div>
                         <div id="display-name-status" style="margin-top: 5px; font-size: 12px;"></div>
                     </div>
-                    <!-- 预留空间，用于添加更多项目信息字段 -->
+                    <!-- 游戏图片资源简洁预览 -->
                     <div class="form-group">
-                        <small style="color: var(--text-muted); font-style: italic;">更多项目信息字段即将添加...</small>
+                        <label class="form-label">游戏图片资源</label>
+                        <div class="image-summary">
+                            <div class="image-summary-preview" id="image-summary-preview">
+                                <div class="image-summary-count">0/6 已上传</div>
+                                <div class="image-summary-thumbs" id="image-summary-thumbs">
+                                    <!-- 缩略图将在这里显示 -->
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-block" id="edit-images-btn">
+                                编辑图片
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1584,6 +1863,16 @@
                 projectDisplayNameInput: document.getElementById('project-display-name-input'),
                 updateDisplayNameBtn: document.getElementById('update-display-name-btn'),
                 displayNameStatus: document.getElementById('display-name-status'),
+                // Image summary elements
+                imageSummaryPreview: document.getElementById('image-summary-preview'),
+                imageSummaryThumbs: document.getElementById('image-summary-thumbs'),
+                editImagesBtn: document.getElementById('edit-images-btn'),
+                // Image editor modal elements
+                imageEditorModal: document.getElementById('image-editor-modal'),
+                imageEditorOverlay: document.getElementById('image-editor-overlay'),
+                imageEditorClose: document.getElementById('image-editor-close'),
+                imageEditorCancel: document.getElementById('image-editor-cancel'),
+                imageEditorSave: document.getElementById('image-editor-save'),
                 bpmSourceSelect: document.getElementById('bpm-source-select'),
                 detectBpmBtn: document.getElementById('detect-bpm-btn'),
                 manualBpm: document.getElementById('manual-bpm'),
@@ -1902,6 +2191,270 @@
                 
                 // Clear any previous status messages
                 elements.displayNameStatus.textContent = '';
+                
+                // Initialize and load image summary
+                loadImageSummary(projectName);
+            }
+
+            // Load and update image summary for project info panel
+            async function loadImageSummary(projectName) {
+                try {
+                    const response = await fetch(`/api/project/${projectName}/images`);
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        const images = result.images;
+                        let totalCount = 0;
+                        
+                        // Clear thumbnails
+                        elements.imageSummaryThumbs.innerHTML = '';
+                        
+                        // Count images and create thumbnails
+                        const imageOrder = [
+                            {category: 'character', type: 'unsatisfied'},
+                            {category: 'character', type: 'satisfied'},
+                            {category: 'banner', type: 'unsatisfied'},
+                            {category: 'banner', type: 'satisfied'},
+                            {category: 'scene', type: 'background'},
+                            {category: 'scene', type: 'props'}
+                        ];
+                        
+                        imageOrder.forEach(({category, type}) => {
+                            const thumb = document.createElement('div');
+                            thumb.className = 'image-summary-thumb';
+                            
+                            if (images[category] && images[category][type]) {
+                                const filename = images[category][type];
+                                const imageUrl = `/api/project/${projectName}/images/${filename}`;
+                                thumb.innerHTML = `<img src="${imageUrl}" alt="${category} ${type}">`;
+                                totalCount++;
+                            }
+                            
+                            elements.imageSummaryThumbs.appendChild(thumb);
+                        });
+                        
+                        // Update count
+                        const countElement = elements.imageSummaryPreview.querySelector('.image-summary-count');
+                        countElement.textContent = `${totalCount}/6 已上传`;
+                        
+                    }
+                } catch (error) {
+                    console.error('Failed to load image summary:', error);
+                }
+            }
+
+            // Open image editor modal
+            function openImageEditor() {
+                if (!currentProject) {
+                    showToast('请先加载一个项目', 'warning');
+                    return;
+                }
+                
+                elements.imageEditorModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                // Initialize modal functionality
+                initializeImageEditorModal(currentProject);
+                loadImageEditorData(currentProject);
+            }
+
+            // Close image editor modal
+            function closeImageEditor() {
+                elements.imageEditorModal.style.display = 'none';
+                document.body.style.overflow = '';
+                
+                // Refresh summary when closing
+                if (currentProject) {
+                    loadImageSummary(currentProject);
+                }
+            }
+
+            // Initialize image editor modal functionality
+            function initializeImageEditorModal(projectName) {
+                const imageSlots = elements.imageEditorModal.querySelectorAll('.image-slot');
+                
+                imageSlots.forEach(slot => {
+                    const uploadBtn = slot.querySelector('.upload-btn');
+                    const removeBtn = slot.querySelector('.remove-btn');
+                    const fileInput = slot.querySelector('.image-input');
+                    const preview = slot.querySelector('.image-preview');
+                    const category = slot.dataset.category;
+                    const type = slot.dataset.type;
+                    
+                    // Clear existing listeners
+                    const newUploadBtn = uploadBtn.cloneNode(true);
+                    const newRemoveBtn = removeBtn.cloneNode(true);
+                    const newFileInput = fileInput.cloneNode(true);
+                    
+                    uploadBtn.parentNode.replaceChild(newUploadBtn, uploadBtn);
+                    removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+                    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+                    
+                    // Upload button click handler
+                    newUploadBtn.addEventListener('click', () => {
+                        newFileInput.click();
+                    });
+                    
+                    // File input change handler
+                    newFileInput.addEventListener('change', async (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            await uploadImageInModal(file, category, type, projectName, preview, newRemoveBtn);
+                        }
+                    });
+                    
+                    // Remove button click handler
+                    newRemoveBtn.addEventListener('click', async () => {
+                        await removeImageInModal(category, type, projectName, preview, newRemoveBtn);
+                    });
+                });
+            }
+
+            // Upload image in modal
+            async function uploadImageInModal(file, category, type, projectName, previewElement, removeBtn) {
+                try {
+                    // Show loading state
+                    previewElement.innerHTML = '<div style="font-size: 12px; color: var(--text-muted);">上传中...</div>';
+                    
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('category', category);
+                    formData.append('type', type);
+                    
+                    const response = await fetch(`/api/project/${projectName}/images/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        // Show image preview
+                        const imageUrl = `/api/project/${projectName}/images/${result.filename}`;
+                        previewElement.innerHTML = `<img src="${imageUrl}" alt="${category} ${type}">`;
+                        previewElement.classList.add('has-image');
+                        
+                        // Show remove button
+                        removeBtn.style.display = 'inline-block';
+                        
+                        showToast('图片上传成功', 'success');
+                    } else {
+                        throw new Error(result.message || 'Upload failed');
+                    }
+                } catch (error) {
+                    previewElement.innerHTML = '';
+                    previewElement.classList.remove('has-image');
+                    showToast(`上传失败: ${error.message}`, 'error');
+                }
+            }
+
+            // Remove image in modal
+            async function removeImageInModal(category, type, projectName, previewElement, removeBtn) {
+                try {
+                    const response = await fetch(`/api/project/${projectName}/images/${category}/${type}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        // Clear preview
+                        previewElement.innerHTML = '';
+                        previewElement.classList.remove('has-image');
+                        
+                        // Hide remove button
+                        removeBtn.style.display = 'none';
+                        
+                        showToast('图片删除成功', 'success');
+                    } else {
+                        throw new Error(result.message || 'Delete failed');
+                    }
+                } catch (error) {
+                    showToast(`删除失败: ${error.message}`, 'error');
+                }
+            }
+
+            // Load image data into editor modal
+            async function loadImageEditorData(projectName) {
+                try {
+                    const response = await fetch(`/api/project/${projectName}/images`);
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        const images = result.images;
+                        
+                        // Clear all previews first
+                        elements.imageEditorModal.querySelectorAll('.image-preview').forEach(preview => {
+                            preview.innerHTML = '';
+                            preview.classList.remove('has-image');
+                        });
+                        elements.imageEditorModal.querySelectorAll('.remove-btn').forEach(btn => {
+                            btn.style.display = 'none';
+                        });
+                        
+                        // Load existing images
+                        Object.keys(images).forEach(category => {
+                            Object.keys(images[category]).forEach(type => {
+                                const filename = images[category][type];
+                                const previewElement = elements.imageEditorModal.querySelector(`#preview-${category}-${type}`);
+                                const slot = previewElement?.closest('.image-slot');
+                                const removeBtn = slot?.querySelector('.remove-btn');
+                                
+                                if (previewElement) {
+                                    const imageUrl = `/api/project/${projectName}/images/${filename}`;
+                                    previewElement.innerHTML = `<img src="${imageUrl}" alt="${category} ${type}">`;
+                                    previewElement.classList.add('has-image');
+                                    
+                                    if (removeBtn) {
+                                        removeBtn.style.display = 'inline-block';
+                                    }
+                                }
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.error('Failed to load project images:', error);
+                }
+            }
+
+            // Simple toast notification function
+            function showToast(message, type = 'info') {
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    right: 20px;
+                    background: ${type === 'error' ? 'var(--error-color)' : type === 'success' ? 'var(--success-color)' : 'var(--accent-primary)'};
+                    color: var(--text-white);
+                    padding: 12px 16px;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    z-index: 9999;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: all 0.3s ease;
+                `;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Hide and remove toast
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, 3000);
             }
 
             // Load annotations
@@ -2706,6 +3259,18 @@
                 if (e.key === 'Enter') {
                     elements.updateDisplayNameBtn.click();
                 }
+            });
+
+            // Image editor modal event listeners
+            elements.editImagesBtn.addEventListener('click', openImageEditor);
+            elements.imageEditorClose.addEventListener('click', closeImageEditor);
+            elements.imageEditorCancel.addEventListener('click', closeImageEditor);
+            elements.imageEditorSave.addEventListener('click', closeImageEditor);
+            elements.imageEditorOverlay.addEventListener('click', closeImageEditor);
+
+            // Prevent modal from closing when clicking inside the container
+            elements.imageEditorModal.querySelector('.image-editor-container').addEventListener('click', (e) => {
+                e.stopPropagation();
             });
 
             elements.detectBpmBtn.addEventListener('click', detectBPM);
@@ -3665,5 +4230,115 @@
             updateAudioSourceDisplay();
         });
     </script>
+
+    <!-- Image Editor Modal -->
+    <div class="image-editor-modal" id="image-editor-modal" style="display: none;">
+        <div class="image-editor-overlay" id="image-editor-overlay"></div>
+        <div class="image-editor-container">
+            <div class="image-editor-header">
+                <h2 class="image-editor-title">游戏图片资源编辑</h2>
+                <button class="image-editor-close" id="image-editor-close">×</button>
+            </div>
+            <div class="image-editor-content">
+                <!-- Character 角色 -->
+                <div class="image-category">
+                    <h3 class="image-category-title">角色</h3>
+                    <div class="image-slots">
+                        <div class="image-slot" data-category="character" data-type="unsatisfied">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">灵不满</label>
+                                <div class="image-slot-description">角色在灵力不足时的显示图片</div>
+                            </div>
+                            <div class="image-preview" id="preview-character-unsatisfied"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="character" data-type="unsatisfied">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                        <div class="image-slot" data-category="character" data-type="satisfied">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">灵满</label>
+                                <div class="image-slot-description">角色在灵力充满时的显示图片</div>
+                            </div>
+                            <div class="image-preview" id="preview-character-satisfied"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="character" data-type="satisfied">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Banner 顶部横幅 -->
+                <div class="image-category">
+                    <h3 class="image-category-title">顶部横幅</h3>
+                    <div class="image-slots">
+                        <div class="image-slot" data-category="banner" data-type="unsatisfied">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">灵不满</label>
+                                <div class="image-slot-description">游戏顶部横幅在灵力不足时的显示</div>
+                            </div>
+                            <div class="image-preview" id="preview-banner-unsatisfied"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="banner" data-type="unsatisfied">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                        <div class="image-slot" data-category="banner" data-type="satisfied">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">灵满</label>
+                                <div class="image-slot-description">游戏顶部横幅在灵力充满时的显示</div>
+                            </div>
+                            <div class="image-preview" id="preview-banner-satisfied"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="banner" data-type="satisfied">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scene 场景 -->
+                <div class="image-category">
+                    <h3 class="image-category-title">场景</h3>
+                    <div class="image-slots">
+                        <div class="image-slot" data-category="scene" data-type="background">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">背景图</label>
+                                <div class="image-slot-description">游戏主背景图片</div>
+                            </div>
+                            <div class="image-preview" id="preview-scene-background"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="scene" data-type="background">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                        <div class="image-slot" data-category="scene" data-type="props">
+                            <div class="image-slot-info">
+                                <label class="image-slot-label">动态现场小道具</label>
+                                <div class="image-slot-description">游戏中的动态装饰元素</div>
+                            </div>
+                            <div class="image-preview" id="preview-scene-props"></div>
+                            <input type="file" class="image-input" accept="image/png,image/jpg,image/jpeg,image/gif" data-category="scene" data-type="props">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-primary upload-btn">选择文件</button>
+                                <button type="button" class="btn btn-secondary remove-btn" style="display: none;">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="image-editor-footer">
+                <button type="button" class="btn btn-secondary" id="image-editor-cancel">取消</button>
+                <button type="button" class="btn btn-primary" id="image-editor-save">保存并关闭</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

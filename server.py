@@ -4,6 +4,9 @@ import os
 import sys
 import time
 import json
+import uuid
+import shutil
+from werkzeug.utils import secure_filename
 
 # Import our new DAW modules from audio_processor folder
 try:
@@ -34,6 +37,15 @@ except ImportError as e:
     ALIGNMENT_MODULES_AVAILABLE = False
 
 app = Flask(__name__, static_folder=None)
+
+# Configure upload settings
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+
+def allowed_image_file(filename):
+    """Check if file has allowed image extension"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
 # --- Frontend Routes ---
@@ -491,6 +503,190 @@ def update_project_display_name(project_name):
         
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/project/<project_name>/images/upload', methods=['POST'])
+def upload_project_image(project_name):
+    """Upload an image for a project"""
+    try:
+        # Check if project exists
+        project_dir = os.path.join(DATA_DIR, project_name)
+        if not os.path.isdir(project_dir):
+            return jsonify({"status": "error", "message": "Project not found"}), 404
+        
+        # Get form data
+        if 'image' not in request.files:
+            return jsonify({"status": "error", "message": "No image file provided"}), 400
+        
+        file = request.files['image']
+        category = request.form.get('category')
+        image_type = request.form.get('type')
+        
+        if not category or not image_type:
+            return jsonify({"status": "error", "message": "Category and type are required"}), 400
+        
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "No file selected"}), 400
+        
+        if not allowed_image_file(file.filename):
+            return jsonify({"status": "error", "message": "File type not allowed. Use PNG, JPG, JPEG, or GIF"}), 400
+        
+        # Create images directory if it doesn't exist
+        images_dir = os.path.join(project_dir, 'images')
+        os.makedirs(images_dir, exist_ok=True)
+        
+        # Generate unique filename
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"{category}_{image_type}_{uuid.uuid4().hex[:8]}.{file_extension}"
+        filepath = os.path.join(images_dir, filename)
+        
+        # Save the file
+        file.save(filepath)
+        
+        # Update metadata.json
+        metadata_path = os.path.join(project_dir, 'metadata.json')
+        metadata = {}
+        
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+            except Exception as e:
+                print(f"[Warning] Could not read metadata for {project_name}: {e}")
+                metadata = {}
+        
+        # Initialize images section if it doesn't exist
+        if 'images' not in metadata:
+            metadata['images'] = {}
+        if category not in metadata['images']:
+            metadata['images'][category] = {}
+        
+        # Remove old image if it exists
+        if image_type in metadata['images'][category]:
+            old_image_path = os.path.join(images_dir, metadata['images'][category][image_type])
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+        
+        # Update metadata with new image
+        metadata['images'][category][image_type] = filename
+        metadata['last_updated'] = time.time()
+        
+        # Save metadata
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=4, ensure_ascii=False)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Image uploaded successfully",
+            "filename": filename,
+            "category": category,
+            "type": image_type
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/project/<project_name>/images')
+def get_project_images(project_name):
+    """Get all images for a project"""
+    try:
+        # Check if project exists
+        project_dir = os.path.join(DATA_DIR, project_name)
+        if not os.path.isdir(project_dir):
+            return jsonify({"status": "error", "message": "Project not found"}), 404
+        
+        # Read metadata
+        metadata_path = os.path.join(project_dir, 'metadata.json')
+        images = {}
+        
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+                    images = metadata.get('images', {})
+            except Exception as e:
+                print(f"[Warning] Could not read metadata for {project_name}: {e}")
+        
+        return jsonify({
+            "status": "success",
+            "images": images
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/project/<project_name>/images/<category>/<image_type>', methods=['DELETE'])
+def delete_project_image(project_name, category, image_type):
+    """Delete an image for a project"""
+    try:
+        # Check if project exists
+        project_dir = os.path.join(DATA_DIR, project_name)
+        if not os.path.isdir(project_dir):
+            return jsonify({"status": "error", "message": "Project not found"}), 404
+        
+        # Read metadata
+        metadata_path = os.path.join(project_dir, 'metadata.json')
+        if not os.path.exists(metadata_path):
+            return jsonify({"status": "error", "message": "No images found for this project"}), 404
+        
+        try:
+            with open(metadata_path, 'r', encoding='utf-8') as f:
+                metadata = json.load(f)
+        except Exception as e:
+            return jsonify({"status": "error", "message": "Could not read project metadata"}), 500
+        
+        # Check if image exists in metadata
+        if 'images' not in metadata or category not in metadata['images'] or image_type not in metadata['images'][category]:
+            return jsonify({"status": "error", "message": "Image not found"}), 404
+        
+        # Get filename and delete file
+        filename = metadata['images'][category][image_type]
+        image_path = os.path.join(project_dir, 'images', filename)
+        
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        
+        # Remove from metadata
+        del metadata['images'][category][image_type]
+        
+        # Clean up empty categories
+        if not metadata['images'][category]:
+            del metadata['images'][category]
+        if not metadata['images']:
+            del metadata['images']
+        
+        metadata['last_updated'] = time.time()
+        
+        # Save metadata
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=4, ensure_ascii=False)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Image deleted successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/project/<project_name>/images/<filename>')
+def serve_project_image(project_name, filename):
+    """Serve project image files"""
+    try:
+        project_dir = os.path.join(DATA_DIR, project_name)
+        images_dir = os.path.join(project_dir, 'images')
+        
+        if not os.path.isdir(images_dir):
+            return "Image not found", 404
+        
+        # Security check - ensure filename is safe
+        safe_filename = secure_filename(filename)
+        if safe_filename != filename:
+            return "Invalid filename", 400
+        
+        return send_from_directory(images_dir, filename)
+        
+    except Exception as e:
+        return "Image not found", 404
 
 @app.route('/api/score/<project_name>', methods=['GET', 'POST'])
 def handle_score(project_name):

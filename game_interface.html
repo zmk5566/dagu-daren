@@ -38,6 +38,57 @@
             position: relative;
         }
 
+        /* Background Image Container */
+        .game-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0.7;
+            transition: opacity 0.5s ease;
+        }
+
+        .game-background.loaded {
+            opacity: 0.8;
+        }
+
+        /* Character Display (Above don-display) */
+        .character-display {
+            position: absolute;
+            left: -20px; /* Character center aligns with don center (60px - 80px) */
+            top: calc(30% - 210px); /* Down 15px from previous position */
+            width: 160px; /* Character size */
+            height: 160px; /* Character size */
+            z-index: 4; /* Below game track but above background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .character-display.loaded {
+            opacity: 1;
+        }
+
+        .character-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+        }
+
+        /* Hide character when no image loaded */
+        .character-display img[src=""], .character-display img:not([src]) {
+            display: none;
+        }
+
         /* Game Track Container */
         .game-track-container {
             position: absolute;
@@ -206,6 +257,7 @@
             bottom: 0;
             background: transparent;
             overflow: hidden;
+            z-index: 2;
         }
 
         /* Beat Track - Horizontal scrolling area */
@@ -388,6 +440,7 @@
             height: 300px; /* 2倍大小：150 * 2 */
             overflow: hidden; /* 隐藏下半部分 */
             transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 6; /* Above game track but below UI elements */
         }
 
         .drum-kit.hidden {
@@ -916,6 +969,14 @@
 
         <!-- Main Game Area -->
         <div class="game-area">
+            <!-- Background Image Container -->
+            <div class="game-background" id="gameBackground"></div>
+            
+            <!-- Character Display (Above game track) -->
+            <div class="character-display" id="characterDisplay">
+                <img id="characterImage" alt="Character" />
+            </div>
+            
             <!-- Game Track Container (Don + Beat Track) -->
             <div class="game-track-container">
                 <!-- Don Character Display (Left of beat track) -->
@@ -1039,6 +1100,7 @@
             }
             
             updateSpiritDisplay();
+            updateCharacterDisplay(); // Update character based on spirit value
             checkChallengeStatus();
         }
 
@@ -1100,6 +1162,9 @@
             spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #0066CC, #4CAF50)';
             spiritElements.label.textContent = '灵: 0%';
             spiritElements.system.style.boxShadow = 'none';
+            
+            // Update character to unsatisfied state
+            updateCharacterDisplay();
         }
 
         // Game settings
@@ -1152,7 +1217,10 @@
                 maxCombo: document.getElementById('maxCombo'),
                 finalAccuracy: document.getElementById('finalAccuracy'),
                 perfectHits: document.getElementById('perfectHits'),
-                playAgainBtn: document.getElementById('playAgainBtn')
+                playAgainBtn: document.getElementById('playAgainBtn'),
+                gameBackground: document.getElementById('gameBackground'),
+                characterDisplay: document.getElementById('characterDisplay'),
+                characterImage: document.getElementById('characterImage')
             };
 
             donElements = {
@@ -1253,6 +1321,79 @@
             }
         }
 
+        // Load project images (background and character)
+        function loadProjectImages(projectName, projectImages) {
+            if (!projectImages) {
+                console.log('[Images] No images data provided');
+                return;
+            }
+
+            // Load background image
+            if (elements.gameBackground) {
+                const sceneImages = projectImages.scene;
+                if (sceneImages && sceneImages.background) {
+                    const imageUrl = `/api/project/${projectName}/images/${sceneImages.background}`;
+                    console.log('[Background] Loading background image:', imageUrl);
+                    
+                    const img = new Image();
+                    img.onload = function() {
+                        elements.gameBackground.style.backgroundImage = `url('${imageUrl}')`;
+                        elements.gameBackground.classList.add('loaded');
+                        console.log('[Background] Background image loaded successfully');
+                    };
+                    img.onerror = function() {
+                        console.warn('[Background] Failed to load background image:', imageUrl);
+                    };
+                    img.src = imageUrl;
+                } else {
+                    console.log('[Background] No scene background image found');
+                }
+            }
+
+            // Load character images and store URLs
+            if (elements.characterImage && projectImages.character) {
+                const characterImages = projectImages.character;
+                
+                // Store character image URLs in gameState for switching
+                gameState.characterImages = {
+                    unsatisfied: null,
+                    satisfied: null
+                };
+
+                // Preload unsatisfied character image
+                if (characterImages.unsatisfied) {
+                    const unsatisfiedUrl = `/api/project/${projectName}/images/${characterImages.unsatisfied}`;
+                    const unsatisfiedImg = new Image();
+                    unsatisfiedImg.onload = function() {
+                        gameState.characterImages.unsatisfied = unsatisfiedUrl;
+                        console.log('[Character] Unsatisfied character image loaded');
+                        // Set initial character (unsatisfied by default)
+                        updateCharacterDisplay();
+                    };
+                    unsatisfiedImg.onerror = function() {
+                        console.warn('[Character] Failed to load unsatisfied character image');
+                    };
+                    unsatisfiedImg.src = unsatisfiedUrl;
+                }
+
+                // Preload satisfied character image
+                if (characterImages.satisfied) {
+                    const satisfiedUrl = `/api/project/${projectName}/images/${characterImages.satisfied}`;
+                    const satisfiedImg = new Image();
+                    satisfiedImg.onload = function() {
+                        gameState.characterImages.satisfied = satisfiedUrl;
+                        console.log('[Character] Satisfied character image loaded');
+                    };
+                    satisfiedImg.onerror = function() {
+                        console.warn('[Character] Failed to load satisfied character image');
+                    };
+                    satisfiedImg.src = satisfiedUrl;
+                }
+            } else {
+                console.log('[Character] No character images found');
+            }
+        }
+
         // Load game data for selected project
         async function loadGame(projectName) {
             if (!projectName) return;
@@ -1261,6 +1402,17 @@
             gameState.currentProject = projectName;
 
             try {
+                // Load project images
+                const imagesResponse = await fetch(`/api/project/${projectName}/images`);
+                let projectImages = null;
+                if (imagesResponse.ok) {
+                    const imagesData = await imagesResponse.json();
+                    if (imagesData.status === 'success') {
+                        projectImages = imagesData.images;
+                        console.log('Loaded project images:', projectImages);
+                    }
+                }
+
                 // Load score data (beatmap)
                 const scoreResponse = await fetch(`/api/score/${projectName}`);
                 const scoreData = await scoreResponse.json();
@@ -1335,6 +1487,9 @@
                 
                 // Now generate beat grid with available duration
                 generateUniformBeatGrid();
+                
+                // Load project images (background and character)
+                loadProjectImages(projectName, projectImages);
                 
                 elements.loadingScreen.style.display = 'none';
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
@@ -1957,6 +2112,45 @@
             
             // Regenerate uniform beat grid
             generateUniformBeatGrid();
+        }
+
+        // Update character display based on spirit value
+        function updateCharacterDisplay() {
+            if (!elements.characterImage || !gameState.characterImages) {
+                return;
+            }
+
+            const isSatisfied = gameState.spiritValue >= 60; // Spirit >= 60% is satisfied
+            const imageUrl = isSatisfied ? 
+                gameState.characterImages.satisfied : 
+                gameState.characterImages.unsatisfied;
+
+            if (imageUrl) {
+                elements.characterImage.src = imageUrl;
+                elements.characterDisplay.classList.add('loaded');
+                
+                console.log(`[Character] Updated to ${isSatisfied ? 'satisfied' : 'unsatisfied'} (spirit: ${Math.round(gameState.spiritValue)}%)`);
+            }
+        }
+
+        // Clear project images
+        function clearProjectImages() {
+            // Clear background image
+            if (elements.gameBackground) {
+                elements.gameBackground.style.backgroundImage = '';
+                elements.gameBackground.classList.remove('loaded');
+            }
+            
+            // Clear character image
+            if (elements.characterImage) {
+                elements.characterImage.src = '';
+                elements.characterDisplay.classList.remove('loaded');
+            }
+            
+            // Clear stored image URLs
+            if (gameState.characterImages) {
+                gameState.characterImages = null;
+            }
         }
 
         // End game

@@ -2501,7 +2501,21 @@
         "audio_source": "original_track"
     },
     "created_at": 1756015827.969621,
-    "last_updated": 1756016759.7431319,
+    "last_updated": 1756028766.984831,
     "version": "1.0",
-    "display_name": "象王行(伴奏)"
+    "display_name": "象王行(伴奏)",
+    "images": {
+        "banner": {
+            "unsatisfied": "banner_unsatisfied_139e5387.png",
+            "satisfied": "banner_satisfied_8a761329.jpeg"
+        },
+        "character": {
+            "unsatisfied": "character_unsatisfied_7680843b.gif",
+            "satisfied": "character_satisfied_475fe243.gif"
+        },
+        "scene": {
+            "background": "scene_background_a6efaa62.jpg",
+            "props": "scene_props_21c098e8.png"
+        }
+    }
 }
