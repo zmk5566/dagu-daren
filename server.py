@@ -5,29 +5,20 @@ import sys
 import time
 import json
 
-# Import our new DAW modules
+# Import our new DAW modules from audio_processor folder
 try:
-    from .bpm_detector import BPMDetector
-    from .beat_grid import BeatGridGenerator
-    from .measure_detector import FirstMeasureDetector
+    from audio_processor.bpm_detector import BPMDetector
+    from audio_processor.beat_grid import BeatGridGenerator
+    from audio_processor.measure_detector import FirstMeasureDetector
     DAW_MODULES_AVAILABLE = True
-except ImportError:
-    # Handle relative import issues when running as script
-    import sys
-    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    try:
-        from bpm_detector import BPMDetector
-        from beat_grid import BeatGridGenerator
-        from measure_detector import FirstMeasureDetector
-        DAW_MODULES_AVAILABLE = True
-    except ImportError as e:
-        print(f"[Warning] DAW modules not available: {e}")
-        DAW_MODULES_AVAILABLE = False
+except ImportError as e:
+    print(f"[Warning] DAW modules not available: {e}")
+    DAW_MODULES_AVAILABLE = False
 
 # --- Define Absolute Paths ---
 # This makes the server runnable from any directory
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(APP_ROOT, '..'))
+PROJECT_ROOT = APP_ROOT  # Now server.py is in root directory
 ANNOTATOR_DIR = os.path.join(PROJECT_ROOT, 'annotator')
 VISUALIZER_DIR = os.path.join(PROJECT_ROOT, 'beatmap_visualizer')
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
@@ -418,12 +409,86 @@ def get_quantization_options():
 
 @app.route('/api/projects')
 def list_projects():
-    """Scans the 'data/' directory for subfolders and returns them as a list."""
+    """Scans the 'data/' directory for subfolders and returns them with display names."""
     try:
         if not os.path.isdir(DATA_DIR):
             return jsonify({"status": "error", "message": "'data' 目录未找到。"}), 404
-        projects = [d for d in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, d))]
+        
+        project_folders = [d for d in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, d))]
+        projects = []
+        
+        for folder_name in project_folders:
+            project_info = {
+                "folder_name": folder_name,
+                "display_name": folder_name  # Default to folder name
+            }
+            
+            # Try to read display_name from metadata.json
+            metadata_path = os.path.join(DATA_DIR, folder_name, 'metadata.json')
+            if os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                        metadata = json.load(f)
+                        if 'display_name' in metadata:
+                            project_info["display_name"] = metadata['display_name']
+                except Exception as e:
+                    # If metadata.json is invalid, just use folder name
+                    print(f"[Warning] Could not read metadata for {folder_name}: {e}")
+            
+            projects.append(project_info)
+        
+        # Sort by display_name for better user experience
+        projects.sort(key=lambda x: x['display_name'])
+        
         return jsonify({"status": "success", "projects": projects})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/project/<project_name>/display_name', methods=['POST'])
+def update_project_display_name(project_name):
+    """Update the display name for a project in its metadata.json"""
+    try:
+        data = request.json
+        display_name = data.get('display_name', '').strip()
+        
+        if not display_name:
+            return jsonify({"status": "error", "message": "Display name cannot be empty"}), 400
+        
+        # Check if project exists
+        project_dir = os.path.join(DATA_DIR, project_name)
+        if not os.path.isdir(project_dir):
+            return jsonify({"status": "error", "message": "Project not found"}), 404
+        
+        # Read existing metadata or create new one
+        metadata_path = os.path.join(project_dir, 'metadata.json')
+        metadata = {}
+        
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+            except Exception as e:
+                print(f"[Warning] Could not read existing metadata for {project_name}: {e}")
+                metadata = {}
+        
+        # Update display_name and timestamp
+        metadata['display_name'] = display_name
+        metadata['last_updated'] = time.time()
+        
+        # Ensure project_name is set
+        if 'project_name' not in metadata:
+            metadata['project_name'] = project_name
+        
+        # Save updated metadata
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=4, ensure_ascii=False)
+        
+        return jsonify({
+            "status": "success", 
+            "message": f"Display name updated to '{display_name}'",
+            "display_name": display_name
+        })
+        
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

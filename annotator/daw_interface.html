@@ -1133,6 +1133,17 @@
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         }
+
+        /* Project Info Display */
+        .form-display {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -1172,6 +1183,34 @@
                     <button class="btn btn-primary btn-block" id="load-project-btn">
                         加载项目
                     </button>
+                </div>
+            </div>
+
+            <!-- Project Info Panel -->
+            <div class="daw-panel" id="project-info-panel" style="display: none;">
+                <div class="daw-panel-header" onclick="togglePanel('project-info-panel')">
+                    <span>项目信息</span>
+                    <span class="panel-toggle">▼</span>
+                </div>
+                <div class="daw-panel-content">
+                    <div class="form-group">
+                        <label class="form-label">当前项目</label>
+                        <div class="form-display" id="current-project-display">未加载项目</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">项目显示名称</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" class="form-control" id="project-display-name-input" placeholder="输入友好的项目名称">
+                            <button class="btn btn-secondary" id="update-display-name-btn" style="width: auto; padding: 0 12px;">
+                                更新
+                            </button>
+                        </div>
+                        <div id="display-name-status" style="margin-top: 5px; font-size: 12px;"></div>
+                    </div>
+                    <!-- 预留空间，用于添加更多项目信息字段 -->
+                    <div class="form-group">
+                        <small style="color: var(--text-muted); font-style: italic;">更多项目信息字段即将添加...</small>
+                    </div>
                 </div>
             </div>
 
@@ -1540,6 +1579,11 @@
             const elements = {
                 projectSelector: document.getElementById('project-selector'),
                 loadProjectBtn: document.getElementById('load-project-btn'),
+                projectInfoPanel: document.getElementById('project-info-panel'),
+                currentProjectDisplay: document.getElementById('current-project-display'),
+                projectDisplayNameInput: document.getElementById('project-display-name-input'),
+                updateDisplayNameBtn: document.getElementById('update-display-name-btn'),
+                displayNameStatus: document.getElementById('display-name-status'),
                 bpmSourceSelect: document.getElementById('bpm-source-select'),
                 detectBpmBtn: document.getElementById('detect-bpm-btn'),
                 manualBpm: document.getElementById('manual-bpm'),
@@ -1646,8 +1690,13 @@
                         elements.projectSelector.innerHTML = '<option value="">-- 请选择项目 --</option>';
                         data.projects.forEach(project => {
                             const option = document.createElement('option');
-                            option.value = project;
-                            option.textContent = project;
+                            // Use folder_name as value for backend compatibility
+                            option.value = project.folder_name;
+                            // Display the friendly display_name to user
+                            option.textContent = project.display_name;
+                            // Store both values for potential future use
+                            option.dataset.folderName = project.folder_name;
+                            option.dataset.displayName = project.display_name;
                             elements.projectSelector.appendChild(option);
                         });
                     } else {
@@ -1823,6 +1872,8 @@
                         showStatus(null, `项目 "${projectName}" 加载成功 (需要检测 BPM)`, 'success');
                     }
                     
+                    // Show project info panel and update project information
+                    showProjectInfo(projectName);
                     
                     // Enable controls
                     enableControls();
@@ -1832,6 +1883,25 @@
                 } finally {
                     hideLoading();
                 }
+            }
+
+            // Show project info panel and update project information
+            function showProjectInfo(projectName) {
+                // Show the project info panel
+                elements.projectInfoPanel.style.display = 'block';
+                
+                // Get the selected option to show display name
+                const selectedOption = elements.projectSelector.selectedOptions[0];
+                const displayName = selectedOption ? selectedOption.dataset.displayName : projectName;
+                
+                // Update current project display
+                elements.currentProjectDisplay.textContent = displayName;
+                
+                // Set current display name in input for editing
+                elements.projectDisplayNameInput.value = displayName;
+                
+                // Clear any previous status messages
+                elements.displayNameStatus.textContent = '';
             }
 
             // Load annotations
@@ -2556,6 +2626,85 @@
                 const project = elements.projectSelector.value;
                 if (project) {
                     loadProject(project);
+                }
+            });
+
+            // Clear project info panel when project selector changes
+            elements.projectSelector.addEventListener('change', () => {
+                const selectedProject = elements.projectSelector.value;
+                if (!selectedProject) {
+                    // Hide project info panel when no project selected
+                    elements.projectInfoPanel.style.display = 'none';
+                    elements.currentProjectDisplay.textContent = '未加载项目';
+                    elements.projectDisplayNameInput.value = '';
+                    elements.displayNameStatus.textContent = '';
+                }
+            });
+
+            // Update display name functionality
+            elements.updateDisplayNameBtn.addEventListener('click', async () => {
+                const selectedProject = elements.projectSelector.value;
+                const newDisplayName = elements.projectDisplayNameInput.value.trim();
+
+                if (!selectedProject) {
+                    elements.displayNameStatus.textContent = '请先选择一个项目';
+                    elements.displayNameStatus.style.color = 'var(--error-color)';
+                    return;
+                }
+
+                if (!newDisplayName) {
+                    elements.displayNameStatus.textContent = '显示名称不能为空';
+                    elements.displayNameStatus.style.color = 'var(--error-color)';
+                    return;
+                }
+
+                try {
+                    elements.displayNameStatus.textContent = '正在更新...';
+                    elements.displayNameStatus.style.color = 'var(--text-muted)';
+                    elements.updateDisplayNameBtn.disabled = true;
+
+                    const response = await fetch(`/api/project/${selectedProject}/display_name`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            display_name: newDisplayName
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        elements.displayNameStatus.textContent = '显示名称已更新';
+                        elements.displayNameStatus.style.color = 'var(--success-color)';
+                        
+                        // Update the option text in the selector
+                        const selectedOption = elements.projectSelector.selectedOptions[0];
+                        if (selectedOption) {
+                            selectedOption.textContent = newDisplayName;
+                            selectedOption.dataset.displayName = newDisplayName;
+                        }
+                        
+                        // Clear status after 3 seconds
+                        setTimeout(() => {
+                            elements.displayNameStatus.textContent = '';
+                        }, 3000);
+                    } else {
+                        throw new Error(result.message || 'Failed to update display name');
+                    }
+                } catch (error) {
+                    elements.displayNameStatus.textContent = `更新失败: ${error.message}`;
+                    elements.displayNameStatus.style.color = 'var(--error-color)';
+                } finally {
+                    elements.updateDisplayNameBtn.disabled = false;
+                }
+            });
+
+            // Allow Enter key to update display name
+            elements.projectDisplayNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    elements.updateDisplayNameBtn.click();
                 }
             });
 

@@ -196,8 +196,13 @@
                         projectSelector.innerHTML = '<option value="">-- 请选择一个项目 --</option>';
                         data.projects.forEach(project => {
                             const option = document.createElement('option');
-                            option.value = project;
-                            option.textContent = project;
+                            // Use folder_name as value for backend compatibility
+                            option.value = project.folder_name;
+                            // Display the friendly display_name to user
+                            option.textContent = project.display_name;
+                            // Store both values for potential future use
+                            option.dataset.folderName = project.folder_name;
+                            option.dataset.displayName = project.display_name;
                             projectSelector.appendChild(option);
                         });
                     } else { throw new Error(data.message); }
