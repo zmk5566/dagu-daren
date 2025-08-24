@@ -57,6 +57,58 @@
             opacity: 0.8;
         }
 
+        /* Top Banner - Tiling pattern from top to above character */
+        .top-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(55vh - 230px); /* Set to 55vh - 230px as requested */
+            background-repeat: repeat;
+            background-size: auto;
+            background-position: 0 0;
+            z-index: 3; /* Below character but above background */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: bannerScroll 20s linear infinite; /* Smooth continuous movement */
+            display: none; /* Hidden by default */
+        }
+
+        .top-banner.loaded {
+            opacity: 1;
+        }
+
+        /* Banner scrolling animation - Particle-like movement using sin/cos */
+        @keyframes bannerScroll {
+            0% {
+                background-position: 0px 0px;
+            }
+            12.5% {
+                background-position: 35px 15px; /* sin(π/4) ≈ 0.7, cos(π/4) ≈ 0.7 */
+            }
+            25% {
+                background-position: 50px 50px; /* sin(π/2) = 1, cos(π/2) = 0 */
+            }
+            37.5% {
+                background-position: 35px 85px; /* sin(3π/4) ≈ 0.7, cos(3π/4) ≈ -0.7 */
+            }
+            50% {
+                background-position: 0px 100px; /* sin(π) = 0, cos(π) = -1 */
+            }
+            62.5% {
+                background-position: -35px 85px; /* sin(5π/4) ≈ -0.7, cos(5π/4) ≈ -0.7 */
+            }
+            75% {
+                background-position: -50px 50px; /* sin(3π/2) = -1, cos(3π/2) = 0 */
+            }
+            87.5% {
+                background-position: -35px 15px; /* sin(7π/4) ≈ -0.7, cos(7π/4) ≈ 0.7 */
+            }
+            100% {
+                background-position: 0px 0px; /* sin(2π) = 0, cos(2π) = 1 */
+            }
+        }
+
         /* Character Display (Above don-display) */
         .character-display {
             position: absolute;
@@ -64,7 +116,7 @@
             top: calc(30% - 210px); /* Down 15px from previous position */
             width: 160px; /* Character size */
             height: 160px; /* Character size */
-            z-index: 4; /* Below game track but above background */
+            z-index: 15; /* Above banner and other elements */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -208,33 +260,76 @@
             max-width: 400px; /* Maximum width */
             height: 20px;
             z-index: 15;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.8); /* 20% transparency */
             border: 2px solid rgba(255, 255, 255, 0.3);
             overflow: hidden;
         }
 
-        .spirit-bar {
+        /* DDR-style spirit lines container */
+        .spirit-lines {
             position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, #4A90E2, #0066CC, #4CAF50);
-            transition: width 0.3s ease;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* Critical threshold marker at 60% */
-        .spirit-threshold {
-            position: absolute;
-            top: -5px;
-            left: 60%;
-            width: 3px;
-            height: 30px;
+        /* Individual spirit line */
+        .spirit-line {
+            width: 1px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* Active spirit lines - different colors and thickness based on percentage */
+        .spirit-line.active-yellow {
             background: #FFD700;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            z-index: 16;
+            width: 1px;
+            height: 12px;
         }
 
+        .spirit-line.active-orange {
+            background: #FF8C00;
+            width: 1px;
+            height: 12px;
+        }
+
+        /* 85%+ state - all lines become thick and get rainbow animation */
+        .spirit-line.active-rainbow {
+            width: 3px;
+            height: 16px;
+            animation: rainbowPulse 1.5s ease-in-out infinite;
+        }
+
+        /* Rainbow color cycling animation - softer, more elegant */
+        @keyframes rainbowPulse {
+            0% { background: hsl(0, 65%, 55%); }      /* Soft Red */
+            16.67% { background: hsl(60, 65%, 55%); } /* Soft Yellow */
+            33.33% { background: hsl(120, 65%, 55%); }/* Soft Green */
+            50% { background: hsl(180, 65%, 55%); }   /* Soft Cyan */
+            66.67% { background: hsl(240, 65%, 55%); }/* Soft Blue */
+            83.33% { background: hsl(300, 65%, 55%); }/* Soft Magenta */
+            100% { background: hsl(360, 65%, 55%); }  /* Soft Red again */
+        }
+
+        /* Spirit system container rainbow glow when 85%+ - softer glow */
+        .spirit-system.rainbow-mode {
+            animation: rainbowGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 15px hsla(0, 65%, 55%, 0.4); }
+            16.67% { box-shadow: 0 0 15px hsla(60, 65%, 55%, 0.4); }
+            33.33% { box-shadow: 0 0 15px hsla(120, 65%, 55%, 0.4); }
+            50% { box-shadow: 0 0 15px hsla(180, 65%, 55%, 0.4); }
+            66.67% { box-shadow: 0 0 15px hsla(240, 65%, 55%, 0.4); }
+            83.33% { box-shadow: 0 0 15px hsla(300, 65%, 55%, 0.4); }
+            100% { box-shadow: 0 0 15px hsla(360, 65%, 55%, 0.4); }
+        }
 
         .spirit-label {
             position: absolute;
@@ -248,6 +343,26 @@
             white-space: nowrap;
         }
 
+        /* Song Name Display - Top Right Corner */
+        .song-name {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            max-width: 40vw; /* Prevent overflow on narrow screens */
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 20; /* Above all other elements */
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            backdrop-filter: blur(5px);
+        }
+
         /* Main Game Area - Full screen */
         .game-area {
             position: absolute;
@@ -257,7 +372,7 @@
             bottom: 0;
             background: transparent;
             overflow: hidden;
-            z-index: 2;
+            z-index: 5; /* Higher than banner to ensure character visibility */
         }
 
         /* Beat Track - Horizontal scrolling area */
@@ -933,8 +1048,49 @@
 
         <!-- Spirit System -->
         <div class="spirit-system" id="spiritSystem">
-            <div class="spirit-bar" id="spiritBar"></div>
-            <div class="spirit-threshold"></div>
+            <div class="spirit-lines" id="spiritLines">
+                <!-- 40 spirit lines for denser DDR-style display (2.5% per line) -->
+                <div class="spirit-line" data-threshold="2.5"></div>
+                <div class="spirit-line" data-threshold="5"></div>
+                <div class="spirit-line" data-threshold="7.5"></div>
+                <div class="spirit-line" data-threshold="10"></div>
+                <div class="spirit-line" data-threshold="12.5"></div>
+                <div class="spirit-line" data-threshold="15"></div>
+                <div class="spirit-line" data-threshold="17.5"></div>
+                <div class="spirit-line" data-threshold="20"></div>
+                <div class="spirit-line" data-threshold="22.5"></div>
+                <div class="spirit-line" data-threshold="25"></div>
+                <div class="spirit-line" data-threshold="27.5"></div>
+                <div class="spirit-line" data-threshold="30"></div>
+                <div class="spirit-line" data-threshold="32.5"></div>
+                <div class="spirit-line" data-threshold="35"></div>
+                <div class="spirit-line" data-threshold="37.5"></div>
+                <div class="spirit-line" data-threshold="40"></div>
+                <div class="spirit-line" data-threshold="42.5"></div>
+                <div class="spirit-line" data-threshold="45"></div>
+                <div class="spirit-line" data-threshold="47.5"></div>
+                <div class="spirit-line" data-threshold="50"></div>
+                <div class="spirit-line" data-threshold="52.5"></div>
+                <div class="spirit-line" data-threshold="55"></div>
+                <div class="spirit-line" data-threshold="57.5"></div>
+                <div class="spirit-line" data-threshold="60"></div>
+                <div class="spirit-line" data-threshold="62.5"></div>
+                <div class="spirit-line" data-threshold="65"></div>
+                <div class="spirit-line" data-threshold="67.5"></div>
+                <div class="spirit-line" data-threshold="70"></div>
+                <div class="spirit-line" data-threshold="72.5"></div>
+                <div class="spirit-line" data-threshold="75"></div>
+                <div class="spirit-line" data-threshold="77.5"></div>
+                <div class="spirit-line" data-threshold="80"></div>
+                <div class="spirit-line" data-threshold="82.5"></div>
+                <div class="spirit-line" data-threshold="85"></div>
+                <div class="spirit-line" data-threshold="87.5"></div>
+                <div class="spirit-line" data-threshold="90"></div>
+                <div class="spirit-line" data-threshold="92.5"></div>
+                <div class="spirit-line" data-threshold="95"></div>
+                <div class="spirit-line" data-threshold="97.5"></div>
+                <div class="spirit-line" data-threshold="100"></div>
+            </div>
             <div class="spirit-label" id="spiritLabel">灵: 0%</div>
         </div>
 
@@ -958,6 +1114,12 @@
                             <span>显示命中线</span>
                         </div>
                     </div>
+                    <div class="setting-item">
+                        <div class="setting-toggle" id="pauseBannerToggle">
+                            <div class="setting-checkbox" id="pauseBannerCheckbox"></div>
+                            <span>显示顶部横幅</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <button class="pause-menu-btn" id="pauseBtn">继续</button>
@@ -969,8 +1131,14 @@
 
         <!-- Main Game Area -->
         <div class="game-area">
+            <!-- Song Name Display -->
+            <div class="song-name" id="songName">待加载</div>
+            
             <!-- Background Image Container -->
             <div class="game-background" id="gameBackground"></div>
+            
+            <!-- Top Banner (Above background) -->
+            <div class="top-banner" id="topBanner"></div>
             
             <!-- Character Display (Above game track) -->
             <div class="character-display" id="characterDisplay">
@@ -1062,7 +1230,8 @@
             spiritValue: 0,    // Spirit value (0-100%)
             spiritCombo: 0,    // Current combo for spirit calculation
             maxSpiritCombo: 0, // Maximum spirit combo achieved
-            challengeFailed: false // Whether challenge failed
+            challengeFailed: false, // Whether challenge failed
+            currentProjectName: null // Current project name for reloading images
         };
 
         // Particle system
@@ -1101,6 +1270,7 @@
             
             updateSpiritDisplay();
             updateCharacterDisplay(); // Update character based on spirit value
+            updateBannerDisplay(); // Update banner based on spirit value
             checkChallengeStatus();
         }
 
@@ -1108,19 +1278,37 @@
             // Update spirit label with actual value
             spiritElements.label.textContent = `灵: ${Math.round(gameState.spiritValue)}%`;
             
-            // Update horizontal bar width (capped at 85% for display)
-            const displayValue = Math.min(gameState.spiritValue, 85);
-            const barWidth = (displayValue / 85) * 100;
-            spiritElements.bar.style.width = `${barWidth}%`;
+            // Reset all lines to inactive state
+            spiritElements.lines.forEach(line => {
+                line.className = 'spirit-line';
+            });
             
-            // Special visual effects for full spirit (85% or above)
-            if (gameState.spiritValue >= 85) {
-                spiritElements.system.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.6)';
-                spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #4CAF50)';
+            // Check if we're in rainbow mode (85%+)
+            const isRainbowMode = gameState.spiritValue >= 85;
+            
+            // Add or remove rainbow mode class from container
+            if (isRainbowMode) {
+                spiritElements.system.classList.add('rainbow-mode');
             } else {
-                spiritElements.system.style.boxShadow = 'none';
-                spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #0066CC, #4CAF50)';
+                spiritElements.system.classList.remove('rainbow-mode');
             }
+            
+            // Activate lines based on spirit value
+            spiritElements.lines.forEach(line => {
+                const threshold = parseFloat(line.dataset.threshold);
+                if (gameState.spiritValue >= threshold) {
+                    if (isRainbowMode) {
+                        // 85%+: All active lines become thick rainbow lines
+                        line.classList.add('active-rainbow');
+                    } else if (threshold < 60) {
+                        // Below 60%: Yellow thin lines
+                        line.classList.add('active-yellow');
+                    } else {
+                        // 60-84%: Orange thin lines
+                        line.classList.add('active-orange');
+                    }
+                }
+            });
         }
 
         function checkChallengeStatus() {
@@ -1157,14 +1345,16 @@
             gameState.maxSpiritCombo = 0;
             gameState.challengeFailed = false;
             
-            // Reset visual display
-            spiritElements.bar.style.width = '0%';
-            spiritElements.bar.style.background = 'linear-gradient(to right, #4A90E2, #0066CC, #4CAF50)';
+            // Reset visual display - all lines to inactive
+            spiritElements.lines.forEach(line => {
+                line.className = 'spirit-line';
+            });
             spiritElements.label.textContent = '灵: 0%';
-            spiritElements.system.style.boxShadow = 'none';
+            spiritElements.system.classList.remove('rainbow-mode');
             
-            // Update character to unsatisfied state
+            // Update character and banner to unsatisfied state
             updateCharacterDisplay();
+            updateBannerDisplay();
         }
 
         // Game settings
@@ -1181,7 +1371,8 @@
                 perfect: 1000,
                 good: 500,
                 miss: 0
-            }
+            },
+            showBanner: false // Default: don't show banner
         };
 
         // DOM elements - will be initialized in initGame
@@ -1212,6 +1403,8 @@
                 pauseTouchDrumCheckbox: document.getElementById('pauseTouchDrumCheckbox'),
                 pauseHitTargetToggle: document.getElementById('pauseHitTargetToggle'),
                 pauseHitTargetCheckbox: document.getElementById('pauseHitTargetCheckbox'),
+                pauseBannerToggle: document.getElementById('pauseBannerToggle'),
+                pauseBannerCheckbox: document.getElementById('pauseBannerCheckbox'),
                 gameOverScreen: document.getElementById('gameOverScreen'),
                 finalScore: document.getElementById('finalScore'),
                 maxCombo: document.getElementById('maxCombo'),
@@ -1220,7 +1413,9 @@
                 playAgainBtn: document.getElementById('playAgainBtn'),
                 gameBackground: document.getElementById('gameBackground'),
                 characterDisplay: document.getElementById('characterDisplay'),
-                characterImage: document.getElementById('characterImage')
+                characterImage: document.getElementById('characterImage'),
+                topBanner: document.getElementById('topBanner'),
+                songName: document.getElementById('songName')
             };
 
             donElements = {
@@ -1230,7 +1425,7 @@
 
             spiritElements = {
                 system: document.getElementById('spiritSystem'),
-                bar: document.getElementById('spiritBar'),
+                lines: document.querySelectorAll('.spirit-line'),
                 label: document.getElementById('spiritLabel')
             };
 
@@ -1266,6 +1461,21 @@
                 updatePauseMenuCheckbox(elements.pauseHitTargetCheckbox, currentState);
                 localStorage.setItem('hitTargetEnabled', currentState);
             });
+
+            // Initialize banner toggle
+            const bannerEnabled = localStorage.getItem('bannerEnabled') === 'true';
+            setBannerEnabled(bannerEnabled);
+            updatePauseMenuCheckbox(elements.pauseBannerCheckbox, bannerEnabled);
+
+            elements.pauseBannerToggle.addEventListener('click', () => {
+                console.log('[Banner] Toggle button clicked');
+                const currentState = !elements.pauseBannerCheckbox.classList.contains('checked');
+                console.log('[Banner] Current state will be:', currentState);
+                setBannerEnabled(currentState);
+                updatePauseMenuCheckbox(elements.pauseBannerCheckbox, currentState);
+                localStorage.setItem('bannerEnabled', currentState);
+                console.log('[Banner] Settings updated');
+            });
         }
 
         // Set touch drum enabled/disabled state
@@ -1284,6 +1494,27 @@
                 hitTarget.classList.add('visible');
             } else {
                 hitTarget.classList.remove('visible');
+            }
+        }
+
+        // Set banner enabled/disabled state
+        function setBannerEnabled(enabled) {
+            console.log('[Banner] setBannerEnabled called with:', enabled);
+            settings.showBanner = enabled;
+            
+            if (elements.topBanner) {
+                if (enabled) {
+                    elements.topBanner.style.display = 'block';
+                    console.log('[Banner] Banner display set to block');
+                    
+                    // Update banner display with current spirit value
+                    updateBannerDisplay();
+                } else {
+                    elements.topBanner.style.display = 'none';
+                    console.log('[Banner] Banner display set to none');
+                }
+            } else {
+                console.warn('[Banner] topBanner element not found');
             }
         }
 
@@ -1392,6 +1623,49 @@
             } else {
                 console.log('[Character] No character images found');
             }
+
+            // Load banner images and store URLs (always load for potential use)
+            if (elements.topBanner && projectImages.banner) {
+                const bannerImages = projectImages.banner;
+                
+                // Store banner image URLs in gameState for switching
+                gameState.bannerImages = {
+                    unsatisfied: null,
+                    satisfied: null
+                };
+
+                // Preload unsatisfied banner image
+                if (bannerImages.unsatisfied) {
+                    const unsatisfiedUrl = `/api/project/${projectName}/images/${bannerImages.unsatisfied}`;
+                    const unsatisfiedImg = new Image();
+                    unsatisfiedImg.onload = function() {
+                        gameState.bannerImages.unsatisfied = unsatisfiedUrl;
+                        console.log('[Banner] Unsatisfied banner image loaded');
+                        // Set initial banner (unsatisfied by default)
+                        updateBannerDisplay();
+                    };
+                    unsatisfiedImg.onerror = function() {
+                        console.warn('[Banner] Failed to load unsatisfied banner image');
+                    };
+                    unsatisfiedImg.src = unsatisfiedUrl;
+                }
+
+                // Preload satisfied banner image
+                if (bannerImages.satisfied) {
+                    const satisfiedUrl = `/api/project/${projectName}/images/${bannerImages.satisfied}`;
+                    const satisfiedImg = new Image();
+                    satisfiedImg.onload = function() {
+                        gameState.bannerImages.satisfied = satisfiedUrl;
+                        console.log('[Banner] Satisfied banner image loaded');
+                    };
+                    satisfiedImg.onerror = function() {
+                        console.warn('[Banner] Failed to load satisfied banner image');
+                    };
+                    satisfiedImg.src = satisfiedUrl;
+                }
+            } else {
+                console.log('[Banner] No banner images found');
+            }
         }
 
         // Load game data for selected project
@@ -1400,6 +1674,12 @@
 
             elements.loadingScreen.style.display = 'flex';
             gameState.currentProject = projectName;
+            gameState.currentProjectName = projectName;
+            
+            // Update song name display
+            const selectedOption = elements.projectSelect.querySelector(`option[value="${projectName}"]`);
+            const displayName = selectedOption ? selectedOption.dataset.displayName : projectName;
+            elements.songName.textContent = displayName;
 
             try {
                 // Load project images
@@ -2133,6 +2413,25 @@
             }
         }
 
+        // Update banner display based on spirit value
+        function updateBannerDisplay() {
+            if (!settings.showBanner || !elements.topBanner || !gameState.bannerImages) {
+                return;
+            }
+
+            const isSatisfied = gameState.spiritValue >= 60; // Spirit >= 60% is satisfied
+            const imageUrl = isSatisfied ? 
+                gameState.bannerImages.satisfied : 
+                gameState.bannerImages.unsatisfied;
+
+            if (imageUrl) {
+                elements.topBanner.style.backgroundImage = `url('${imageUrl}')`;
+                elements.topBanner.classList.add('loaded');
+                
+                console.log(`[Banner] Updated to ${isSatisfied ? 'satisfied' : 'unsatisfied'} (spirit: ${Math.round(gameState.spiritValue)}%)`);
+            }
+        }
+
         // Clear project images
         function clearProjectImages() {
             // Clear background image
@@ -2147,9 +2446,18 @@
                 elements.characterDisplay.classList.remove('loaded');
             }
             
+            // Clear banner image
+            if (elements.topBanner) {
+                elements.topBanner.style.backgroundImage = '';
+                elements.topBanner.classList.remove('loaded');
+            }
+            
             // Clear stored image URLs
             if (gameState.characterImages) {
                 gameState.characterImages = null;
+            }
+            if (gameState.bannerImages) {
+                gameState.bannerImages = null;
             }
         }
 
