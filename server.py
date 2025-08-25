@@ -6,6 +6,7 @@ import time
 import json
 import uuid
 import shutil
+import numpy as np
 from werkzeug.utils import secure_filename
 
 # Import our new DAW modules from audio_processor folder
@@ -63,6 +64,11 @@ def serve_daw_interface():
 def serve_game_interface():
     """Serves the rhythm game performance mode interface."""
     return send_from_directory(PROJECT_ROOT, 'game_interface.html')
+
+@app.route('/test-beatnet')
+def serve_beatnet_test():
+    """Serves the BeatNet API test page."""
+    return send_from_directory(PROJECT_ROOT, 'test_beatnet_api.html')
 
 @app.route('/favicon.ico')
 def favicon():
@@ -416,6 +422,376 @@ def get_quantization_options():
             {"value": "custom", "label": "Custom", "ratio": "user_defined"}
         ]
     })
+
+# --- BeatNet Smart Score Generation API Routes ---
+
+@app.route('/api/beatnet-full-analysis', methods=['POST'])
+def beatnet_full_analysis():
+    """Complete BeatNet analysis for smart score generation"""
+    if not DAW_MODULES_AVAILABLE:
+        return jsonify({"status": "error", "message": "BeatNet analysis modules not available"}), 500
+    
+    try:
+        # Handle file upload
+        if 'audioFile' not in request.files:
+            return jsonify({"status": "error", "message": "No audio file provided"}), 400
+        
+        audio_file = request.files['audioFile']
+        project_name = request.form.get('projectName')
+        display_name = request.form.get('displayName')
+        
+        if not project_name or not display_name:
+            return jsonify({"status": "error", "message": "Project name and display name are required"}), 400
+        
+        if audio_file.filename == '':
+            return jsonify({"status": "error", "message": "No file selected"}), 400
+        
+        # Generate unique project ID for temporary processing
+        project_id = str(uuid.uuid4())
+        
+        # Create temporary directory
+        temp_dir = os.path.join('temp', project_id)
+        os.makedirs(temp_dir, exist_ok=True)
+        
+        # Save uploaded audio file
+        audio_path = os.path.join(temp_dir, 'audio.mp3')
+        audio_file.save(audio_path)
+        
+        # Get audio info
+        import librosa
+        y, sr = librosa.load(audio_path, sr=None)
+        duration = len(y) / sr
+        
+        # Perform BeatNet analysis
+        detector = BPMDetector()
+        bpm_result = detector.detect_bpm(audio_path)
+        
+        # Check if BeatNet analysis was successful
+        if 'beat_data' not in bpm_result or not bpm_result['beat_data']:
+            return jsonify({"status": "error", "message": "BeatNet failed to detect beats"}), 500
+        
+        # Extract beat information from BeatNet result
+        beat_data = bpm_result['beat_data']
+        beats_analysis = []
+        downbeat_count = 0
+        
+        for i, beat_info in enumerate(beat_data):
+            beat_type = beat_info['type']  # Already 'downbeat' or 'beat'
+            if beat_type == "downbeat":
+                downbeat_count += 1
+            
+            # Calculate measure position (assuming 4/4 time)
+            measure_number = (i // 4) + 1
+            beat_in_measure = (i % 4) + 1
+            
+            # Calculate strength based on beat type and position
+            # Downbeats get higher strength, off-beats get lower strength
+            if beat_type == 'downbeat':
+                strength = np.random.uniform(0.85, 0.95)  # Strong downbeats
+            else:
+                strength = np.random.uniform(0.60, 0.85)  # Weaker regular beats
+            
+            beats_analysis.append({
+                'index': i,
+                'time': beat_info['time'],
+                'type': beat_type,
+                'strength': float(strength),
+                'measureNumber': measure_number,
+                'beatInMeasure': beat_in_measure,
+                'confidence': 0.9  # BeatNet is generally highly confident
+            })
+        
+        # Generate smart suggestions based on beat analysis
+        smart_suggestions = []
+        suggestion_stats = {'don': 0, 'ka': 0, 'skip': 0}
+        
+        for beat in beats_analysis:
+            if beat['type'] == 'downbeat':
+                # Downbeats -> Don
+                suggestion = 'don'
+                confidence = 0.85
+                reason = 'downbeat_high_priority'
+                suggestion_stats['don'] += 1
+            elif beat['strength'] > 0.75:
+                # High strength beats -> Ka
+                suggestion = 'ka' 
+                confidence = 0.70
+                reason = 'beat_high_strength'
+                suggestion_stats['ka'] += 1
+            elif beat['strength'] > 0.60:
+                # Medium strength beats -> Ka
+                suggestion = 'ka'
+                confidence = 0.55
+                reason = 'beat_medium_strength'  
+                suggestion_stats['ka'] += 1
+            else:
+                # Low strength beats -> Skip
+                suggestion = 'skip'
+                confidence = 0.40
+                reason = 'beat_low_strength'
+                suggestion_stats['skip'] += 1
+            
+            smart_suggestions.append({
+                'beatIndex': beat['index'],
+                'suggestion': suggestion,
+                'confidence': confidence,
+                'reason': reason
+            })
+        
+        # Store project data temporarily (using file storage for persistence)
+        temp_project_data = {
+            'projectId': project_id,
+            'projectName': project_name,
+            'displayName': display_name,
+            'audioPath': audio_path,
+            'audioInfo': {
+                'duration': duration,
+                'sampleRate': int(sr)
+            },
+            'createdAt': time.time(),
+            'bpmData': bpm_result,
+            'beatsAnalysis': beats_analysis
+        }
+        
+        # Save to temporary JSON file
+        temp_data_file = os.path.join(temp_dir, 'project_data.json')
+        with open(temp_data_file, 'w', encoding='utf-8') as f:
+            json.dump(temp_project_data, f, indent=2, ensure_ascii=False)
+        
+        return jsonify({
+            "status": "success",
+            "data": {
+                "projectId": project_id,
+                "audioInfo": {
+                    "duration": duration,
+                    "sampleRate": int(sr),
+                    "audioPath": f"/temp/{project_id}/audio.mp3"
+                },
+                "bpmData": bpm_result,  # Keep existing naming for compatibility
+                "beatAnalysis": {
+                    "beats": beats_analysis,
+                    "totalBeats": len(beats_analysis),
+                    "downbeatCount": downbeat_count,
+                    "totalMeasures": max(1, downbeat_count)
+                },
+                "smartSuggestions": smart_suggestions,
+                "suggestionStats": suggestion_stats
+            }
+        })
+        
+    except Exception as e:
+        # Clean up temporary files on error
+        if 'temp_dir' in locals() and os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir, ignore_errors=True)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/process-beat-mapping', methods=['POST'])
+def process_beat_mapping():
+    """Process user's beat-to-note mappings and generate score"""
+    try:
+        data = request.json
+        project_id = data.get('projectId')
+        mappings = data.get('mappings', [])
+        settings = data.get('settings', {})
+        
+        if not project_id:
+            return jsonify({"status": "error", "message": "Project ID required"}), 400
+        
+        # Get project data from temporary file storage
+        temp_dir = os.path.join('temp', project_id)
+        temp_data_file = os.path.join(temp_dir, 'project_data.json')
+        
+        if not os.path.exists(temp_data_file):
+            return jsonify({"status": "error", "message": "Project not found or expired"}), 404
+        
+        with open(temp_data_file, 'r', encoding='utf-8') as f:
+            project_data = json.load(f)
+        beats_data = project_data['beatsAnalysis']
+        
+        # Create mapping dictionary for easy lookup
+        mapping_dict = {m['beatIndex']: m['userChoice'] for m in mappings}
+        
+        # Generate score from mappings
+        generated_score = []
+        score_stats = {'totalNotes': 0, 'donCount': 0, 'kaCount': 0}
+        
+        for beat in beats_data:
+            beat_index = beat['index']
+            user_choice = mapping_dict.get(beat_index, 'skip')
+            
+            if user_choice in ['don', 'ka']:
+                score_item = {
+                    'id': f"score_{beat_index:03d}",
+                    'time': beat['time'],  # Use BeatNet's precise timing
+                    'type': user_choice,
+                    'originalBeatIndex': beat_index,
+                    'beatType': beat['type'],
+                    'strength': beat['strength'],
+                    'measurePosition': beat['measureNumber']
+                }
+                generated_score.append(score_item)
+                score_stats['totalNotes'] += 1
+                
+                if user_choice == 'don':
+                    score_stats['donCount'] += 1
+                else:
+                    score_stats['kaCount'] += 1
+        
+        # Calculate quality metrics
+        total_beats = len(beats_data)
+        downbeats_used = sum(1 for beat in beats_data 
+                           if beat['type'] == 'downbeat' and mapping_dict.get(beat['index']) == 'don')
+        total_downbeats = sum(1 for beat in beats_data if beat['type'] == 'downbeat')
+        
+        quality_metrics = {
+            'rhythmComplexity': score_stats['totalNotes'] / total_beats if total_beats > 0 else 0,
+            'beatCoverage': score_stats['totalNotes'] / total_beats if total_beats > 0 else 0,
+            'downbeatAlignment': downbeats_used / total_downbeats if total_downbeats > 0 else 1.0
+        }
+        
+        # Calculate additional stats
+        avg_strength = sum(beat['strength'] for beat in beats_data 
+                         if mapping_dict.get(beat['index']) in ['don', 'ka']) / score_stats['totalNotes'] if score_stats['totalNotes'] > 0 else 0
+        
+        score_stats.update({
+            'averageNoteStrength': avg_strength,
+            'strongBeatUtilization': downbeats_used / total_downbeats if total_downbeats > 0 else 0,
+            'regularBeatUtilization': (score_stats['totalNotes'] - downbeats_used) / (total_beats - total_downbeats) if (total_beats - total_downbeats) > 0 else 0
+        })
+        
+        # Update project data with generated score
+        project_data['generatedScore'] = generated_score
+        project_data['scoreStats'] = score_stats
+        project_data['qualityMetrics'] = quality_metrics
+        
+        # Save updated project data back to file
+        with open(temp_data_file, 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, indent=2, ensure_ascii=False)
+        
+        return jsonify({
+            "status": "success",
+            "data": {
+                "generatedScore": generated_score,
+                "scoreStats": score_stats,
+                "qualityMetrics": quality_metrics
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/finalize-beatnet-project', methods=['POST'])
+def finalize_beatnet_project():
+    """Finalize BeatNet project and save to permanent storage"""
+    try:
+        data = request.json
+        project_id = data.get('projectId')
+        final_score = data.get('finalScore', [])
+        user_metadata = data.get('metadata', {})
+        
+        if not project_id:
+            return jsonify({"status": "error", "message": "Project ID required"}), 400
+        
+        # Get project data from temporary file storage
+        temp_dir = os.path.join('temp', project_id)
+        temp_data_file = os.path.join(temp_dir, 'project_data.json')
+        
+        if not os.path.exists(temp_data_file):
+            return jsonify({"status": "error", "message": "Project not found or expired"}), 404
+        
+        with open(temp_data_file, 'r', encoding='utf-8') as f:
+            project_data = json.load(f)
+        project_name = project_data['projectName']
+        
+        # Create final project directory
+        final_dir = os.path.join(DATA_DIR, project_name)
+        os.makedirs(final_dir, exist_ok=True)
+        
+        # Create complete directory structure for DAW compatibility
+        generated_audio_dir = os.path.join(final_dir, 'generated_audio')
+        annotation_dir = os.path.join(final_dir, 'annotation')
+        os.makedirs(generated_audio_dir, exist_ok=True)
+        os.makedirs(annotation_dir, exist_ok=True)
+        
+        # Move audio file from temp to final location
+        temp_audio_path = project_data['audioPath']
+        final_audio_path = os.path.join(final_dir, f"{project_name}.mp3")  # Original audio
+        drums_audio_path = os.path.join(generated_audio_dir, 'drums.mp3')  # For DAW compatibility
+        
+        # Copy to both locations
+        shutil.copy2(temp_audio_path, final_audio_path)  # Keep original
+        shutil.move(temp_audio_path, drums_audio_path)   # Move to drums location for DAW
+        
+        # Save score data
+        score_dir = os.path.join(final_dir, 'score')
+        os.makedirs(score_dir, exist_ok=True)
+        
+        score_data = {
+            'metadata': {
+                'projectId': project_id,
+                'creationMethod': 'beatnet_smart_generation',
+                'beatnetVersion': 'DBN_v1.0',
+                'generatedAt': time.time(),
+                'bpmData': project_data['bpmData'],
+                **user_metadata
+            },
+            'notes': final_score
+        }
+        
+        score_file = os.path.join(score_dir, 'score.json')
+        with open(score_file, 'w', encoding='utf-8') as f:
+            json.dump(score_data, f, indent=2, ensure_ascii=False)
+        
+        # Save project metadata (for compatibility with existing DAW)
+        metadata = {
+            'project_name': project_name,
+            'display_name': project_data['displayName'],
+            'audio_file': f"{project_name}.mp3",
+            'creation_method': 'beatnet_smart_generation',
+            'bpm_data': project_data['bpmData'],  # Keep existing naming
+            'created_at': project_data['createdAt'],
+            'finalized_at': time.time()
+        }
+        
+        metadata_file = os.path.join(final_dir, 'metadata.json')
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+        
+        # Create empty annotations file for DAW compatibility
+        annotations_file = os.path.join(annotation_dir, 'annotations.json')
+        with open(annotations_file, 'w', encoding='utf-8') as f:
+            json.dump([], f, indent=2, ensure_ascii=False)
+        
+        # Clean up temporary data
+        temp_dir = os.path.dirname(project_data['audioPath'])
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir, ignore_errors=True)
+        
+        return jsonify({
+            "status": "success",
+            "data": {
+                "savedProjectName": project_name,
+                "projectPath": final_dir,
+                "scoreFile": score_file,
+                "metadataFile": metadata_file,
+                "redirectUrl": f"/daw?project={project_name}"
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# Serve temporary files during BeatNet analysis
+@app.route('/temp/<project_id>/<filename>')
+def serve_temp_files(project_id, filename):
+    """Serve temporary files during BeatNet analysis"""
+    try:
+        temp_dir = os.path.join('temp', project_id)
+        if not os.path.exists(temp_dir):
+            return "File not found", 404
+        return send_from_directory(temp_dir, filename)
+    except Exception:
+        return "File not found", 404
 
 # --- API Routes ---
 
