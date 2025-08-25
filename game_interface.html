@@ -3266,16 +3266,18 @@
             // Reset expanded state when selecting a new song
             collapseSongInfo();
             
-            // Mark that this is a click-initiated scroll (not user manual scroll)
+            // Mark that this is a click-initiated scroll with longer protection
             gameState.isClickScrolling = true;
+            gameState.clickScrollStartTime = performance.now();
             
             // Center the clicked song with smooth animation
             centerSongItem(songItem);
             
-            // Reset the click scrolling flag after animation
+            // Extend the click scrolling protection time for longer animations
             setTimeout(() => {
                 gameState.isClickScrolling = false;
-            }, 500);
+                gameState.clickScrollStartTime = null;
+            }, 800); // Increased from 500ms to 800ms
             
             console.log('[SongSelection] Selected song:', project.display_name);
         }
@@ -3343,6 +3345,17 @@
                 isScrolling = false;
                 isUserScrolling = false; // Reset user scrolling flag
                 
+                // Don't auto-snap if we're still in click scrolling mode
+                if (gameState.isClickScrolling) {
+                    return;
+                }
+                
+                // Additional protection: don't auto-snap if click was recent
+                if (gameState.clickScrollStartTime && 
+                    (performance.now() - gameState.clickScrollStartTime) < 1000) {
+                    return;
+                }
+                
                 // Find center item and snap to it
                 const centerItem = updateCenterSelection();
                 if (centerItem) {
@@ -3364,8 +3377,8 @@
                 // Clear existing timeout
                 clearTimeout(scrollTimeout);
                 
-                // Set timeout to snap to center after scrolling stops
-                scrollTimeout = setTimeout(handleScrollEnd, 150);
+                // Set timeout to snap to center after scrolling stops (increased delay)
+                scrollTimeout = setTimeout(handleScrollEnd, 300); // Increased from 150ms to 300ms
             });
             
             // Initial center selection
@@ -3391,15 +3404,21 @@
             const containerCenter = containerRect.left + containerRect.width / 2;
             const offset = itemCenter - containerCenter;
             
-            // Only scroll if the item is not already centered (avoid unnecessary scrolling)
-            if (Math.abs(offset) > 5) { // 5px tolerance
-                // Mark that we're doing programmatic scrolling
-                const scrollHandler = container.onscroll;
+            // Increased tolerance to reduce micro-adjustments and oscillation
+            if (Math.abs(offset) > 15) { // Increased from 5px to 15px tolerance
+                // Temporarily disable scroll-behavior for more precise control
+                const originalBehavior = container.style.scrollBehavior;
+                container.style.scrollBehavior = 'smooth';
                 
                 container.scrollTo({
                     left: scrollLeft + offset,
                     behavior: 'smooth'
                 });
+                
+                // Restore original scroll behavior after a delay
+                setTimeout(() => {
+                    container.style.scrollBehavior = originalBehavior;
+                }, 100);
             }
         }
 
