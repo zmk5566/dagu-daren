@@ -3277,6 +3277,39 @@
             setTimeout(() => {
                 gameState.isClickScrolling = false;
                 gameState.clickScrollStartTime = null;
+                
+                // Final state cleanup: ensure the clicked song is properly centered and focused
+                setTimeout(() => {
+                    // Re-run center selection to ensure final state is correct
+                    const finalUpdate = () => {
+                        const containerRect = elements.songList.getBoundingClientRect();
+                        const containerCenter = containerRect.left + containerRect.width / 2;
+                        
+                        let finalClosestItem = null;
+                        let finalClosestDistance = Infinity;
+                        
+                        document.querySelectorAll('.song-item').forEach(item => {
+                            const itemRect = item.getBoundingClientRect();
+                            const itemCenter = itemRect.left + itemRect.width / 2;
+                            const distance = Math.abs(itemCenter - containerCenter);
+                            
+                            if (distance < finalClosestDistance) {
+                                finalClosestDistance = distance;
+                                finalClosestItem = item;
+                            }
+                        });
+                        
+                        if (finalClosestItem) {
+                            // Clean final state
+                            document.querySelectorAll('.song-item').forEach(item => {
+                                item.classList.remove('center-focus');
+                            });
+                            finalClosestItem.classList.add('center-focus');
+                        }
+                    };
+                    
+                    finalUpdate();
+                }, 100); // Small delay to ensure scroll animation is complete
             }, 800); // Increased from 500ms to 800ms
             
             console.log('[SongSelection] Selected song:', project.display_name);
@@ -3309,7 +3342,27 @@
                 });
                 
                 if (closestItem) {
-                    // Remove center focus from all items
+                    // During click scrolling, don't change the visual states to prevent flicker
+                    if (gameState.isClickScrolling) {
+                        // Only update the song info but don't change visual classes
+                        const project = {
+                            folder_name: closestItem.dataset.projectName,
+                            display_name: closestItem.dataset.displayName
+                        };
+                        
+                        elements.selectedSongName.textContent = project.display_name;
+                        
+                        // Store selected project (only if it's a real song)
+                        if (closestItem.dataset.isReal === 'true') {
+                            gameState.selectedProject = project.folder_name;
+                        } else {
+                            gameState.selectedProject = null;
+                        }
+                        
+                        return closestItem;
+                    }
+                    
+                    // Normal scroll behavior - update visual states
                     document.querySelectorAll('.song-item').forEach(item => {
                         item.classList.remove('center-focus');
                         // If user is scrolling, also remove selected state to avoid conflicts
