@@ -363,6 +363,548 @@
             backdrop-filter: blur(5px);
         }
 
+        /* Song Selection Screen - Full screen overlay */
+        .song-selection-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #4FA8B8 0%, #7DBCC3 50%, #4FA8B8 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Hide overflow for background animation */
+        }
+
+        /* Multiple lines of scrolling text - Line 1 */
+        .song-selection-screen::before {
+            content: '演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式';
+            position: absolute;
+            top: -30vh;
+            left: -60vw;
+            width: 220vw;
+            height: 160vh;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            transform: rotate(-15deg);
+            animation: diagonalScroll 25s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+            letter-spacing: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Create multiple parallel lines using text-shadow */
+            text-shadow: 
+                0 8rem rgba(255, 255, 255, 0.2),
+                0 16rem rgba(255, 255, 255, 0.18),
+                0 24rem rgba(255, 255, 255, 0.16),
+                0 32rem rgba(255, 255, 255, 0.14),
+                0 40rem rgba(255, 255, 255, 0.12),
+                0 48rem rgba(255, 255, 255, 0.1),
+                0 -8rem rgba(255, 255, 255, 0.2),
+                0 -16rem rgba(255, 255, 255, 0.18),
+                0 -24rem rgba(255, 255, 255, 0.16),
+                0 -32rem rgba(255, 255, 255, 0.14),
+                0 -40rem rgba(255, 255, 255, 0.12),
+                0 -48rem rgba(255, 255, 255, 0.1);
+        }
+
+        /* Multiple lines of scrolling text - Line 2 */
+        .song-selection-screen::after {
+            content: '演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式 演奏模式';
+            position: absolute;
+            top: -25vh;
+            left: -55vw;
+            width: 220vw;
+            height: 160vh;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.15);
+            white-space: nowrap;
+            transform: rotate(-15deg);
+            animation: diagonalScroll 30s linear infinite reverse;
+            pointer-events: none;
+            z-index: -2;
+            letter-spacing: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Create multiple parallel lines using text-shadow - offset pattern */
+            text-shadow: 
+                0 4rem rgba(255, 255, 255, 0.15),
+                0 12rem rgba(255, 255, 255, 0.13),
+                0 20rem rgba(255, 255, 255, 0.11),
+                0 28rem rgba(255, 255, 255, 0.09),
+                0 36rem rgba(255, 255, 255, 0.07),
+                0 44rem rgba(255, 255, 255, 0.05),
+                0 -4rem rgba(255, 255, 255, 0.15),
+                0 -12rem rgba(255, 255, 255, 0.13),
+                0 -20rem rgba(255, 255, 255, 0.11),
+                0 -28rem rgba(255, 255, 255, 0.09),
+                0 -36rem rgba(255, 255, 255, 0.07),
+                0 -44rem rgba(255, 255, 255, 0.05);
+        }
+
+        /* Diagonal scrolling animation */
+        @keyframes diagonalScroll {
+            0% {
+                transform: rotate(-15deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(-15deg) translateX(100%);
+            }
+        }
+
+
+        /* Main content area - Mobile: character and song info share first column, stats in second */
+        .selection-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 2fr 3fr; /* 2:3 ratio for the left column panels */
+            grid-template-areas: 
+                "character stats"
+                "song-info stats";
+            padding: 1rem;
+            gap: 0.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: stretch; /* Changed from start to stretch to fill height */
+            height: 55vh; /* Exactly 55% of viewport height */
+            flex-shrink: 0;
+        }
+
+        /* Desktop mode - Three column layout with flexible height */
+        @media (min-width: 1024px) {
+            .selection-main {
+                grid-template-columns: 1fr 2fr 1fr;
+                grid-template-rows: 1fr; /* Reset to single row for desktop */
+                grid-template-areas: "character song-info stats";
+                padding: 1rem;
+                gap: 1rem;
+                align-items: start; /* Reset to start alignment for desktop */
+                height: auto; /* Allow flexible height on desktop */
+                min-height: 40vh; /* Minimum height to ensure space */
+                max-height: 55vh; /* Maximum height to leave space for song list */
+            }
+
+            /* Adjust song list container position for desktop */
+            .song-list-container {
+                height: 40vh; /* Smaller on desktop to give more space to main content */
+            }
+        }
+
+        /* Character Panel - Independent grid item */
+        .character-panel {
+            grid-area: character;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border: 3px solid #8B4513;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 100%; /* Fill the grid area height */
+        }
+
+        /* Desktop character panel styling */
+        @media (min-width: 1024px) {
+            .character-panel {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1rem;
+                height: auto; /* Reset height for desktop */
+            }
+
+            .character-avatar {
+                margin-bottom: 1rem;
+            }
+
+            .character-avatar img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .difficulty-label {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        .character-avatar {
+            flex-shrink: 0;
+        }
+
+        .character-avatar img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .difficulty-info {
+            flex: 1;
+        }
+
+        .difficulty-label {
+            background: #FF8C00;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        /* Song Info Panel - Independent grid item */
+        .song-info-panel {
+            grid-area: song-info;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Fill the grid area height */
+        }
+
+        /* Desktop song info panel styling */
+        @media (min-width: 1024px) {
+            .song-info-panel {
+                height: auto; /* Reset height for desktop */
+            }
+            
+            .song-info-frame {
+                padding: 2.5rem;
+            }
+
+            .selected-song-name {
+                font-size: 1.75rem;
+            }
+        }
+
+        .song-info-frame {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: 4px solid #8B4513;
+            padding: 2rem;
+            padding-bottom: 3.5rem; /* Add extra padding at bottom for button space */
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px; /* Set minimum height to prevent size changes */
+        }
+
+        .song-info-frame:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-info-frame.expanded {
+            /* Remove scale transformation, keep same size */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        /* No need to adjust title position since button is absolutely positioned */
+
+        .start-performance-btn {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: linear-gradient(45deg, #FF4500, #FF6347);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Animation for smooth appearance */
+            opacity: 0;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Show button with smooth transition */
+        .start-performance-btn.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .start-performance-btn:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Override hover for visible button */
+        .start-performance-btn.visible:hover {
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .start-performance-btn:active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .song-icon {
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            background: #FF4500;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #8B4513;
+        }
+
+        .song-symbol {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .selected-song-name {
+            font-size: clamp(1.25rem, 4vw, 2rem);
+            font-weight: bold;
+            color: #8B4513;
+            margin: 1rem 0;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+            word-break: break-word;
+            transition: all 0.3s ease; /* Smooth title position changes */
+        }
+
+        .song-genre {
+            background: #4FA8B8;
+            color: white;
+            padding: 0.25rem 1rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        /* Stats Panel - Independent grid item */
+        .stats-panel {
+            grid-area: stats;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border: 3px solid #8B4513;
+            height: 100%;
+        }
+
+        /* Desktop stats panel styling */
+        @media (min-width: 1024px) {
+            .stats-panel {
+                padding: 1rem;
+            }
+
+            .stats-title {
+                font-size: 0.875rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .stats-panel .stat-row {
+                font-size: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .stats-panel .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .stats-panel .stat-value {
+                font-size: 0.75rem;
+            }
+        }
+
+        .stats-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #8B4513;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.625rem;
+        }
+
+        .stats-panel .stat-label {
+            color: #333;
+            font-size: 0.625rem;
+        }
+
+        .stats-panel .stat-value {
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 0.625rem; /* Same size as stat-label, more specific selector */
+        }
+
+        /* Song List Container - Fixed bottom panel (45% height) */
+        .song-list-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45vh;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1001;
+        }
+
+        .song-list {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex: 1;
+            align-items: center;
+            /* Better scrolling on mobile */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .song-list::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .song-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .song-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .song-item {
+            min-width: 100px;
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(45deg, #4FA8B8, #7DBCC3);
+            border: 3px solid #2F7D8B;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .song-item:hover {
+            transform: translateY(-3px);
+            border-color: #FFD700;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .song-item.selected {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-color: #FF8C00;
+            transform: scale(1.05);
+        }
+
+        .song-item-name {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.75rem;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        /* Remove controls - no longer needed */
+
+        /* Song List and Controls optimizations */
+        @media (max-width: 767px) {
+            .song-list {
+                padding: 0.75rem;
+            }
+
+            .song-item {
+                min-width: 80px;
+                width: 80px;
+                height: 120px;
+                padding: 0.25rem;
+            }
+
+            .song-item-name {
+                font-size: 0.625rem;
+            }
+
+            .control-btn {
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+
+            .selection-controls {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        /* Tablet Optimizations */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .song-item {
+                min-width: 110px;
+                width: 110px;
+                height: 150px;
+            }
+
+            .song-item-name {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Large Desktop Optimizations */
+        @media (min-width: 1024px) {
+            .song-list-container {
+                padding: 1.5rem;
+            }
+
+            .song-item {
+                min-width: 120px;
+                width: 120px;
+                height: 160px;
+                padding: 0.75rem;
+            }
+
+            .song-item-name {
+                font-size: 0.875rem;
+            }
+
+            .control-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1.1rem;
+            }
+        }
+
         /* Main Game Area - Full screen */
         .game-area {
             position: absolute;
@@ -1206,6 +1748,72 @@
         </div>
     </div>
 
+    <!-- Song Selection Screen -->
+    <div class="song-selection-screen" id="songSelectionScreen" style="display: none;">
+        <!-- Main Content Area -->
+        <div class="selection-main">
+            <!-- Character Display -->
+            <div class="character-panel">
+                <div class="character-avatar">
+                    <img src="" alt="Character" id="selectionCharacter" />
+                </div>
+                <div class="difficulty-info">
+                    <div class="difficulty-label">初级</div>
+                </div>
+            </div>
+
+            <!-- Song Info -->
+            <div class="song-info-panel">
+                <div class="song-info-frame" id="songInfoFrame">
+                    <div class="song-icon">
+                        <div class="song-symbol">♪</div>
+                    </div>
+                    <div class="selected-song-name" id="selectedSongName">请选择歌曲</div>
+                    <div class="song-genre">J-POP</div>
+                    <div class="start-performance-btn" id="startPerformanceBtn" style="display: none;">
+                        开始演奏
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+                <div class="stats-title">最佳成绩</div>
+                <div class="stat-row">
+                    <span class="stat-label">最佳成绩</span>
+                    <span class="stat-value">0点</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">音符敲打率</span>
+                    <span class="stat-value">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">良</span>
+                    <span class="stat-value">0回</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">可</span>
+                    <span class="stat-value">0回</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">不可</span>
+                    <span class="stat-value">0回</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">最多连段数</span>
+                    <span class="stat-value">0回</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Song List -->
+        <div class="song-list-container">
+            <div class="song-list" id="songList">
+                <!-- Songs will be populated here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Game state
         let gameState = {
@@ -1231,7 +1839,8 @@
             spiritCombo: 0,    // Current combo for spirit calculation
             maxSpiritCombo: 0, // Maximum spirit combo achieved
             challengeFailed: false, // Whether challenge failed
-            currentProjectName: null // Current project name for reloading images
+            currentProjectName: null, // Current project name for reloading images
+            selectedProject: null // Selected project in song selection screen
         };
 
         // Particle system
@@ -1415,7 +2024,14 @@
                 characterDisplay: document.getElementById('characterDisplay'),
                 characterImage: document.getElementById('characterImage'),
                 topBanner: document.getElementById('topBanner'),
-                songName: document.getElementById('songName')
+                songName: document.getElementById('songName'),
+                // Song Selection Screen elements
+                songSelectionScreen: document.getElementById('songSelectionScreen'),
+                selectedSongName: document.getElementById('selectedSongName'),
+                songList: document.getElementById('songList'),
+                selectionCharacter: document.getElementById('selectionCharacter'),
+                songInfoFrame: document.getElementById('songInfoFrame'),
+                startPerformanceBtn: document.getElementById('startPerformanceBtn')
             };
 
             donElements = {
@@ -1431,6 +2047,10 @@
 
             await loadProjects();
             elements.loadingScreen.style.display = 'none';
+            
+            // Show song selection screen directly instead of song selector
+            showSongSelectionScreen();
+            
             setupEventListeners();
             initPauseMenuToggles();
         }
@@ -2487,21 +3107,117 @@
             elements.gameOverScreen.style.display = 'flex';
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Project loading
-            elements.loadGameBtn.addEventListener('click', () => {
-                const selectedProject = elements.projectSelect.value;
-                if (selectedProject) {
-                    loadGame(selectedProject);
-                    // Hide song selector after loading
-                    elements.songSelector.classList.remove('show');
+        // Song Selection Screen Functions
+        function showSongSelectionScreen() {
+            elements.songSelectionScreen.style.display = 'flex';
+            populateSongList();
+            console.log('[SongSelection] Song selection screen shown');
+        }
+
+        function hideSongSelectionScreen() {
+            elements.songSelectionScreen.style.display = 'none';
+            console.log('[SongSelection] Song selection screen hidden');
+        }
+
+        async function populateSongList() {
+            if (!elements.songList) return;
+            
+            // Clear existing songs
+            elements.songList.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/projects');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.projects) {
+                    data.projects.forEach((project, index) => {
+                        const songItem = document.createElement('div');
+                        songItem.className = 'song-item';
+                        songItem.dataset.projectName = project.folder_name;
+                        songItem.dataset.displayName = project.display_name;
+                        
+                        const songName = document.createElement('div');
+                        songName.className = 'song-item-name';
+                        songName.textContent = project.display_name;
+                        
+                        songItem.appendChild(songName);
+                        elements.songList.appendChild(songItem);
+                        
+                        // Add click handler
+                        songItem.addEventListener('click', () => selectSong(songItem, project));
+                        
+                        // Select first song by default
+                        if (index === 0) {
+                            selectSong(songItem, project);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to populate song list:', error);
+            }
+        }
+
+        function selectSong(songItem, project) {
+            // Remove selection from all songs
+            document.querySelectorAll('.song-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select this song
+            songItem.classList.add('selected');
+            
+            // Update song info display
+            elements.selectedSongName.textContent = project.display_name;
+            
+            // Store selected project
+            gameState.selectedProject = project.folder_name;
+            
+            // Reset expanded state when selecting a new song
+            collapseSongInfo();
+            
+            console.log('[SongSelection] Selected song:', project.display_name);
+        }
+
+        function setupSongSelectionListeners() {
+            // Song info frame click - expand and show start button
+            elements.songInfoFrame.addEventListener('click', () => {
+                if (gameState.selectedProject) {
+                    expandSongInfo();
                 }
             });
             
-            // Show song selector initially
-            elements.songSelector.classList.add('show');
-            
+            // Start performance button
+            elements.startPerformanceBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent frame click
+                if (gameState.selectedProject) {
+                    startPerformance();
+                }
+            });
+        }
+
+        function expandSongInfo() {
+            elements.songInfoFrame.classList.add('expanded');
+            elements.startPerformanceBtn.style.display = 'block';
+            elements.startPerformanceBtn.classList.add('visible');
+            console.log('[SongSelection] Song info expanded');
+        }
+
+        function collapseSongInfo() {
+            elements.songInfoFrame.classList.remove('expanded');
+            elements.startPerformanceBtn.style.display = 'none';
+            elements.startPerformanceBtn.classList.remove('visible');
+            console.log('[SongSelection] Song info collapsed');
+        }
+
+        function startPerformance() {
+            console.log('[SongSelection] Starting performance for:', gameState.selectedProject);
+            hideSongSelectionScreen();
+            loadGame(gameState.selectedProject);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Project loading
             // Game controls in pause menu
             elements.pauseBtn.addEventListener('click', () => {
                 if (gameState.isPlaying && gameState.isPaused) {
@@ -2623,6 +3339,9 @@
             
             // Prevent context menu on drum
             elements.unifiedDrum.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Setup song selection screen listeners
+            setupSongSelectionListeners();
         }
 
         // Initialize when page loads
