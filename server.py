@@ -705,8 +705,18 @@ def finalize_beatnet_project():
         
         # If no finalScore provided, use the generated score from beat mapping (if available)
         if not final_score and 'generatedScore' in project_data:
-            final_score = project_data['generatedScore']
-            print(f"[Project] Using generated score from beat mapping: {len(final_score)} notes")
+            generated_score = project_data['generatedScore']
+            # Convert BeatNet format to DAW-compatible format
+            final_score = []
+            for note in generated_score:
+                daw_note = {
+                    'id': note.get('id', f"beatnet_{note.get('originalBeatIndex', 0)}"),
+                    'time': note['time'],
+                    'type': note['type'],
+                    'duration': 0.2  # Default duration for BeatNet notes
+                }
+                final_score.append(daw_note)
+            print(f"[Project] Converted {len(final_score)} BeatNet notes to DAW format")
         
         # Create final project directory
         final_dir = os.path.join(DATA_DIR, project_name)

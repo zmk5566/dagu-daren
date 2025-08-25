@@ -775,9 +775,9 @@
             gap: 0.75rem;
             overflow-x: auto;
             padding: 1rem;
-            /* Add padding on sides so edge items can be centered */
-            padding-left: calc(50vw - 50px); /* Half viewport width minus half item width */
-            padding-right: calc(50vw - 50px); /* Half viewport width minus half item width */
+            /* Add generous padding on sides so edge items can be centered comfortably */
+            padding-left: calc(50vw - 30px); /* More space: half viewport width minus 30px */
+            padding-right: calc(50vw - 30px); /* More space: half viewport width minus 30px */
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
             flex: 1;
@@ -894,9 +894,9 @@
         /* Mobile optimizations */
         @media (max-width: 767px) {
             .song-list {
-                /* Adjust padding for mobile item width (80px) */
-                padding-left: calc(50vw - 40px); /* Half viewport width minus half item width */
-                padding-right: calc(50vw - 40px); /* Half viewport width minus half item width */
+                /* More generous padding for mobile */
+                padding-left: calc(50vw - 20px); /* More space: half viewport width minus 20px */
+                padding-right: calc(50vw - 20px); /* More space: half viewport width minus 20px */
             }
 
             .song-item {
@@ -922,9 +922,9 @@
         /* Tablet Optimizations */
         @media (min-width: 768px) and (max-width: 1023px) {
             .song-list {
-                /* Adjust padding for tablet item width (110px) */
-                padding-left: calc(50vw - 55px); /* Half viewport width minus half item width */
-                padding-right: calc(50vw - 55px); /* Half viewport width minus half item width */
+                /* More generous padding for tablet */
+                padding-left: calc(50vw - 35px); /* More space: half viewport width minus 35px */
+                padding-right: calc(50vw - 35px); /* More space: half viewport width minus 35px */
             }
 
             .song-item {
@@ -945,9 +945,9 @@
             }
 
             .song-list {
-                /* Adjust padding for desktop item width (120px) */
-                padding-left: calc(50vw - 60px); /* Half viewport width minus half item width */
-                padding-right: calc(50vw - 60px); /* Half viewport width minus half item width */
+                /* More generous padding for desktop */
+                padding-left: calc(50vw - 40px); /* More space: half viewport width minus 40px */
+                padding-right: calc(50vw - 40px); /* More space: half viewport width minus 40px */
             }
 
             .song-item {
