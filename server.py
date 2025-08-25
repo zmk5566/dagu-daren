@@ -703,6 +703,11 @@ def finalize_beatnet_project():
             project_data = json.load(f)
         project_name = project_data['projectName']
         
+        # If no finalScore provided, use the generated score from beat mapping (if available)
+        if not final_score and 'generatedScore' in project_data:
+            final_score = project_data['generatedScore']
+            print(f"[Project] Using generated score from beat mapping: {len(final_score)} notes")
+        
         # Create final project directory
         final_dir = os.path.join(DATA_DIR, project_name)
         os.makedirs(final_dir, exist_ok=True)

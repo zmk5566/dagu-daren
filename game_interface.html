@@ -775,6 +775,9 @@
             gap: 0.75rem;
             overflow-x: auto;
             padding: 1rem;
+            /* Add padding on sides so edge items can be centered */
+            padding-left: calc(50vw - 50px); /* Half viewport width minus half item width */
+            padding-right: calc(50vw - 50px); /* Half viewport width minus half item width */
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
             flex: 1;
@@ -815,13 +818,22 @@
             flex-shrink: 0;
         }
 
-        /* Selected song */
+        /* Selected song (clicked) */
         .song-item.selected {
             transform: scale(1.1);
             border-color: #FFD700;
             box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
             background: linear-gradient(45deg, #FFD700, #FFA500);
             z-index: 2;
+        }
+
+        /* Center-focused song (based on scroll position) */
+        .song-item.center-focus {
+            transform: scale(1.05);
+            border-color: #FFD700;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            z-index: 1;
         }
 
         /* Dummy song styling */
@@ -842,7 +854,13 @@
             opacity: 1;
         }
 
-        .song-item:hover:not(.selected) {
+        .song-item[data-is-real="false"].center-focus {
+            background: linear-gradient(45deg, #B8860B, #DAA520);
+            border-color: #B8860B;
+            opacity: 1;
+        }
+
+        .song-item:hover:not(.selected):not(.center-focus) {
             transform: translateY(-3px);
             border-color: #FFD700;
             box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
@@ -850,6 +868,10 @@
 
         .song-item.selected:hover {
             transform: scale(1.15);
+        }
+
+        .song-item.center-focus:hover {
+            transform: scale(1.1);
         }
 
 
@@ -871,6 +893,12 @@
 
         /* Mobile optimizations */
         @media (max-width: 767px) {
+            .song-list {
+                /* Adjust padding for mobile item width (80px) */
+                padding-left: calc(50vw - 40px); /* Half viewport width minus half item width */
+                padding-right: calc(50vw - 40px); /* Half viewport width minus half item width */
+            }
+
             .song-item {
                 min-width: 80px;
                 width: 80px;
@@ -893,6 +921,12 @@
 
         /* Tablet Optimizations */
         @media (min-width: 768px) and (max-width: 1023px) {
+            .song-list {
+                /* Adjust padding for tablet item width (110px) */
+                padding-left: calc(50vw - 55px); /* Half viewport width minus half item width */
+                padding-right: calc(50vw - 55px); /* Half viewport width minus half item width */
+            }
+
             .song-item {
                 min-width: 110px;
                 width: 110px;
@@ -908,6 +942,12 @@
         @media (min-width: 1024px) {
             .song-list-container {
                 padding: 1.5rem;
+            }
+
+            .song-list {
+                /* Adjust padding for desktop item width (120px) */
+                padding-left: calc(50vw - 60px); /* Half viewport width minus half item width */
+                padding-right: calc(50vw - 60px); /* Half viewport width minus half item width */
             }
 
             .song-item {
@@ -3171,6 +3211,9 @@
                     }
                 }
                 
+                // Initialize center selection after populating
+                initializeCenterSelection();
+                
             } catch (error) {
                 console.error('Failed to populate song list:', error);
             }
@@ -3203,10 +3246,12 @@
             // Remove selection from all songs
             document.querySelectorAll('.song-item').forEach(item => {
                 item.classList.remove('selected');
+                item.classList.remove('center-focus');
             });
             
-            // Select this song
+            // Select this song and add center focus
             songItem.classList.add('selected');
+            songItem.classList.add('center-focus');
             
             // Update song info display
             elements.selectedSongName.textContent = project.display_name;
@@ -3221,7 +3266,141 @@
             // Reset expanded state when selecting a new song
             collapseSongInfo();
             
+            // Mark that this is a click-initiated scroll (not user manual scroll)
+            gameState.isClickScrolling = true;
+            
+            // Center the clicked song with smooth animation
+            centerSongItem(songItem);
+            
+            // Reset the click scrolling flag after animation
+            setTimeout(() => {
+                gameState.isClickScrolling = false;
+            }, 500);
+            
             console.log('[SongSelection] Selected song:', project.display_name);
+        }
+
+        // Initialize center selection functionality with auto-snap
+        function initializeCenterSelection() {
+            const container = elements.songList;
+            let scrollTimeout;
+            let isScrolling = false;
+            let isUserScrolling = false; // Track if user is manually scrolling
+            
+            function updateCenterSelection() {
+                const containerRect = container.getBoundingClientRect();
+                const containerCenter = containerRect.left + containerRect.width / 2;
+                
+                let closestItem = null;
+                let closestDistance = Infinity;
+                
+                // Find the song item closest to center
+                document.querySelectorAll('.song-item').forEach(item => {
+                    const itemRect = item.getBoundingClientRect();
+                    const itemCenter = itemRect.left + itemRect.width / 2;
+                    const distance = Math.abs(itemCenter - containerCenter);
+                    
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestItem = item;
+                    }
+                });
+                
+                if (closestItem) {
+                    // Remove center focus from all items
+                    document.querySelectorAll('.song-item').forEach(item => {
+                        item.classList.remove('center-focus');
+                        // If user is scrolling, also remove selected state to avoid conflicts
+                        if (isUserScrolling) {
+                            item.classList.remove('selected');
+                        }
+                    });
+                    
+                    // Add center focus to closest item
+                    closestItem.classList.add('center-focus');
+                    
+                    // Update song info display automatically
+                    const project = {
+                        folder_name: closestItem.dataset.projectName,
+                        display_name: closestItem.dataset.displayName
+                    };
+                    
+                    elements.selectedSongName.textContent = project.display_name;
+                    
+                    // Store selected project (only if it's a real song)
+                    if (closestItem.dataset.isReal === 'true') {
+                        gameState.selectedProject = project.folder_name;
+                    } else {
+                        gameState.selectedProject = null;
+                    }
+                    
+                    return closestItem;
+                }
+                return null;
+            }
+            
+            function handleScrollEnd() {
+                isScrolling = false;
+                isUserScrolling = false; // Reset user scrolling flag
+                
+                // Find center item and snap to it
+                const centerItem = updateCenterSelection();
+                if (centerItem) {
+                    centerSongItem(centerItem);
+                }
+            }
+            
+            // Update center selection on scroll
+            container.addEventListener('scroll', () => {
+                // Only set user scrolling flag if this is not programmatic scrolling
+                if (!isScrolling && !gameState.isClickScrolling) {
+                    isUserScrolling = true;
+                }
+                isScrolling = true;
+                
+                // Update center focus immediately for visual feedback
+                updateCenterSelection();
+                
+                // Clear existing timeout
+                clearTimeout(scrollTimeout);
+                
+                // Set timeout to snap to center after scrolling stops
+                scrollTimeout = setTimeout(handleScrollEnd, 150);
+            });
+            
+            // Initial center selection
+            setTimeout(() => {
+                const centerItem = updateCenterSelection();
+                if (centerItem) {
+                    // Center the first item without smooth animation initially
+                    container.style.scrollBehavior = 'auto';
+                    centerSongItem(centerItem);
+                    container.style.scrollBehavior = 'smooth';
+                }
+            }, 100);
+        }
+
+        // Center a specific song item in view
+        function centerSongItem(songItem) {
+            const container = elements.songList;
+            const containerRect = container.getBoundingClientRect();
+            const itemRect = songItem.getBoundingClientRect();
+            
+            const scrollLeft = container.scrollLeft;
+            const itemCenter = itemRect.left + itemRect.width / 2;
+            const containerCenter = containerRect.left + containerRect.width / 2;
+            const offset = itemCenter - containerCenter;
+            
+            // Only scroll if the item is not already centered (avoid unnecessary scrolling)
+            if (Math.abs(offset) > 5) { // 5px tolerance
+                // Mark that we're doing programmatic scrolling
+                const scrollHandler = container.onscroll;
+                
+                container.scrollTo({
+                    left: scrollLeft + offset,
+                    behavior: 'smooth'
+                });
+            }
         }
 
 
