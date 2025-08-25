@@ -516,7 +516,7 @@ ${scoreData.generatedScore.length > 5 ? `\n... 还有 ${scoreData.generatedScore
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         projectId: currentProjectData.projectId,
-                        finalScore: currentProjectData.generatedScore || [],
+                        // Don't send finalScore - let backend auto-convert from generated score
                         metadata: {
                             userMappingTime: 120, // 示例数据
                             totalAdjustments: currentMappings.size,

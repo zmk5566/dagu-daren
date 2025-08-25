@@ -613,44 +613,43 @@
 
         /* No need to adjust title position since button is absolutely positioned */
 
+        /* Floating Start Performance Button */
         .start-performance-btn {
             position: absolute;
-            bottom: 1rem;
+            top: calc(50% + 50px); /* Move down by 50% of button height (approx) */
             left: 50%;
-            transform: translateX(-50%) translateY(10px);
+            transform: translate(-50%, -50%) scale(0.7); /* Scale down to 70% */
             background: linear-gradient(45deg, #FF4500, #FF6347);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.25rem;
+            border-radius: 0; /* Remove rounded corners */
+            padding: 0.8rem 1.8rem; /* Smaller padding */
+            font-size: 1.1rem; /* Smaller font */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* Animation for smooth appearance */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            z-index: 9999; /* Highest z-index - above everything */
             opacity: 0;
-            white-space: nowrap; /* Prevent text wrapping */
+            visibility: hidden;
         }
 
-        /* Show button with smooth transition */
+        /* Show button when a real song is selected */
         .start-performance-btn.visible {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            visibility: visible;
         }
 
         .start-performance-btn:hover {
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Override hover for visible button */
-        .start-performance-btn.visible:hover {
-            transform: translateX(-50%) translateY(-2px);
+            transform: translate(-50%, -50%) translateY(-4px) scale(0.75); /* 0.7 * 1.07 ≈ 0.75 */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #FF6347, #FF8C00);
         }
 
         .start-performance-btn:active {
-            transform: translateX(-50%) translateY(0);
+            transform: translate(-50%, -50%) translateY(-2px) scale(0.69); /* 0.7 * 0.98 ≈ 0.69 */
         }
 
         .song-icon {
@@ -805,7 +804,7 @@
         .song-item {
             min-width: 100px;
             width: 100px;
-            height: 140px;
+            height: 180px; /* Increased from 140px to 180px */
             background: linear-gradient(45deg, #4FA8B8, #7DBCC3);
             border: 3px solid #2F7D8B;
             cursor: pointer;
@@ -891,6 +890,59 @@
             line-height: 1.2;
         }
 
+        /* Navigation buttons */
+        .nav-button {
+            min-width: 80px;
+            width: 80px;
+            height: 180px; /* Updated to match song-item height */
+            background: linear-gradient(45deg, #FF6B47, #FF8C00);
+            border: 3px solid #CC5238;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 107, 71, 0.4);
+            background: linear-gradient(45deg, #FF8C00, #FFA500);
+        }
+
+        .nav-button:active {
+            transform: scale(0.98);
+        }
+
+        .nav-button-content {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.7rem;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        /* Position navigation buttons at edges */
+        .nav-button-left {
+            order: -1; /* Appear first */
+        }
+
+        .nav-button-right {
+            order: 999; /* Appear last */
+        }
+
         /* Mobile optimizations */
         @media (max-width: 767px) {
             .song-list {
@@ -902,7 +954,7 @@
             .song-item {
                 min-width: 80px;
                 width: 80px;
-                height: 120px;
+                height: 160px; /* Increased from 120px to 160px */
                 padding: 0.25rem;
             }
 
@@ -915,6 +967,18 @@
             }
 
             .song-item-name {
+                font-size: 0.625rem;
+            }
+
+            /* Mobile navigation buttons */
+            .nav-button {
+                min-width: 60px;
+                width: 60px;
+                height: 160px; /* Updated to match mobile song-item height */
+                padding: 0.25rem;
+            }
+
+            .nav-button-content {
                 font-size: 0.625rem;
             }
         }
@@ -930,11 +994,22 @@
             .song-item {
                 min-width: 110px;
                 width: 110px;
-                height: 150px;
+                height: 190px; /* Increased from 150px to 190px */
             }
 
             .song-item-name {
                 font-size: 0.8rem;
+            }
+
+            /* Tablet navigation buttons */
+            .nav-button {
+                min-width: 90px;
+                width: 90px;
+                height: 190px; /* Updated to match tablet song-item height */
+            }
+
+            .nav-button-content {
+                font-size: 0.75rem;
             }
         }
 
@@ -953,12 +1028,24 @@
             .song-item {
                 min-width: 120px;
                 width: 120px;
-                height: 160px;
+                height: 200px; /* Increased from 160px to 200px */
                 padding: 0.75rem;
             }
 
             .song-item-name {
                 font-size: 0.875rem;
+            }
+
+            /* Desktop navigation buttons */
+            .nav-button {
+                min-width: 100px;
+                width: 100px;
+                height: 200px; /* Updated to match desktop song-item height */
+                padding: 0.75rem;
+            }
+
+            .nav-button-content {
+                font-size: 0.8rem;
             }
         }
 
@@ -1536,6 +1623,104 @@
             color: var(--text-dark);
         }
 
+        /* Curtain Transition Effect */
+        .curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            z-index: 10000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .curtain.active {
+            display: block;
+        }
+
+        /* Left curtain panel */
+        .curtain-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            transform: translateX(-100%);
+            transition: transform 0.8s ease-in-out;
+            border-right: 3px solid #8B4513;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Right curtain panel */
+        .curtain-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            transform: translateX(100%);
+            transition: transform 0.8s ease-in-out;
+            border-left: 3px solid #8B4513;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Curtain closing animation */
+        .curtain.closing .curtain-left {
+            transform: translateX(0);
+        }
+
+        .curtain.closing .curtain-right {
+            transform: translateX(0);
+        }
+
+        /* Curtain opening animation */
+        .curtain.opening .curtain-left {
+            transform: translateX(-100%);
+        }
+
+        .curtain.opening .curtain-right {
+            transform: translateX(100%);
+        }
+
+        /* Curtain loading content */
+        .curtain-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #FFFFFF;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .curtain.closing .curtain-content {
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+
+        .curtain-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .curtain-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
         /* Game Over Screen */
         .game-over {
             position: absolute;
@@ -1579,19 +1764,102 @@
             margin-top: 5px;
         }
 
-        .restart-btn {
+        /* Hit Statistics Section */
+        .hit-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .hit-stat-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            min-width: 120px;
+        }
+
+        .hit-stat-item.perfect {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .hit-stat-item.good {
+            border-color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hit-stat-item.miss {
+            border-color: #CCCCCC;
+            background: rgba(204, 204, 204, 0.1);
+        }
+
+        .hit-stat-count {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-white);
+            margin-bottom: 5px;
+        }
+
+        .hit-stat-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .hit-stat-item.perfect .hit-stat-label {
+            color: #FFD700;
+        }
+
+        .hit-stat-item.good .hit-stat-label {
+            color: #FFFFFF;
+        }
+
+        .hit-stat-item.miss .hit-stat-label {
+            color: #CCCCCC;
+        }
+
+        .hit-stat-score {
+            font-size: 14px;
+            color: var(--text-white);
+            opacity: 0.8;
+        }
+
+        /* Game Over Action Buttons */
+        .game-over-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .action-btn {
             padding: 15px 30px;
             font-size: 18px;
-            background: var(--primary-red);
-            color: var(--text-white);
             border: none;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s ease;
+            border-radius: 5px;
+        }
+
+        .restart-btn {
+            background: var(--primary-red);
+            color: var(--text-white);
         }
 
         .restart-btn:hover {
             background: #CC5238;
+        }
+
+        .back-btn {
+            background: var(--primary-blue);
+            color: var(--text-white);
+        }
+
+        .back-btn:hover {
+            background: #3A72B8;
         }
 
         /* Responsive Design */
@@ -1632,6 +1900,16 @@
         <div class="loading-screen" id="loadingScreen">
             <div class="loading-spinner"></div>
             <div class="loading-text">加载游戏中...</div>
+        </div>
+
+        <!-- Curtain Transition Effect -->
+        <div class="curtain" id="curtain">
+            <div class="curtain-left"></div>
+            <div class="curtain-right"></div>
+            <div class="curtain-content">
+                <div class="curtain-spinner"></div>
+                <div class="curtain-text" id="curtainText">准备演奏...</div>
+            </div>
         </div>
 
         <!-- Song Selector (Floating) -->
@@ -1797,11 +2075,35 @@
                     <div class="stat-label">准确率</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" id="perfectHits">0</div>
-                    <div class="stat-label">完美击打</div>
+                    <div class="stat-value" id="finalSpirit">0%</div>
+                    <div class="stat-label">最终灵魂值</div>
                 </div>
             </div>
-            <button class="restart-btn" id="playAgainBtn">再玩一次</button>
+            
+            <!-- Detailed Hit Statistics -->
+            <div class="hit-stats">
+                <div class="hit-stat-item perfect">
+                    <div class="hit-stat-count" id="finalPerfectHits">0</div>
+                    <div class="hit-stat-label">优</div>
+                    <div class="hit-stat-score" id="perfectScore">0分</div>
+                </div>
+                <div class="hit-stat-item good">
+                    <div class="hit-stat-count" id="finalGoodHits">0</div>
+                    <div class="hit-stat-label">良</div>
+                    <div class="hit-stat-score" id="goodScore">0分</div>
+                </div>
+                <div class="hit-stat-item miss">
+                    <div class="hit-stat-count" id="finalMissedHits">0</div>
+                    <div class="hit-stat-label">不可</div>
+                    <div class="hit-stat-score" id="missScore">0分</div>
+                </div>
+            </div>
+            
+            <!-- Action buttons -->
+            <div class="game-over-actions">
+                <button class="action-btn restart-btn" id="playAgainBtn">再来一遍</button>
+                <button class="action-btn back-btn" id="backToSelectionBtn">返回选曲</button>
+            </div>
         </div>
     </div>
 
@@ -1827,9 +2129,6 @@
                     </div>
                     <div class="selected-song-name" id="selectedSongName">请选择歌曲</div>
                     <div class="song-genre">J-POP</div>
-                    <div class="start-performance-btn" id="startPerformanceBtn" style="display: none;">
-                        开始演奏
-                    </div>
                 </div>
             </div>
 
@@ -1845,11 +2144,11 @@
                     <span class="stat-value">0%</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">良</span>
+                    <span class="stat-label">优</span>
                     <span class="stat-value">0回</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">可</span>
+                    <span class="stat-label">良</span>
                     <span class="stat-value">0回</span>
                 </div>
                 <div class="stat-row">
@@ -1861,12 +2160,17 @@
                     <span class="stat-value">0回</span>
                 </div>
             </div>
+
+            <!-- Floating Start Performance Button -->
+            <div class="start-performance-btn" id="startPerformanceBtn">
+                开始演奏
+            </div>
         </div>
 
         <!-- Song List -->
         <div class="song-list-container">
             <div class="song-list" id="songList">
-                <!-- Songs will be populated here -->
+                <!-- Songs will be populated here dynamically -->
             </div>
         </div>
     </div>
@@ -1882,6 +2186,9 @@
             perfectHits: 0,
             goodHits: 0,
             missedHits: 0,
+            perfectScore: 0,   // Score from perfect hits
+            goodScore: 0,      // Score from good hits
+            comboScore: 0,     // Score from combo bonuses
             isPlaying: false,
             isPaused: false,
             currentProject: null,
@@ -2075,8 +2382,15 @@
                 finalScore: document.getElementById('finalScore'),
                 maxCombo: document.getElementById('maxCombo'),
                 finalAccuracy: document.getElementById('finalAccuracy'),
-                perfectHits: document.getElementById('perfectHits'),
+                finalSpirit: document.getElementById('finalSpirit'),
+                finalPerfectHits: document.getElementById('finalPerfectHits'),
+                finalGoodHits: document.getElementById('finalGoodHits'),
+                finalMissedHits: document.getElementById('finalMissedHits'),
+                perfectScore: document.getElementById('perfectScore'),
+                goodScore: document.getElementById('goodScore'),
+                missScore: document.getElementById('missScore'),
                 playAgainBtn: document.getElementById('playAgainBtn'),
+                backToSelectionBtn: document.getElementById('backToSelectionBtn'),
                 gameBackground: document.getElementById('gameBackground'),
                 characterDisplay: document.getElementById('characterDisplay'),
                 characterImage: document.getElementById('characterImage'),
@@ -2088,7 +2402,10 @@
                 songList: document.getElementById('songList'),
                 selectionCharacter: document.getElementById('selectionCharacter'),
                 songInfoFrame: document.getElementById('songInfoFrame'),
-                startPerformanceBtn: document.getElementById('startPerformanceBtn')
+                startPerformanceBtn: document.getElementById('startPerformanceBtn'),
+                // Curtain elements
+                curtain: document.getElementById('curtain'),
+                curtainText: document.getElementById('curtainText')
             };
 
             donElements = {
@@ -2346,10 +2663,10 @@
         }
 
         // Load game data for selected project
-        async function loadGame(projectName) {
+        // Load game data with curtain transition
+        async function loadGameWithCurtain(projectName) {
             if (!projectName) return;
 
-            elements.loadingScreen.style.display = 'flex';
             gameState.currentProject = projectName;
             gameState.currentProjectName = projectName;
             
@@ -2359,6 +2676,7 @@
             elements.songName.textContent = displayName;
 
             try {
+                updateCurtainText('加载资源...');
                 // Load project images
                 const imagesResponse = await fetch(`/api/project/${projectName}/images`);
                 let projectImages = null;
@@ -2370,6 +2688,7 @@
                     }
                 }
 
+                updateCurtainText('加载谱面...');
                 // Load score data (beatmap)
                 const scoreResponse = await fetch(`/api/score/${projectName}`);
                 const scoreData = await scoreResponse.json();
@@ -2427,6 +2746,7 @@
                     console.warn('Could not load beat grid data:', metaError);
                 }
 
+                updateCurtainText('加载音频...');
                 // Load audio - use original song instead of backing track
                 const audioPath = `data/${projectName}/${projectName}.mp3`;
                 gameState.audio = new Audio(audioPath);
@@ -2436,6 +2756,8 @@
                     gameState.audio.onerror = reject;
                 });
 
+                updateCurtainText('初始化游戏...');
+                
                 gameState.duration = gameState.audio.duration;
                 gameState.notes = notes.sort((a, b) => a.time - b.time);
                 gameState.totalNotes = notes.length;
@@ -2448,18 +2770,43 @@
                 // Load project images (background and character)
                 loadProjectImages(projectName, projectImages);
                 
-                elements.loadingScreen.style.display = 'none';
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
                 
-                // Auto-start the game after loading
+                updateCurtainText('即将开始演奏...');
+                
+                // Wait a moment then hide curtain and start game
                 setTimeout(() => {
-                    startGame();
-                }, 500); // Small delay to ensure everything is ready
+                    hideCurtain();
+                    setTimeout(() => {
+                        startGame();
+                    }, 200); // Start game just after curtain starts opening
+                }, 800);
                 
             } catch (error) {
                 console.error('Failed to load game:', error);
+                updateCurtainText('加载失败...');
+                setTimeout(() => {
+                    hideCurtain();
+                    setTimeout(() => {
+                        alert('加载游戏失败: ' + error.message);
+                        showSongSelectionScreen();
+                    }, 500);
+                }, 1000);
+            }
+        }
+
+        // Keep original loadGame for backward compatibility
+        async function loadGame(projectName) {
+            if (!projectName) return;
+
+            elements.loadingScreen.style.display = 'flex';
+            
+            try {
+                await loadGameWithCurtain(projectName);
                 elements.loadingScreen.style.display = 'none';
-                alert('加载游戏失败: ' + error.message);
+            } catch (error) {
+                elements.loadingScreen.style.display = 'none';
+                throw error;
             }
         }
 
@@ -2797,7 +3144,16 @@
                     gameState.combo = 0;
                 }
                 
-                gameState.score += points + (gameState.combo * 10); // Combo bonus
+                // Track separate scores for detailed statistics
+                const comboBonus = gameState.combo * 10;
+                if (judgment === 'perfect') {
+                    gameState.perfectScore += points + comboBonus;
+                } else if (judgment === 'good') {
+                    gameState.goodScore += points + comboBonus;
+                }
+                gameState.comboScore += comboBonus;
+                
+                gameState.score += points + comboBonus;
                 showJudgment(judgment);
                 createHitEffect(type);
                 
@@ -3045,6 +3401,9 @@
             gameState.perfectHits = 0;
             gameState.goodHits = 0;
             gameState.missedHits = 0;
+            gameState.perfectScore = 0;
+            gameState.goodScore = 0;
+            gameState.comboScore = 0;
             gameState.currentTime = 0;
             
             // Reset Spirit system
@@ -3151,15 +3510,95 @@
             showGameOverScreen();
         }
 
+        // Send game result to backend
+        async function sendGameResult() {
+            if (!gameState.currentProject) {
+                console.warn('No current project - cannot send game result');
+                return;
+            }
+            
+            const accuracy = gameState.totalNotes > 0 ? 
+                Math.round((gameState.hitNotes / Math.max(gameState.hitNotes + gameState.missedHits, 1)) * 100) : 100;
+            
+            // Calculate play time (actual time spent playing)
+            const playTime = gameState.currentTime;
+            
+            const gameResult = {
+                project_name: gameState.currentProject,
+                timestamp: new Date().toISOString(),
+                final_score: gameState.score,
+                max_combo: gameState.maxCombo,
+                accuracy: accuracy,
+                spirit_value: Math.round(gameState.spiritValue),
+                max_spirit_combo: gameState.maxSpiritCombo,
+                total_notes: gameState.totalNotes,
+                hit_notes: gameState.hitNotes,
+                perfect_hits: gameState.perfectHits,
+                good_hits: gameState.goodHits,
+                missed_hits: gameState.missedHits,
+                perfect_score: gameState.perfectHits * settings.scoring.perfect,
+                good_score: gameState.goodHits * settings.scoring.good,
+                combo_score: gameState.comboScore,
+                duration: gameState.duration,
+                play_time: playTime,
+                completion_rate: Math.round((playTime / gameState.duration) * 100),
+                challenge_failed: gameState.challengeFailed,
+                // Additional metadata
+                game_settings: {
+                    scroll_speed: settings.scrollSpeed,
+                    hit_window_perfect: settings.hitWindow.perfect,
+                    hit_window_good: settings.hitWindow.good,
+                    scoring_perfect: settings.scoring.perfect,
+                    scoring_good: settings.scoring.good
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/game-result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(gameResult)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Game result saved successfully:', result);
+                } else {
+                    console.error('Failed to save game result:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Error sending game result:', error);
+            }
+        }
+        
         // Show game over screen
         function showGameOverScreen() {
             const accuracy = gameState.totalNotes > 0 ? 
                 Math.round((gameState.hitNotes / Math.max(gameState.hitNotes + gameState.missedHits, 1)) * 100) : 100;
             
+            // Basic stats
             elements.finalScore.textContent = gameState.score.toLocaleString();
             elements.maxCombo.textContent = gameState.maxCombo;
             elements.finalAccuracy.textContent = `${accuracy}%`;
-            elements.perfectHits.textContent = gameState.perfectHits;
+            elements.finalSpirit.textContent = `${Math.round(gameState.spiritValue)}%`;
+            
+            // Detailed hit statistics
+            elements.finalPerfectHits.textContent = gameState.perfectHits;
+            elements.finalGoodHits.textContent = gameState.goodHits;
+            elements.finalMissedHits.textContent = gameState.missedHits;
+            
+            // Individual scores (approximated since we track combined scores)
+            const perfectBaseScore = gameState.perfectHits * settings.scoring.perfect;
+            const goodBaseScore = gameState.goodHits * settings.scoring.good;
+            
+            elements.perfectScore.textContent = `${perfectBaseScore.toLocaleString()}分`;
+            elements.goodScore.textContent = `${goodBaseScore.toLocaleString()}分`;
+            elements.missScore.textContent = '0分';
+            
+            // Send game result to backend
+            sendGameResult();
             
             elements.gameOverScreen.style.display = 'flex';
         }
@@ -3180,14 +3619,25 @@
         async function populateSongList() {
             if (!elements.songList) return;
             
-            // Clear existing songs
-            elements.songList.innerHTML = '';
+            // Clear only song items, not navigation buttons
+            const songItems = elements.songList.querySelectorAll('.song-item');
+            songItems.forEach(item => item.remove());
             
             try {
                 const response = await fetch('/api/projects');
                 const data = await response.json();
                 
                 if (data.status === 'success' && data.projects) {
+                    // Create navigation button to right (if not already exists)
+                    let navButtonRight = document.getElementById('navButtonRight');
+                    if (!navButtonRight) {
+                        navButtonRight = document.createElement('div');
+                        navButtonRight.className = 'nav-button nav-button-left';
+                        navButtonRight.id = 'navButtonRight';
+                        navButtonRight.innerHTML = '<div class="nav-button-content">来到最右侧</div>';
+                        elements.songList.appendChild(navButtonRight);
+                    }
+                    
                     data.projects.forEach(project => {
                         const songItem = createSongItem(project, true);
                         elements.songList.appendChild(songItem);
@@ -3209,10 +3659,23 @@
                             elements.songList.appendChild(songItem);
                         });
                     }
+                    
+                    // Create navigation button to left (if not already exists)
+                    let navButtonLeft = document.getElementById('navButtonLeft');
+                    if (!navButtonLeft) {
+                        navButtonLeft = document.createElement('div');
+                        navButtonLeft.className = 'nav-button nav-button-right';
+                        navButtonLeft.id = 'navButtonLeft';
+                        navButtonLeft.innerHTML = '<div class="nav-button-content">来到最左侧</div>';
+                        elements.songList.appendChild(navButtonLeft);
+                    }
                 }
                 
                 // Initialize center selection after populating
                 initializeCenterSelection();
+                
+                // Setup navigation button listeners after songs are populated
+                setupNavigationButtons();
                 
             } catch (error) {
                 console.error('Failed to populate song list:', error);
@@ -3263,8 +3726,8 @@
                 gameState.selectedProject = null; // Dummy song can't be played
             }
             
-            // Reset expanded state when selecting a new song
-            collapseSongInfo();
+            // Show or hide start button based on selection
+            showStartButton();
             
             // Mark that this is a click-initiated scroll with longer protection
             gameState.isClickScrolling = true;
@@ -3389,6 +3852,9 @@
                         gameState.selectedProject = null;
                     }
                     
+                    // Update start button visibility
+                    showStartButton();
+                    
                     return closestItem;
                 }
                 return null;
@@ -3477,48 +3943,123 @@
 
 
         function setupSongSelectionListeners() {
-            // Song info frame click - expand and show start button
-            elements.songInfoFrame.addEventListener('click', () => {
-                if (gameState.selectedProject) {
-                    expandSongInfo();
-                }
-            });
-            
-            // Start performance button
-            elements.startPerformanceBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent frame click
+            // Start performance button (no longer inside song info frame)
+            elements.startPerformanceBtn.addEventListener('click', () => {
                 if (gameState.selectedProject) {
                     startPerformance();
                 }
             });
+
         }
 
-        function expandSongInfo() {
-            // Only allow expansion if a real song is selected
-            if (gameState.selectedProject) {
-                elements.songInfoFrame.classList.add('expanded');
-                elements.startPerformanceBtn.style.display = 'block';
-                elements.startPerformanceBtn.classList.add('visible');
-                console.log('[SongSelection] Song info expanded');
+        // Setup navigation buttons - called after songs are populated
+        function setupNavigationButtons() {
+            // Navigation buttons - with null checks and debugging
+            const navButtonRight = document.getElementById('navButtonRight');
+            const navButtonLeft = document.getElementById('navButtonLeft');
+
+            console.log('[Navigation] Setting up navigation buttons...');
+            console.log('[Navigation] Right button found:', !!navButtonRight);
+            console.log('[Navigation] Left button found:', !!navButtonLeft);
+
+            if (navButtonRight) {
+                navButtonRight.addEventListener('click', () => {
+                    console.log('[Navigation] Right button clicked');
+                    goToRightmost();
+                });
             } else {
-                // For dummy songs, show a message
-                console.log('[SongSelection] Cannot expand - dummy song selected');
-                // Optional: show a brief message or different behavior for dummy songs
+                console.warn('[Navigation] Right button not found');
+            }
+
+            if (navButtonLeft) {
+                navButtonLeft.addEventListener('click', () => {
+                    console.log('[Navigation] Left button clicked');
+                    goToLeftmost();
+                });
+            } else {
+                console.warn('[Navigation] Left button not found');
             }
         }
 
-        function collapseSongInfo() {
-            elements.songInfoFrame.classList.remove('expanded');
-            elements.startPerformanceBtn.style.display = 'none';
+        // Navigate to rightmost song
+        function goToRightmost() {
+            const songs = document.querySelectorAll('.song-item');
+            if (songs.length > 0) {
+                const rightmostSong = songs[songs.length - 1];
+                const project = {
+                    folder_name: rightmostSong.dataset.projectName,
+                    display_name: rightmostSong.dataset.displayName
+                };
+                selectSong(rightmostSong, project);
+            }
+        }
+
+        // Navigate to leftmost song
+        function goToLeftmost() {
+            const songs = document.querySelectorAll('.song-item');
+            if (songs.length > 0) {
+                const leftmostSong = songs[0];
+                const project = {
+                    folder_name: leftmostSong.dataset.projectName,
+                    display_name: leftmostSong.dataset.displayName
+                };
+                selectSong(leftmostSong, project);
+            }
+        }
+
+        function showStartButton() {
+            // Show floating start button if a real song is selected
+            if (gameState.selectedProject) {
+                elements.startPerformanceBtn.classList.add('visible');
+                console.log('[SongSelection] Start button shown');
+            } else {
+                elements.startPerformanceBtn.classList.remove('visible');
+                console.log('[SongSelection] Start button hidden - no real song selected');
+            }
+        }
+
+        function hideStartButton() {
             elements.startPerformanceBtn.classList.remove('visible');
-            console.log('[SongSelection] Song info collapsed');
+            console.log('[SongSelection] Start button hidden');
+        }
+
+        // Curtain transition functions
+        function showCurtain() {
+            elements.curtain.classList.add('active');
+            setTimeout(() => {
+                elements.curtain.classList.add('closing');
+            }, 50);
+        }
+
+        function hideCurtain() {
+            elements.curtain.classList.remove('closing');
+            elements.curtain.classList.add('opening');
+            
+            setTimeout(() => {
+                elements.curtain.classList.remove('active', 'opening');
+            }, 800);
+        }
+
+        function updateCurtainText(text) {
+            if (elements.curtainText) {
+                elements.curtainText.textContent = text;
+            }
         }
 
         function startPerformance() {
             if (gameState.selectedProject) {
                 console.log('[SongSelection] Starting performance for:', gameState.selectedProject);
-                hideSongSelectionScreen();
-                loadGame(gameState.selectedProject);
+                
+                // Show curtain with loading
+                showCurtain();
+                updateCurtainText('准备演奏...');
+                
+                // Hide song selection screen after curtain starts
+                setTimeout(() => {
+                    hideSongSelectionScreen();
+                    // Start loading game behind curtain
+                    loadGameWithCurtain(gameState.selectedProject);
+                }, 400);
             } else {
                 console.log('[SongSelection] Cannot start performance - no real song selected');
             }
@@ -3599,6 +4140,11 @@
             elements.playAgainBtn.addEventListener('click', () => {
                 elements.gameOverScreen.style.display = 'none';
                 startGame();
+            });
+            
+            elements.backToSelectionBtn.addEventListener('click', () => {
+                elements.gameOverScreen.style.display = 'none';
+                showSongSelectionScreen();
             });
             
             // Keyboard controls

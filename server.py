@@ -39,6 +39,45 @@ except ImportError as e:
 
 app = Flask(__name__, static_folder=None)
 
+def convert_beatnet_to_annotations_then_score(beatnet_notes, project_data):
+    """
+    使用现有的annotation→score转换管线
+    参考DAW界面的generateScoreFromAnnotations()函数
+    
+    Step 1: BeatNet notes → annotations (假设beat发生的事件，音符长度0.1秒)
+    Step 2: annotations → score (使用相同的转换逻辑)
+    """
+    import time
+    import random
+    
+    # Step 1: Convert BeatNet notes to annotation format
+    annotations = []
+    for note in beatnet_notes:
+        annotation = {
+            'id': f"beatnet-{note.get('originalBeatIndex', 0)}-{int(time.time()*1000)}",
+            'time': note['time'],  # Keep BeatNet's precise timing
+            'type': note['type'],  # don/ka
+            'duration': 0.1  # 固定音符长度0.1秒，如你建议
+        }
+        annotations.append(annotation)
+    
+    print(f"[BeatNet→Annotation] Converted {len(beatnet_notes)} BeatNet notes to annotations")
+    
+    # Step 2: Convert annotations to score (参考DAW的generateScoreFromAnnotations逻辑)
+    score = []
+    for annotation in annotations:
+        score_note = {
+            'id': f"score-{int(time.time()*1000)}-{random.randint(100000, 999999)}",
+            'time': annotation['time'],
+            'type': annotation['type'],
+            'duration': annotation['duration']
+        }
+        score.append(score_note)
+    
+    print(f"[Annotation→Score] Converted {len(annotations)} annotations to score using DAW pipeline")
+    
+    return score
+
 # Configure upload settings
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -703,20 +742,15 @@ def finalize_beatnet_project():
             project_data = json.load(f)
         project_name = project_data['projectName']
         
-        # If no finalScore provided, use the generated score from beat mapping (if available)
-        if not final_score and 'generatedScore' in project_data:
+        # Always use generated score from beat mapping if available, regardless of finalScore
+        if 'generatedScore' in project_data:
             generated_score = project_data['generatedScore']
-            # Convert BeatNet format to DAW-compatible format
-            final_score = []
-            for note in generated_score:
-                daw_note = {
-                    'id': note.get('id', f"beatnet_{note.get('originalBeatIndex', 0)}"),
-                    'time': note['time'],
-                    'type': note['type'],
-                    'duration': 0.2  # Default duration for BeatNet notes
-                }
-                final_score.append(daw_note)
-            print(f"[Project] Converted {len(final_score)} BeatNet notes to DAW format")
+            
+            # Use new annotation-style conversion pipeline (参考现有成功管线)
+            final_score = convert_beatnet_to_annotations_then_score(generated_score, project_data)
+            print(f"[Project] Converted {len(final_score)} BeatNet notes using annotation pipeline")
+        elif not final_score:
+            print("[Project] Warning: No score data available - project will have empty score")
         
         # Create final project directory
         final_dir = os.path.join(DATA_DIR, project_name)
@@ -737,17 +771,23 @@ def finalize_beatnet_project():
         shutil.copy2(temp_audio_path, final_audio_path)  # Keep original
         shutil.move(temp_audio_path, drums_audio_path)   # Move to drums location for DAW
         
-        # Save score data
+        # Save score data (使用与现有项目一致的格式)
         score_dir = os.path.join(final_dir, 'score')
         os.makedirs(score_dir, exist_ok=True)
         
+        # Extract offset from BeatNet data for DAW compatibility  
+        score_offset = 0.0
+        if 'bpmData' in project_data and 'offset' in project_data['bpmData']:
+            score_offset = project_data['bpmData']['offset']
+        
+        # 使用与现有DAW项目一致的score格式
         score_data = {
             'metadata': {
-                'projectId': project_id,
+                'scoreOffset': score_offset,  # BeatNet offset for audio alignment
+                'createdAt': int(time.time() * 1000),  # 使用毫秒时间戳，与现有项目一致
+                'version': '2.0',  # 与现有项目版本一致
                 'creationMethod': 'beatnet_smart_generation',
                 'beatnetVersion': 'DBN_v1.0',
-                'generatedAt': time.time(),
-                'bpmData': project_data['bpmData'],
                 **user_metadata
             },
             'notes': final_score
