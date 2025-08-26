@@ -623,22 +623,24 @@
             position: absolute;
             top: calc(50% + 50px); /* Move down by 50% of button height (approx) */
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.7); /* Scale down to 70% */
+            transform: translate(-50%, -50%);
             background: linear-gradient(45deg, #FF4500, #FF6347);
             color: white;
             border: none;
             border-radius: 0; /* Remove rounded corners */
-            padding: 0.8rem 1.8rem; /* Smaller padding */
-            font-size: 1.1rem; /* Smaller font */
+            width: 120px; /* Fixed width */
+            height: 50px; /* Fixed height */
+            font-size: 16px; /* Fixed font size */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
             z-index: 9999; /* Highest z-index - above everything */
             opacity: 0;
             visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Show button when a real song is selected */
@@ -648,13 +650,11 @@
         }
 
         .start-performance-btn:hover {
-            transform: translate(-50%, -50%) translateY(-4px) scale(0.75); /* 0.7 * 1.07 ≈ 0.75 */
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
             background: linear-gradient(45deg, #FF6347, #FF8C00);
         }
 
         .start-performance-btn:active {
-            transform: translate(-50%, -50%) translateY(-2px) scale(0.69); /* 0.7 * 0.98 ≈ 0.69 */
+            background: linear-gradient(45deg, #CC3300, #FF4500);
         }
 
         .song-icon {
@@ -688,13 +688,15 @@
         }
 
         .song-genre {
-            background: #4FA8B8;
+            background: var(--category-primary, #4FA8B8);
             color: white;
             padding: 0.25rem 1rem;
             font-weight: bold;
             display: inline-block;
             margin-top: 0.5rem;
             font-size: 0.875rem;
+            border-radius: 0;
+            transition: all 0.3s ease;
         }
 
         /* Stats Panel - Independent grid item */
@@ -777,25 +779,29 @@
         /* Category Selection Button */
         .category-select-btn {
             position: absolute;
-            left: -150px;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 12px 24px;
+            top: calc(50% + 50px); /* Same level as start performance button */
+            left: calc(50% - 150px); /* Position to the left of start button */
+            transform: translate(-50%, -50%);
             background: linear-gradient(45deg, #4A90E2, #357ABD);
-            border: 3px solid #2C5F8A;
-            border-radius: 25px;
-            color: #FFFFFF;
-            font-size: 16px;
+            border: none;
+            border-radius: 0; /* Remove rounded corners */
+            color: white; /* Match start button color */
+            width: 120px; /* Fixed width - same as start button */
+            height: 50px; /* Fixed height - same as start button */
+            font-size: 16px; /* Fixed font size - same as start button */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
-            z-index: 1003;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .category-select-btn:hover {
             background: linear-gradient(45deg, #357ABD, #2C5F8A);
-            transform: translateY(-50%) scale(1.05);
+            /* Remove transform animation, keep same position */
         }
 
         .category-select-btn.active {
@@ -806,14 +812,15 @@
         /* Category Dropdown */
         .category-dropdown {
             position: absolute;
-            left: -150px;
-            bottom: 70px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
+            top: calc(50% + 120px); /* Position below the category button */
+            left: calc(50% - 150px); /* Match button left position */
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #4A90E2, #357ABD); /* Same gradient as button */
+            border: none; /* Same as button */
+            border-radius: 0; /* Same as button */
             padding: 8px;
-            min-width: 140px;
-            z-index: 1004;
+            width: 120px; /* Same width as button */
+            z-index: 9999;
             display: none;
         }
 
@@ -822,16 +829,21 @@
         }
 
         .category-dropdown-item {
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: #FFFFFF;
+            padding: 8px;
+            background: transparent; /* Transparent background to show dropdown gradient */
+            border: none; /* Remove border */
+            border-radius: 0; /* Remove rounded corners */
+            color: white; /* Same color as button text */
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             font-weight: bold;
-            margin-bottom: 4px;
+            font-size: 16px; /* Same font size as button */
+            margin-bottom: 2px;
+            height: 36px; /* Fixed height for consistency */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .category-dropdown-item:last-child {
@@ -839,14 +851,63 @@
         }
 
         .category-dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: linear-gradient(45deg, #357ABD, #2C5F8A); /* Same hover gradient as button */
         }
 
         .category-dropdown-item.active {
-            border-color: var(--category-accent, #FFD700);
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--category-accent, #FFD700);
+            background: linear-gradient(45deg, var(--category-primary, #4A90E2), var(--category-accent, #357ABD)); /* Same active gradient as button */
+            color: white;
+        }
+
+        /* Mobile responsive adjustments for category button */
+        @media (max-width: 768px) {
+            .category-select-btn {
+                left: calc(50% - 120px); /* Adjust spacing for smaller screens */
+                width: 100px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .start-performance-btn {
+                width: 100px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .category-dropdown {
+                left: calc(50% - 120px);
+                width: 100px;
+            }
+
+            .category-dropdown-item {
+                font-size: 14px;
+                height: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-select-btn {
+                left: calc(50% - 100px); /* Even closer spacing for mobile */
+                width: 80px;
+                height: 35px;
+                font-size: 12px;
+            }
+
+            .start-performance-btn {
+                width: 80px;
+                height: 35px;
+                font-size: 12px;
+            }
+
+            .category-dropdown {
+                left: calc(50% - 100px);
+                width: 80px;
+            }
+
+            .category-dropdown-item {
+                font-size: 12px;
+                height: 28px;
+            }
         }
 
         .song-list {
@@ -900,19 +961,19 @@
         /* Selected song (clicked) */
         .song-item.selected {
             transform: scale(1.1);
-            border-color: #FFD700;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-color: #FFD700 !important;
+            border-width: 4px;
             z-index: 2;
+            filter: brightness(1.2) saturate(1.3);
         }
 
         /* Center-focused song (based on scroll position) */
         .song-item.center-focus {
             transform: scale(1.05);
-            border-color: #FFD700;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-color: #FFD700 !important;
+            border-width: 3px;
             z-index: 1;
+            filter: brightness(1.1) saturate(1.1);
         }
 
         /* Dummy song styling */
@@ -2240,7 +2301,7 @@
                         <div class="song-symbol">♪</div>
                     </div>
                     <div class="selected-song-name" id="selectedSongName">请选择歌曲</div>
-                    <div class="song-genre">J-POP</div>
+                    <div class="song-genre" id="songGenre">J-POP</div>
                 </div>
             </div>
 
@@ -2271,6 +2332,20 @@
                     <span class="stat-label">最多连段数</span>
                     <span class="stat-value">0回</span>
                 </div>
+            </div>
+
+            <!-- Category Selection Button -->
+            <div class="category-select-btn" id="categorySelectBtn">
+                全部
+            </div>
+
+            <!-- Category Dropdown -->
+            <div class="category-dropdown" id="categoryDropdown">
+                <div class="category-dropdown-item active" data-category="All">全部</div>
+                <div class="category-dropdown-item" data-category="Pop">Pop</div>
+                <div class="category-dropdown-item" data-category="Trance">Trance</div>
+                <div class="category-dropdown-item" data-category="Brutal">Brutal</div>
+                <div class="category-dropdown-item" data-category="Softcore">Softcore</div>
             </div>
 
             <!-- Floating Start Performance Button -->
@@ -2514,12 +2589,13 @@
                 // Song Selection Screen elements
                 songSelectionScreen: document.getElementById('songSelectionScreen'),
                 selectedSongName: document.getElementById('selectedSongName'),
+                songGenre: document.getElementById('songGenre'),
                 songList: document.getElementById('songList'),
                 selectionCharacter: document.getElementById('selectionCharacter'),
                 songInfoFrame: document.getElementById('songInfoFrame'),
                 startPerformanceBtn: document.getElementById('startPerformanceBtn'),
-                categoryNavPanel: document.getElementById('categoryNavPanel'),
-                categoryList: document.getElementById('categoryList'),
+                categorySelectBtn: document.getElementById('categorySelectBtn'),
+                categoryDropdown: document.getElementById('categoryDropdown'),
                 // Curtain elements
                 curtain: document.getElementById('curtain'),
                 curtainText: document.getElementById('curtainText')
@@ -3759,10 +3835,11 @@
                     // Filter projects by selected category
                     const filteredProjects = await filterProjectsByCategory(data.projects);
                     
-                    filteredProjects.forEach(project => {
-                        const songItem = createSongItem(project, true);
+                    // Create real song items
+                    for (const project of filteredProjects) {
+                        const songItem = await createSongItem(project, true);
                         elements.songList.appendChild(songItem);
-                    });
+                    }
                     
                     // Add some test songs for demonstration
                     if (data.projects.length > 0) {
@@ -3775,10 +3852,10 @@
                             { folder_name: baseProject.folder_name + '_test4', display_name: '春风十里 (测试歌曲)' }
                         ];
                         
-                        testSongs.forEach(testSong => {
-                            const songItem = createSongItem(testSong, false);
+                        for (const testSong of testSongs) {
+                            const songItem = await createSongItem(testSong, false);
                             elements.songList.appendChild(songItem);
-                        });
+                        }
                     }
                     
                     // Create navigation button to left (if not already exists)
@@ -3804,7 +3881,7 @@
         }
 
         // Create a song item element
-        function createSongItem(project, isReal) {
+        async function createSongItem(project, isReal) {
             const songItem = document.createElement('div');
             songItem.className = 'song-item';
             songItem.dataset.projectName = project.folder_name;
@@ -3817,12 +3894,63 @@
             
             songItem.appendChild(songName);
             
+            // Set song item colors based on category
+            await setSongItemColors(songItem, project, isReal);
+            
             // Add click handler
             songItem.addEventListener('click', () => {
                 selectSong(songItem, project);
             });
             
             return songItem;
+        }
+
+        // Set song item colors based on project category
+        async function setSongItemColors(songItem, project, isReal) {
+            // Default color for demo/test songs
+            if (!isReal || !project.folder_name || project.folder_name.includes('_test')) {
+                songItem.style.background = 'linear-gradient(45deg, #4FA8B8, #7DBCC3)';
+                songItem.style.borderColor = '#2F7D8B';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                const metadata = await response.json();
+                
+                if (response.ok && metadata) {
+                    const category = metadata.category || 'Pop';
+                    
+                    // Get category colors
+                    let categoryConfig;
+                    if (gameState.categoryColors && gameState.categoryColors.categories[category]) {
+                        categoryConfig = gameState.categoryColors.categories[category];
+                    } else {
+                        // Fallback colors
+                        const fallbackColors = {
+                            'Pop': { primary: '#FF6B9D', secondary: '#FFE1EC', accent: '#FF1F6A' },
+                            'Trance': { primary: '#00D4FF', secondary: '#E0F7FF', accent: '#0099CC' },
+                            'Brutal': { primary: '#FF4444', secondary: '#FFE6E6', accent: '#CC0000' },
+                            'Softcore': { primary: '#90EE90', secondary: '#F0FFF0', accent: '#32CD32' }
+                        };
+                        categoryConfig = fallbackColors[category] || fallbackColors['Pop'];
+                    }
+                    
+                    // Apply category colors
+                    songItem.style.background = `linear-gradient(45deg, ${categoryConfig.primary}, ${categoryConfig.secondary})`;
+                    songItem.style.borderColor = categoryConfig.accent;
+                    
+                } else {
+                    // Fallback to Pop colors
+                    songItem.style.background = 'linear-gradient(45deg, #FF6B9D, #FFE1EC)';
+                    songItem.style.borderColor = '#FF1F6A';
+                }
+            } catch (error) {
+                console.warn(`Failed to load metadata for ${project.folder_name}:`, error);
+                // Fallback to Pop colors
+                songItem.style.background = 'linear-gradient(45deg, #FF6B9D, #FFE1EC)';
+                songItem.style.borderColor = '#FF1F6A';
+            }
         }
 
 
@@ -3839,6 +3967,9 @@
             
             // Update song info display
             elements.selectedSongName.textContent = project.display_name;
+            
+            // Update song genre display and colors based on project metadata
+            updateSongGenreDisplay(project);
             
             // Store selected project (only if it's a real song)
             if (songItem.dataset.isReal === 'true') {
@@ -3936,6 +4067,9 @@
                         
                         elements.selectedSongName.textContent = project.display_name;
                         
+                        // Update song genre display and colors
+                        updateSongGenreDisplay(project);
+                        
                         // Store selected project (only if it's a real song)
                         if (closestItem.dataset.isReal === 'true') {
                             gameState.selectedProject = project.folder_name;
@@ -3965,6 +4099,9 @@
                     };
                     
                     elements.selectedSongName.textContent = project.display_name;
+                    
+                    // Update song genre display and colors
+                    updateSongGenreDisplay(project);
                     
                     // Store selected project (only if it's a real song)
                     if (closestItem.dataset.isReal === 'true') {
@@ -4071,28 +4208,75 @@
                 }
             });
 
-            // Category navigation event listeners
-            if (elements.categoryList) {
-                elements.categoryList.addEventListener('click', (e) => {
-                    const categoryItem = e.target.closest('.category-item');
+            // Category selection button event listeners
+            if (elements.categorySelectBtn) {
+                elements.categorySelectBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleCategoryDropdown();
+                });
+            }
+
+            if (elements.categoryDropdown) {
+                elements.categoryDropdown.addEventListener('click', (e) => {
+                    const categoryItem = e.target.closest('.category-dropdown-item');
                     if (categoryItem) {
                         const selectedCategory = categoryItem.dataset.category;
                         selectCategory(selectedCategory);
+                        hideCategoryDropdown();
                     }
                 });
             }
 
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#categorySelectBtn') && !e.target.closest('#categoryDropdown')) {
+                    hideCategoryDropdown();
+                }
+            });
+
+        }
+
+        // Toggle category dropdown visibility
+        function toggleCategoryDropdown() {
+            if (elements.categoryDropdown.classList.contains('show')) {
+                hideCategoryDropdown();
+            } else {
+                showCategoryDropdown();
+            }
+        }
+
+        // Show category dropdown
+        function showCategoryDropdown() {
+            elements.categoryDropdown.classList.add('show');
+        }
+
+        // Hide category dropdown
+        function hideCategoryDropdown() {
+            elements.categoryDropdown.classList.remove('show');
         }
 
         // Category selection functionality
         function selectCategory(category) {
-            // Update visual state of category items
-            document.querySelectorAll('.category-item').forEach(item => {
+            // Update visual state of dropdown items
+            document.querySelectorAll('.category-dropdown-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.category === category) {
                     item.classList.add('active');
                 }
             });
+
+            // Update category button text
+            const categoryDisplayNames = {
+                'All': '全部',
+                'Pop': 'Pop',
+                'Trance': 'Trance',  
+                'Brutal': 'Brutal',
+                'Softcore': 'Softcore'
+            };
+            
+            if (elements.categorySelectBtn) {
+                elements.categorySelectBtn.textContent = categoryDisplayNames[category] || category;
+            }
 
             // Update game state
             gameState.selectedCategory = category;
@@ -4172,6 +4356,11 @@
                 document.documentElement.style.removeProperty('--category-primary');
                 document.documentElement.style.removeProperty('--category-secondary');
                 document.documentElement.style.removeProperty('--category-accent');
+                
+                // Reset category button styling
+                if (elements.categorySelectBtn) {
+                    elements.categorySelectBtn.classList.remove('active');
+                }
                 return;
             }
 
@@ -4187,11 +4376,16 @@
             document.documentElement.style.setProperty('--category-accent', categoryConfig.accent);
 
             // Apply colors to specific UI elements
-            const activeCategory = document.querySelector('.category-item.active');
+            const activeCategory = document.querySelector('.category-dropdown-item.active');
             if (activeCategory) {
                 activeCategory.style.borderColor = categoryConfig.accent;
                 activeCategory.style.background = `rgba(${hexToRgb(categoryConfig.primary)}, 0.2)`;
                 activeCategory.style.color = categoryConfig.accent;
+            }
+
+            // Update category select button colors
+            if (elements.categorySelectBtn) {
+                elements.categorySelectBtn.classList.add('active');
             }
 
             // Apply accent color to selected song items
@@ -4209,6 +4403,54 @@
             return result ? 
                 `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
                 '255, 255, 255';
+        }
+
+        // Update song genre display based on project metadata
+        async function updateSongGenreDisplay(project) {
+            if (!elements.songGenre) return;
+            
+            // Default values for dummy songs
+            if (!project.folder_name || project.folder_name.includes('_test')) {
+                elements.songGenre.textContent = 'Demo';
+                elements.songGenre.style.background = '#4FA8B8'; // Default color
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                const metadata = await response.json();
+                
+                if (response.ok && metadata) {
+                    const category = metadata.category || 'Pop';
+                    
+                    // Update genre text
+                    elements.songGenre.textContent = category;
+                    
+                    // Update genre color based on category
+                    if (gameState.categoryColors && gameState.categoryColors.categories[category]) {
+                        const categoryConfig = gameState.categoryColors.categories[category];
+                        elements.songGenre.style.background = categoryConfig.primary;
+                    } else {
+                        // Fallback colors for each category
+                        const fallbackColors = {
+                            'Pop': '#FF6B9D',
+                            'Trance': '#00D4FF', 
+                            'Brutal': '#FF4444',
+                            'Softcore': '#90EE90'
+                        };
+                        elements.songGenre.style.background = fallbackColors[category] || '#4FA8B8';
+                    }
+                } else {
+                    // Fallback to default
+                    elements.songGenre.textContent = 'Pop';
+                    elements.songGenre.style.background = '#FF6B9D';
+                }
+            } catch (error) {
+                console.warn(`Failed to load metadata for ${project.folder_name}:`, error);
+                // Fallback to default
+                elements.songGenre.textContent = 'Pop';
+                elements.songGenre.style.background = '#FF6B9D';
+            }
         }
 
         // Setup navigation buttons - called after songs are populated
