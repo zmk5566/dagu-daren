@@ -5,21 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大鼓达人 - 演奏模式</title>
     <style>
-        /* CSS Variables for Colors */
+        /* CSS Variables for Vaporwave + Mondrian Colors */
         :root {
-            --primary-red: #FF6B47;
-            --primary-blue: #4A90E2;
-            --bg-gradient: linear-gradient(45deg, #FFE5B4, #FFCCCB, #E6F3FF);
+            /* Vaporwave color palette */
+            --vaporwave-pink: #FF006E;
+            --vaporwave-purple: #8338EC;
+            --vaporwave-blue: #3A86FF;
+            --vaporwave-cyan: #06FFA5;
+            --vaporwave-yellow: #FFBE0B;
+            --vaporwave-white: #FFFFFF;
+            --vaporwave-black: #000000;
+            
+            /* Main theme colors */
+            --primary-red: var(--vaporwave-pink);
+            --primary-blue: var(--vaporwave-blue);
+            --bg-gradient: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF, #06FFA5, #FFBE0B);
             --text-white: #FFFFFF;
-            --text-dark: #333333;
-            --score-bg: rgba(255, 255, 255, 0.9);
-            --drum-shadow: rgba(0, 0, 0, 0.3);
-            --hit-effect: rgba(255, 255, 255, 0.8);
+            --text-dark: #000000;
+            --score-bg: rgba(255, 255, 255, 0.95);
+            --drum-shadow: rgba(0, 0, 0, 0.4);
+            --hit-effect: rgba(255, 255, 255, 0.9);
             
             /* Dynamic category colors - will be updated by JavaScript */
-            --category-primary: #FF6B9D;
-            --category-secondary: #FFE1EC;
-            --category-accent: #FF1F6A;
+            --category-primary: #FF006E;
+            --category-secondary: #8338EC;
+            --category-accent: #3A86FF;
         }
 
         * {
@@ -29,11 +39,19 @@
         }
 
         body {
-            font-family: 'Arial', 'Hiragino Kaku Gothic Pro', 'Microsoft YaHei', sans-serif;
-            background: #1a0f1f;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF, #06FFA5, #FFBE0B);
+            background-size: 400% 400%;
+            animation: vaporwave-gradient 8s ease infinite;
             overflow: hidden;
             height: 100vh;
             user-select: none;
+        }
+        
+        @keyframes vaporwave-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Game Container */
@@ -43,23 +61,31 @@
             position: relative;
         }
 
-        /* Background Image Container */
-        .game-background {
+        /* Mondrian Grid Background */
+        .mondrian-grid {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            opacity: 0.7;
-            transition: opacity 0.5s ease;
+            opacity: 0.2;
+        }
+        
+        /* Chinese Elements Background */
+        .chinese-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 0.3;
         }
 
-        .game-background.loaded {
-            opacity: 0.8;
+        /* Legacy background support - hidden */
+        .game-background {
+            display: none;
         }
 
         /* Top Banner - Tiling pattern from top to above character */
@@ -137,7 +163,7 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 10px;
+            border-radius: 0;
             display: block;
         }
 
@@ -375,7 +401,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, #4FA8B8 0%, #7DBCC3 50%, #4FA8B8 100%);
+            background: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF, #06FFA5, #FFBE0B);
+            background-size: 400% 400%;
+            animation: vaporwave-gradient 8s ease infinite;
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -939,15 +967,15 @@
 
         .song-list::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
+            border-radius: 0;
         }
 
         .song-item {
             min-width: 100px;
             width: 100px;
             height: 180px; /* Increased from 140px to 180px */
-            background: linear-gradient(45deg, #4FA8B8, #7DBCC3);
-            border: 3px solid #2F7D8B;
+            background: linear-gradient(45deg, #FF006E, #8338EC);
+            border: 3px solid #FFFFFF;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -1660,7 +1688,7 @@
         .pause-menu-settings {
             background: rgba(255, 255, 255, 0.7);
             border: 2px solid var(--primary-blue);
-            border-radius: 8px;
+            border-radius: 0;
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -1683,7 +1711,7 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 12px 16px;
             border: 2px solid #ddd;
-            border-radius: 6px;
+            border-radius: 0;
             font-size: 16px;
             font-weight: bold;
             color: #333;
@@ -1706,7 +1734,7 @@
             align-items: center;
             justify-content: center;
             background: white;
-            border-radius: 3px;
+            border-radius: 0;
             transition: all 0.2s ease;
             flex-shrink: 0;
         }
@@ -1948,7 +1976,7 @@
         .hit-stat-item {
             text-align: center;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 0;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid transparent;
             min-width: 120px;
@@ -2014,7 +2042,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s ease;
-            border-radius: 5px;
+            border-radius: 0;
         }
 
         .restart-btn {
@@ -2069,6 +2097,64 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- Mondrian Grid Background -->
+        <svg class="mondrian-grid" viewBox="0 0 1920 1080">
+            <!-- Main grid lines -->
+            <line x1="400" y1="0" x2="400" y2="1080" stroke="#FFFFFF" stroke-width="8" opacity="0.4"/>
+            <line x1="800" y1="0" x2="800" y2="1080" stroke="#FFFFFF" stroke-width="6" opacity="0.3"/>
+            <line x1="1200" y1="0" x2="1200" y2="1080" stroke="#FFFFFF" stroke-width="8" opacity="0.4"/>
+            <line x1="0" y1="200" x2="1920" y2="200" stroke="#FFFFFF" stroke-width="6" opacity="0.3"/>
+            <line x1="0" y1="500" x2="1920" y2="500" stroke="#FFFFFF" stroke-width="8" opacity="0.4"/>
+            <line x1="0" y1="800" x2="1920" y2="800" stroke="#FFFFFF" stroke-width="6" opacity="0.3"/>
+            
+            <!-- Vaporwave color blocks -->
+            <rect x="0" y="0" width="400" height="200" fill="#FF006E" opacity="0.15"/>
+            <rect x="400" y="0" width="400" height="200" fill="#8338EC" opacity="0.15"/>
+            <rect x="800" y="0" width="400" height="200" fill="#3A86FF" opacity="0.15"/>
+            <rect x="1200" y="0" width="720" height="200" fill="#06FFA5" opacity="0.15"/>
+            
+            <rect x="0" y="200" width="400" height="300" fill="#FFBE0B" opacity="0.15"/>
+            <rect x="400" y="200" width="800" height="300" fill="#FF006E" opacity="0.1"/>
+            <rect x="1200" y="200" width="720" height="300" fill="#8338EC" opacity="0.15"/>
+            
+            <rect x="0" y="500" width="800" height="300" fill="#3A86FF" opacity="0.15"/>
+            <rect x="800" y="500" width="400" height="300" fill="#06FFA5" opacity="0.15"/>
+            <rect x="1200" y="500" width="720" height="300" fill="#FFBE0B" opacity="0.15"/>
+            
+            <rect x="0" y="800" width="400" height="280" fill="#8338EC" opacity="0.15"/>
+            <rect x="400" y="800" width="400" height="280" fill="#FF006E" opacity="0.15"/>
+            <rect x="800" y="800" width="400" height="280" fill="#3A86FF" opacity="0.15"/>
+            <rect x="1200" y="800" width="720" height="280" fill="#06FFA5" opacity="0.15"/>
+        </svg>
+        
+        <!-- Chinese Elements Background -->
+        <svg class="chinese-elements" viewBox="0 0 1920 1080">
+            <!-- Cloud patterns -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3">
+                <!-- Top clouds -->
+                <path d="M 100,100 Q 150,50 200,100 Q 250,50 300,100 Q 250,150 200,100 Q 150,150 100,100 Z"/>
+                <path d="M 1620,100 Q 1670,50 1720,100 Q 1770,50 1820,100 Q 1770,150 1720,100 Q 1670,150 1620,100 Z"/>
+                
+                <!-- Bottom clouds -->
+                <path d="M 100,980 Q 150,930 200,980 Q 250,930 300,980 Q 250,1030 200,980 Q 150,1030 100,980 Z"/>
+                <path d="M 1620,980 Q 1670,930 1720,980 Q 1770,930 1820,980 Q 1770,1030 1720,980 Q 1670,1030 1620,980 Z"/>
+            </g>
+            
+            <!-- Mountain silhouettes -->
+            <g fill="#FFFFFF" opacity="0.2">
+                <polygon points="50,1080 150,950 250,1080"/>
+                <polygon points="1670,1080 1770,950 1870,1080"/>
+            </g>
+            
+            <!-- Geometric circles -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.25">
+                <circle cx="1700" cy="250" r="30"/>
+                <circle cx="220" cy="850" r="25"/>
+                <circle cx="1750" cy="700" r="35"/>
+                <circle cx="170" cy="300" r="20"/>
+            </g>
+        </svg>
+
         <!-- Loading Screen -->
         <div class="loading-screen" id="loadingScreen">
             <div class="loading-spinner"></div>
@@ -3849,8 +3935,8 @@
         async function setSongItemColors(songItem, project, isReal) {
             // Default color for demo/test songs
             if (!isReal || !project.folder_name || project.folder_name.includes('_test')) {
-                songItem.style.background = 'linear-gradient(45deg, #4FA8B8, #7DBCC3)';
-                songItem.style.borderColor = '#2F7D8B';
+                songItem.style.background = 'linear-gradient(45deg, #FF006E, #8338EC)';
+                songItem.style.borderColor = '#FFFFFF';
                 return;
             }
             
@@ -4352,7 +4438,7 @@
             // Default values for dummy songs
             if (!project.folder_name || project.folder_name.includes('_test')) {
                 elements.songGenre.textContent = 'Demo';
-                elements.songGenre.style.background = '#4FA8B8'; // Default color
+                elements.songGenre.style.background = '#FF006E'; // Default color
                 return;
             }
             
@@ -4378,7 +4464,7 @@
                             'Brutal': '#FF4444',
                             'Softcore': '#90EE90'
                         };
-                        elements.songGenre.style.background = fallbackColors[category] || '#4FA8B8';
+                        elements.songGenre.style.background = fallbackColors[category] || '#FF006E';
                     }
                 } else {
                     // Fallback to default
