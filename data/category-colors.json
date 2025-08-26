@@ -1,0 +1,64 @@
+{
+  "categories": {
+    "Pop": {
+      "primary": "#FF6B9D",
+      "secondary": "#FFE1EC",
+      "accent": "#FF1F6A",
+      "text": "#FFFFFF",
+      "gradient": ["#FF6B9D", "#FF8FAB"]
+    },
+    "Trance": {
+      "primary": "#00D4FF",
+      "secondary": "#E0F7FF",
+      "accent": "#0099CC",
+      "text": "#FFFFFF",
+      "gradient": ["#00D4FF", "#33E0FF"]
+    },
+    "Brutal": {
+      "primary": "#FF4444",
+      "secondary": "#FFE6E6",
+      "accent": "#CC0000",
+      "text": "#FFFFFF",
+      "gradient": ["#FF4444", "#FF6666"]
+    },
+    "Softcore": {
+      "primary": "#90EE90",
+      "secondary": "#F0FFF0",
+      "accent": "#32CD32",
+      "text": "#2D5016",
+      "gradient": ["#90EE90", "#B4F0B4"]
+    }
+  },
+  "difficulty": {
+    "stars": {
+      "empty": "#E0E0E0",
+      "filled": "#FFD700",
+      "glow": "#FFED4A"
+    },
+    "colors": {
+      "1-2": "#90EE90",
+      "3-4": "#87CEEB", 
+      "5-6": "#FFB347",
+      "7-8": "#FF6B6B",
+      "9": "#8A2BE2"
+    }
+  },
+  "defaults": {
+    "category": "Pop",
+    "difficulty": 1
+  },
+  "ui": {
+    "hover": {
+      "opacity": 0.8,
+      "scale": 1.05
+    },
+    "selected": {
+      "borderWidth": "3px",
+      "borderStyle": "solid"
+    },
+    "transition": {
+      "duration": "0.3s",
+      "easing": "ease-in-out"
+    }
+  }
+}

@@ -2192,7 +2192,7 @@
             
             <!-- Character Display (Above game track) -->
             <div class="character-display" id="characterDisplay">
-                <img id="characterImage" alt="Character" />
+                <img id="characterImage" alt="Character" src="cute-chinese-drum.svg" />
             </div>
             
             <!-- Game Track Container (Don + Beat Track) -->
@@ -2287,10 +2287,10 @@
             <!-- Character Display -->
             <div class="character-panel">
                 <div class="character-avatar">
-                    <img src="" alt="Character" id="selectionCharacter" />
+                    <img src="cute-chinese-drum.svg" alt="Character" id="selectionCharacter" />
                 </div>
                 <div class="difficulty-info">
-                    <div class="difficulty-label">初级</div>
+                    <div class="difficulty-label">蒙德里安大鼓</div>
                 </div>
             </div>
 
@@ -2769,47 +2769,10 @@
                 }
             }
 
-            // Load character images and store URLs
-            if (elements.characterImage && projectImages.character) {
-                const characterImages = projectImages.character;
-                
-                // Store character image URLs in gameState for switching
-                gameState.characterImages = {
-                    unsatisfied: null,
-                    satisfied: null
-                };
-
-                // Preload unsatisfied character image
-                if (characterImages.unsatisfied) {
-                    const unsatisfiedUrl = `/api/project/${projectName}/images/${characterImages.unsatisfied}`;
-                    const unsatisfiedImg = new Image();
-                    unsatisfiedImg.onload = function() {
-                        gameState.characterImages.unsatisfied = unsatisfiedUrl;
-                        console.log('[Character] Unsatisfied character image loaded');
-                        // Set initial character (unsatisfied by default)
-                        updateCharacterDisplay();
-                    };
-                    unsatisfiedImg.onerror = function() {
-                        console.warn('[Character] Failed to load unsatisfied character image');
-                    };
-                    unsatisfiedImg.src = unsatisfiedUrl;
-                }
-
-                // Preload satisfied character image
-                if (characterImages.satisfied) {
-                    const satisfiedUrl = `/api/project/${projectName}/images/${characterImages.satisfied}`;
-                    const satisfiedImg = new Image();
-                    satisfiedImg.onload = function() {
-                        gameState.characterImages.satisfied = satisfiedUrl;
-                        console.log('[Character] Satisfied character image loaded');
-                    };
-                    satisfiedImg.onerror = function() {
-                        console.warn('[Character] Failed to load satisfied character image');
-                    };
-                    satisfiedImg.src = satisfiedUrl;
-                }
-            } else {
-                console.log('[Character] No character images found');
+            // Use the cute Chinese drum SVG as character image
+            if (elements.characterImage) {
+                console.log('[Character] Using cute Chinese drum SVG');
+                updateCharacterDisplay();
             }
 
             // Load banner images and store URLs (always load for potential use)
@@ -3626,21 +3589,15 @@
 
         // Update character display based on spirit value
         function updateCharacterDisplay() {
-            if (!elements.characterImage || !gameState.characterImages) {
+            if (!elements.characterImage) {
                 return;
             }
 
-            const isSatisfied = gameState.spiritValue >= 60; // Spirit >= 60% is satisfied
-            const imageUrl = isSatisfied ? 
-                gameState.characterImages.satisfied : 
-                gameState.characterImages.unsatisfied;
-
-            if (imageUrl) {
-                elements.characterImage.src = imageUrl;
-                elements.characterDisplay.classList.add('loaded');
-                
-                console.log(`[Character] Updated to ${isSatisfied ? 'satisfied' : 'unsatisfied'} (spirit: ${Math.round(gameState.spiritValue)}%)`);
-            }
+            // Always use the cute Chinese drum SVG
+            elements.characterImage.src = 'cute-chinese-drum.svg';
+            elements.characterDisplay.classList.add('loaded');
+            
+            console.log(`[Character] Using cute Chinese drum SVG (spirit: ${Math.round(gameState.spiritValue)}%)`);
         }
 
         // Update banner display based on spirit value
@@ -3839,23 +3796,6 @@
                     for (const project of filteredProjects) {
                         const songItem = await createSongItem(project, true);
                         elements.songList.appendChild(songItem);
-                    }
-                    
-                    // Add some test songs for demonstration
-                    if (data.projects.length > 0) {
-                        const baseProject = data.projects[0];
-                        
-                        const testSongs = [
-                            { folder_name: baseProject.folder_name + '_test1', display_name: '森の音楽会 (测试歌曲)' },
-                            { folder_name: baseProject.folder_name + '_test2', display_name: '夏日祭典 (测试歌曲)' },
-                            { folder_name: baseProject.folder_name + '_test3', display_name: '星空物语 (测试歌曲)' },
-                            { folder_name: baseProject.folder_name + '_test4', display_name: '春风十里 (测试歌曲)' }
-                        ];
-                        
-                        for (const testSong of testSongs) {
-                            const songItem = await createSongItem(testSong, false);
-                            elements.songList.appendChild(songItem);
-                        }
                     }
                     
                     // Create navigation button to left (if not already exists)

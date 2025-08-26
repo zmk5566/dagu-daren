@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大鼓达人 - 是大鼓不是太鼓</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF, #06FFA5, #FFBE0B);
+            background-size: 400% 400%;
+            animation: vaporwave-gradient 8s ease infinite;
+        }
+        
+        @keyframes vaporwave-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .mondrian-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        .chinese-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 0.6;
+        }
+        
+        .title-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .main-title {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 
+                4px 4px 0px #FF006E,
+                8px 8px 0px #8338EC,
+                12px 12px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1rem;
+            animation: title-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes title-glow {
+            0% { text-shadow: 
+                4px 4px 0px #FF006E,
+                8px 8px 0px #8338EC,
+                12px 12px 20px rgba(0, 0, 0, 0.5); }
+            100% { text-shadow: 
+                4px 4px 0px #06FFA5,
+                8px 8px 0px #FFBE0B,
+                12px 12px 30px rgba(0, 0, 0, 0.8); }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #06FFA5;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .start-button {
+            background: linear-gradient(45deg, #FF006E, #8338EC);
+            border: 4px solid #FFFFFF;
+            border-radius: 0;
+            color: #FFFFFF;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 20px 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+        
+        .start-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, #06FFA5, #FFBE0B);
+        }
+        
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #FF006E, #8338EC, #3A86FF);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 1s ease;
+        }
+        
+        .transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        .floating-drum {
+            position: absolute;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-drum:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-drum:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-drum:nth-child(3) {
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        
+        .floating-drum:nth-child(4) {
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-3deg); }
+            75% { transform: translateY(-25px) rotate(3deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .start-button {
+                font-size: 1.5rem;
+                padding: 15px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- 蒙德里安网格背景 -->
+        <svg class="mondrian-grid" viewBox="0 0 1920 1080">
+            <!-- 主要网格线 -->
+            <line x1="400" y1="0" x2="400" y2="1080" stroke="#FFFFFF" stroke-width="8" opacity="0.7"/>
+            <line x1="800" y1="0" x2="800" y2="1080" stroke="#FFFFFF" stroke-width="6" opacity="0.6"/>
+            <line x1="1200" y1="0" x2="1200" y2="1080" stroke="#FFFFFF" stroke-width="8" opacity="0.7"/>
+            <line x1="0" y1="200" x2="1920" y2="200" stroke="#FFFFFF" stroke-width="6" opacity="0.6"/>
+            <line x1="0" y1="500" x2="1920" y2="500" stroke="#FFFFFF" stroke-width="8" opacity="0.7"/>
+            <line x1="0" y1="800" x2="1920" y2="800" stroke="#FFFFFF" stroke-width="6" opacity="0.6"/>
+            
+            <!-- 蒸汽波色块 -->
+            <rect x="0" y="0" width="400" height="200" fill="#FF006E" opacity="0.3"/>
+            <rect x="400" y="0" width="400" height="200" fill="#8338EC" opacity="0.3"/>
+            <rect x="800" y="0" width="400" height="200" fill="#3A86FF" opacity="0.3"/>
+            <rect x="1200" y="0" width="720" height="200" fill="#06FFA5" opacity="0.3"/>
+            
+            <rect x="0" y="200" width="400" height="300" fill="#FFBE0B" opacity="0.3"/>
+            <rect x="400" y="200" width="800" height="300" fill="#FF006E" opacity="0.2"/>
+            <rect x="1200" y="200" width="720" height="300" fill="#8338EC" opacity="0.3"/>
+            
+            <rect x="0" y="500" width="800" height="300" fill="#3A86FF" opacity="0.3"/>
+            <rect x="800" y="500" width="400" height="300" fill="#06FFA5" opacity="0.3"/>
+            <rect x="1200" y="500" width="720" height="300" fill="#FFBE0B" opacity="0.3"/>
+            
+            <rect x="0" y="800" width="400" height="280" fill="#8338EC" opacity="0.3"/>
+            <rect x="400" y="800" width="400" height="280" fill="#FF006E" opacity="0.3"/>
+            <rect x="800" y="800" width="400" height="280" fill="#3A86FF" opacity="0.3"/>
+            <rect x="1200" y="800" width="720" height="280" fill="#06FFA5" opacity="0.3"/>
+        </svg>
+        
+        <!-- 中国元素装饰 -->
+        <svg class="chinese-elements" viewBox="0 0 1920 1080">
+            <!-- 云纹装饰 -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.6">
+                <!-- 左上云 -->
+                <path d="M 100,150 Q 150,100 200,150 Q 250,100 300,150 Q 250,200 200,150 Q 150,200 100,150 Z"/>
+                <path d="M 120,170 Q 160,130 200,170 Q 240,130 280,170"/>
+                
+                <!-- 右上云 -->
+                <path d="M 1620,150 Q 1670,100 1720,150 Q 1770,100 1820,150 Q 1770,200 1720,150 Q 1670,200 1620,150 Z"/>
+                <path d="M 1640,170 Q 1680,130 1720,170 Q 1760,130 1800,170"/>
+                
+                <!-- 左下云 -->
+                <path d="M 100,930 Q 150,880 200,930 Q 250,880 300,930 Q 250,980 200,930 Q 150,980 100,930 Z"/>
+                <path d="M 120,950 Q 160,910 200,950 Q 240,910 280,950"/>
+                
+                <!-- 右下云 -->
+                <path d="M 1620,930 Q 1670,880 1720,930 Q 1770,880 1820,930 Q 1770,980 1720,930 Q 1670,980 1620,930 Z"/>
+                <path d="M 1640,950 Q 1680,910 1720,950 Q 1760,910 1800,950"/>
+            </g>
+            
+            <!-- 山形装饰 -->
+            <g fill="#FFFFFF" opacity="0.4">
+                <polygon points="50,1080 150,900 250,1080"/>
+                <polygon points="1670,1080 1770,900 1870,1080"/>
+                <polygon points="200,1080 280,950 360,1080"/>
+                <polygon points="1560,1080 1640,950 1720,1080"/>
+            </g>
+            
+            <!-- 几何装饰圆 -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5">
+                <circle cx="1700" cy="300" r="30"/>
+                <circle cx="1700" cy="300" r="50"/>
+                <circle cx="220" cy="600" r="25"/>
+                <circle cx="220" cy="600" r="40"/>
+                <circle cx="1750" cy="750" r="35"/>
+                <circle cx="1750" cy="750" r="55"/>
+                <circle cx="170" cy="350" r="20"/>
+                <circle cx="170" cy="350" r="35"/>
+            </g>
+        </svg>
+        
+        <!-- 飘浮的小鼓元素 -->
+        <div class="floating-elements">
+            <div class="floating-drum">
+                <svg width="80" height="80" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="40" fill="#FF006E" stroke="#FFFFFF" stroke-width="4"/>
+                    <circle cx="100" cy="100" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <rect x="85" y="85" width="10" height="10" fill="#FFBE0B"/>
+                    <rect x="105" y="85" width="10" height="10" fill="#06FFA5"/>
+                    <rect x="85" y="105" width="10" height="10" fill="#3A86FF"/>
+                    <rect x="105" y="105" width="10" height="10" fill="#8338EC"/>
+                </svg>
+            </div>
+            <div class="floating-drum">
+                <svg width="60" height="60" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="40" fill="#8338EC" stroke="#FFFFFF" stroke-width="4"/>
+                    <circle cx="100" cy="100" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <rect x="85" y="85" width="10" height="10" fill="#FFBE0B"/>
+                    <rect x="105" y="85" width="10" height="10" fill="#06FFA5"/>
+                </svg>
+            </div>
+            <div class="floating-drum">
+                <svg width="70" height="70" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="40" fill="#3A86FF" stroke="#FFFFFF" stroke-width="4"/>
+                    <circle cx="100" cy="100" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <rect x="90" y="90" width="20" height="20" fill="#FF006E"/>
+                </svg>
+            </div>
+            <div class="floating-drum">
+                <svg width="50" height="50" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="40" fill="#06FFA5" stroke="#FFFFFF" stroke-width="4"/>
+                    <circle cx="100" cy="100" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <rect x="85" y="85" width="10" height="10" fill="#FF006E"/>
+                    <rect x="105" y="105" width="10" height="10" fill="#8338EC"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- 主要内容 -->
+        <div class="title-container">
+            <h1 class="main-title">大鼓达人</h1>
+            <p class="subtitle">是大鼓不是太鼓</p>
+            <button class="start-button" onclick="startGame()">开始游戏</button>
+        </div>
+    </div>
+    
+    <!-- 过渡覆盖层 -->
+    <div class="transition-overlay" id="transitionOverlay"></div>
+    
+    <script>
+        function startGame() {
+            const overlay = document.getElementById('transitionOverlay');
+            const button = document.querySelector('.start-button');
+            
+            // 按钮点击效果
+            button.style.transform = 'translateY(-5px) scale(0.95)';
+            
+            setTimeout(() => {
+                // 显示过渡动画
+                overlay.classList.add('active');
+                
+                // 1秒后跳转到游戏页面
+                setTimeout(() => {
+                    window.location.href = '/game';
+                }, 1000);
+            }, 200);
+        }
+        
+        // 添加键盘支持
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                startGame();
+            }
+        });
+        
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            const title = document.querySelector('.main-title');
+            const subtitle = document.querySelector('.subtitle');
+            const button = document.querySelector('.start-button');
+            
+            // 延迟显示元素
+            title.style.opacity = '0';
+            subtitle.style.opacity = '0';
+            button.style.opacity = '0';
+            
+            setTimeout(() => {
+                title.style.transition = 'opacity 1s ease';
+                title.style.opacity = '1';
+            }, 500);
+            
+            setTimeout(() => {
+                subtitle.style.transition = 'opacity 1s ease';
+                subtitle.style.opacity = '1';
+            }, 1000);
+            
+            setTimeout(() => {
+                button.style.transition = 'opacity 1s ease';
+                button.style.opacity = '1';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

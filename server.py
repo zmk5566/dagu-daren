@@ -91,8 +91,9 @@ def allowed_image_file(filename):
 # --- Frontend Routes ---
 
 @app.route('/')
-def serve_annotator_index():
-    return send_from_directory(ANNOTATOR_DIR, 'index.html')
+def serve_start_screen():
+    """Serves the new game start screen."""
+    return send_from_directory(PROJECT_ROOT, 'start_screen.html')
 
 @app.route('/daw')
 def serve_daw_interface():
@@ -126,8 +127,18 @@ def serve_data_files(filepath):
 
 @app.route('/<path:filename>')
 def serve_annotator_static(filename):
-    # This serves assets like JS, CSS from the annotator folder
-    return send_from_directory(ANNOTATOR_DIR, filename)
+    # First try the annotator folder for JS, CSS assets
+    annotator_path = os.path.join(ANNOTATOR_DIR, filename)
+    if os.path.exists(annotator_path):
+        return send_from_directory(ANNOTATOR_DIR, filename)
+    
+    # Fallback to root directory for files like SVGs
+    root_path = os.path.join(PROJECT_ROOT, filename)
+    if os.path.exists(root_path):
+        return send_from_directory(PROJECT_ROOT, filename)
+    
+    # If not found in either location, return 404
+    return "File not found", 404
 
 @app.route('/visualizer/<path:filename>')
 def serve_visualizer_static(filename):
