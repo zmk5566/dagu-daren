@@ -56,5 +56,39 @@ Once the DAW-style annotation tool is complete, development will focus on:
 
 - ✅ **Classic ML Beatmap Generation**: Achieved 80% F1-Score using SVM with MFCC features
 - ✅ **Manual Annotation Complete**: All don/ka hits manually annotated for training data
-- 🚧 **DAW-Style Annotation Tool**: Planning phase - requires BPM detection and auto-alignment
+- ✅ **DAW-Style Annotation Tool**: Complete with BPM detection, beat grid, and auto-alignment
+- 🚧 **BeatNet Smart Score Generation**: In development with significant issues
 - ⏳ **Game Interface**: Pending completion of annotation tools
+
+### 5. BeatNet Smart Score Generation (Current Development - Issues Present)
+
+**Goal**: Implement intelligent score generation using BeatNet deep learning for automated don/ka mapping from audio.
+
+**Implementation Status**:
+- ✅ **BeatNet Integration**: Deep learning beat detection and downbeat identification working
+- ✅ **3-Step Wizard UI**: Complete user interface for audio upload, beat mapping, and score preview
+- ✅ **Backend API Endpoints**: `/api/beatnet-full-analysis`, `/api/process-beat-mapping`, `/api/finalize-beatnet-project`
+- ✅ **Annotation-Style Conversion Pipeline**: New conversion method referencing existing successful annotation→score pipeline
+- ✅ **Offset Handling**: BeatNet offset correctly saved in metadata (not applied to note times)
+- ⚠️ **Format Compatibility**: DAW score format compatibility implemented but untested
+
+**Current Issues & Limitations**:
+- 🔴 **End-to-End Testing**: Full workflow from BeatNet analysis to DAW display not fully validated
+- 🔴 **Score Display Issues**: Generated scores may not display correctly in DAW interface
+- 🔴 **Format Conversion Problems**: Complex conversion between BeatNet format and DAW-compatible JSON
+- 🔴 **Offset Integration**: While offset is saved in metadata, DAW may not properly use it for audio alignment
+- 🔴 **User Experience**: Multi-step wizard may have UX issues and error handling problems
+- 🔴 **Performance**: BeatNet analysis can be slow for longer audio files
+- 🔴 **Beat Mapping Accuracy**: Smart suggestions may not always match user expectations
+
+**Development Notes**:
+- Implementation spans multiple files: `server.py` (APIs), `test_beatnet_api.html` (UI), `audio_processor/bpm_detector.py` (BeatNet)
+- Uses 2-step conversion: BeatNet notes → annotations → score (mimicking existing successful pipeline)
+- Fixed 0.1s note duration and preserved BeatNet's precise timing
+- Temporary file storage for multi-step workflow
+
+**Next Steps**:
+- Comprehensive end-to-end testing
+- DAW integration validation
+- User experience improvements
+- Error handling enhancement

@@ -1475,6 +1475,31 @@
                         </div>
                         <div id="display-name-status" style="margin-top: 5px; font-size: 12px;"></div>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">歌曲类别</label>
+                        <div style="display: flex; gap: 5px;">
+                            <select class="form-select" id="project-category-select">
+                                <option value="Pop">Pop</option>
+                                <option value="Trance">Trance</option>
+                                <option value="Brutal">Brutal</option>
+                                <option value="Softcore">Softcore</option>
+                            </select>
+                            <button class="btn btn-secondary" id="update-category-btn" style="width: auto; padding: 0 12px;">
+                                更新
+                            </button>
+                        </div>
+                        <div id="category-status" style="margin-top: 5px; font-size: 12px;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">难度等级</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" class="form-input" id="project-difficulty-input" min="1" max="9" step="1" placeholder="1-9">
+                            <button class="btn btn-secondary" id="update-difficulty-btn" style="width: auto; padding: 0 12px;">
+                                更新
+                            </button>
+                        </div>
+                        <div id="difficulty-status" style="margin-top: 5px; font-size: 12px;"></div>
+                    </div>
                     <!-- 游戏图片资源简洁预览 -->
                     <div class="form-group">
                         <label class="form-label">游戏图片资源</label>
@@ -1863,6 +1888,12 @@
                 projectDisplayNameInput: document.getElementById('project-display-name-input'),
                 updateDisplayNameBtn: document.getElementById('update-display-name-btn'),
                 displayNameStatus: document.getElementById('display-name-status'),
+                projectCategorySelect: document.getElementById('project-category-select'),
+                updateCategoryBtn: document.getElementById('update-category-btn'),
+                categoryStatus: document.getElementById('category-status'),
+                projectDifficultyInput: document.getElementById('project-difficulty-input'),
+                updateDifficultyBtn: document.getElementById('update-difficulty-btn'),
+                difficultyStatus: document.getElementById('difficulty-status'),
                 // Image summary elements
                 imageSummaryPreview: document.getElementById('image-summary-preview'),
                 imageSummaryThumbs: document.getElementById('image-summary-thumbs'),
@@ -2175,7 +2206,7 @@
             }
 
             // Show project info panel and update project information
-            function showProjectInfo(projectName) {
+            async function showProjectInfo(projectName) {
                 // Show the project info panel
                 elements.projectInfoPanel.style.display = 'block';
                 
@@ -2191,6 +2222,20 @@
                 
                 // Clear any previous status messages
                 elements.displayNameStatus.textContent = '';
+                elements.categoryStatus.textContent = '';
+                elements.difficultyStatus.textContent = '';
+                
+                // Load project metadata to populate category and difficulty
+                const metadata = await loadProjectMetadata(projectName);
+                if (metadata) {
+                    // Set category (default to Pop if not set)
+                    const category = metadata.category || 'Pop';
+                    elements.projectCategorySelect.value = category;
+                    
+                    // Set difficulty (default to 1 if not set)
+                    const difficulty = metadata.difficulty || 1;
+                    elements.projectDifficultyInput.value = difficulty;
+                }
                 
                 // Initialize and load image summary
                 loadImageSummary(projectName);
@@ -3258,6 +3303,113 @@
             elements.projectDisplayNameInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     elements.updateDisplayNameBtn.click();
+                }
+            });
+
+            // Update category functionality
+            elements.updateCategoryBtn.addEventListener('click', async () => {
+                const selectedProject = elements.projectSelector.value;
+                const newCategory = elements.projectCategorySelect.value;
+
+                if (!selectedProject) {
+                    elements.categoryStatus.textContent = '请先选择一个项目';
+                    elements.categoryStatus.style.color = 'var(--error-color)';
+                    return;
+                }
+
+                try {
+                    elements.categoryStatus.textContent = '正在更新...';
+                    elements.categoryStatus.style.color = 'var(--text-muted)';
+                    elements.updateCategoryBtn.disabled = true;
+
+                    const response = await fetch(`/api/project/${selectedProject}/metadata`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            category: newCategory
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        elements.categoryStatus.textContent = '类别已更新';
+                        elements.categoryStatus.style.color = 'var(--success-color)';
+                        
+                        // Clear status after 3 seconds
+                        setTimeout(() => {
+                            elements.categoryStatus.textContent = '';
+                        }, 3000);
+                    } else {
+                        throw new Error(result.message || 'Failed to update category');
+                    }
+                } catch (error) {
+                    elements.categoryStatus.textContent = `更新失败: ${error.message}`;
+                    elements.categoryStatus.style.color = 'var(--error-color)';
+                } finally {
+                    elements.updateCategoryBtn.disabled = false;
+                }
+            });
+
+            // Update difficulty functionality
+            elements.updateDifficultyBtn.addEventListener('click', async () => {
+                const selectedProject = elements.projectSelector.value;
+                const newDifficulty = parseInt(elements.projectDifficultyInput.value);
+
+                if (!selectedProject) {
+                    elements.difficultyStatus.textContent = '请先选择一个项目';
+                    elements.difficultyStatus.style.color = 'var(--error-color)';
+                    return;
+                }
+
+                if (!newDifficulty || newDifficulty < 1 || newDifficulty > 9) {
+                    elements.difficultyStatus.textContent = '难度必须是1-9之间的整数';
+                    elements.difficultyStatus.style.color = 'var(--error-color)';
+                    return;
+                }
+
+                try {
+                    elements.difficultyStatus.textContent = '正在更新...';
+                    elements.difficultyStatus.style.color = 'var(--text-muted)';
+                    elements.updateDifficultyBtn.disabled = true;
+
+                    const response = await fetch(`/api/project/${selectedProject}/metadata`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            difficulty: newDifficulty
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok && result.status === 'success') {
+                        elements.difficultyStatus.textContent = '难度已更新';
+                        elements.difficultyStatus.style.color = 'var(--success-color)';
+                        
+                        // Clear status after 3 seconds
+                        setTimeout(() => {
+                            elements.difficultyStatus.textContent = '';
+                        }, 3000);
+                    } else {
+                        throw new Error(result.message || 'Failed to update difficulty');
+                    }
+                } catch (error) {
+                    elements.difficultyStatus.textContent = `更新失败: ${error.message}`;
+                    elements.difficultyStatus.style.color = 'var(--error-color)';
+                } finally {
+                    elements.updateDifficultyBtn.disabled = false;
+                }
+            });
+
+            // Allow Enter key to update difficulty
+            elements.projectDifficultyInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    elements.updateDifficultyBtn.click();
                 }
             });
 

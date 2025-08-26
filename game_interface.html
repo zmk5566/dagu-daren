@@ -15,6 +15,11 @@
             --score-bg: rgba(255, 255, 255, 0.9);
             --drum-shadow: rgba(0, 0, 0, 0.3);
             --hit-effect: rgba(255, 255, 255, 0.8);
+            
+            /* Dynamic category colors - will be updated by JavaScript */
+            --category-primary: #FF6B9D;
+            --category-secondary: #FFE1EC;
+            --category-accent: #FF1F6A;
         }
 
         * {
@@ -767,6 +772,81 @@
             display: flex;
             flex-direction: column;
             z-index: 1001;
+        }
+
+        /* Category Selection Button */
+        .category-select-btn {
+            position: absolute;
+            left: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: 3px solid #2C5F8A;
+            border-radius: 25px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            z-index: 1003;
+        }
+
+        .category-select-btn:hover {
+            background: linear-gradient(45deg, #357ABD, #2C5F8A);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .category-select-btn.active {
+            background: linear-gradient(45deg, var(--category-primary, #4A90E2), var(--category-accent, #357ABD));
+            border-color: var(--category-accent, #2C5F8A);
+        }
+
+        /* Category Dropdown */
+        .category-dropdown {
+            position: absolute;
+            left: -150px;
+            bottom: 70px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 140px;
+            z-index: 1004;
+            display: none;
+        }
+
+        .category-dropdown.show {
+            display: block;
+        }
+
+        .category-dropdown-item {
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .category-dropdown-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .category-dropdown-item.active {
+            border-color: var(--category-accent, #FFD700);
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--category-accent, #FFD700);
         }
 
         .song-list {
@@ -1623,14 +1703,14 @@
             color: var(--text-dark);
         }
 
-        /* Curtain Transition Effect */
+        /* Curtain Transition Effect - Dark Mysterious Girl Style */
         .curtain {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            background: linear-gradient(135deg, #2D1B2D 0%, #3D2A3D 50%, #2D1B2D 100%);
             z-index: 10000;
             display: none;
             overflow: hidden;
@@ -1647,11 +1727,13 @@
             left: 0;
             width: 50%;
             height: 100%;
-            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            background: linear-gradient(135deg, #2D1B2D 0%, #4A2D4A 50%, #3D2A3D 100%);
             transform: translateX(-100%);
             transition: transform 0.8s ease-in-out;
-            border-right: 3px solid #8B4513;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            border-right: 3px solid #8B4B8B;
+            box-shadow: 
+                2px 0 15px rgba(139, 75, 139, 0.4),
+                inset -5px 0 20px rgba(75, 45, 75, 0.3);
         }
 
         /* Right curtain panel */
@@ -1661,11 +1743,13 @@
             right: 0;
             width: 50%;
             height: 100%;
-            background: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
+            background: linear-gradient(135deg, #2D1B2D 0%, #3D2B4A 50%, #3D2A3D 100%);
             transform: translateX(100%);
             transition: transform 0.8s ease-in-out;
-            border-left: 3px solid #8B4513;
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #6B4B8B;
+            box-shadow: 
+                -2px 0 15px rgba(107, 75, 139, 0.4),
+                inset 5px 0 20px rgba(61, 43, 74, 0.3);
         }
 
         /* Curtain closing animation */
@@ -1686,14 +1770,14 @@
             transform: translateX(100%);
         }
 
-        /* Curtain loading content */
+        /* Curtain loading content - Dark Mysterious Girl Style */
         .curtain-content {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #FFFFFF;
+            color: #D8B3D8;
             z-index: 10001;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -1702,23 +1786,51 @@
         .curtain.closing .curtain-content {
             opacity: 1;
             transition-delay: 0.4s;
+            animation: mysteriousGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes mysteriousGlow {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(216, 179, 216, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 20px rgba(216, 179, 216, 0.6));
+            }
         }
 
         .curtain-spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #FFD700;
+            border: 3px solid rgba(139, 75, 139, 0.2);
+            border-top: 3px solid #B366B3;
+            border-right: 3px solid #8B4B8B;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: mysterySpin 1.5s ease-in-out infinite;
             margin: 0 auto 20px;
+            box-shadow: 0 0 15px rgba(179, 102, 179, 0.3);
+        }
+
+        @keyframes mysterySpin {
+            0% {
+                transform: rotate(0deg);
+                box-shadow: 0 0 15px rgba(179, 102, 179, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(139, 75, 139, 0.5);
+            }
+            100% {
+                transform: rotate(360deg);
+                box-shadow: 0 0 15px rgba(179, 102, 179, 0.3);
+            }
         }
 
         .curtain-text {
             font-size: 16px;
             font-weight: bold;
-            color: #FFD700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: #D8B3D8;
+            text-shadow: 
+                0 0 10px rgba(216, 179, 216, 0.8),
+                2px 2px 4px rgba(61, 42, 61, 0.8);
         }
 
         /* Game Over Screen */
@@ -2167,6 +2279,7 @@
             </div>
         </div>
 
+
         <!-- Song List -->
         <div class="song-list-container">
             <div class="song-list" id="songList">
@@ -2204,7 +2317,9 @@
             maxSpiritCombo: 0, // Maximum spirit combo achieved
             challengeFailed: false, // Whether challenge failed
             currentProjectName: null, // Current project name for reloading images
-            selectedProject: null // Selected project in song selection screen
+            selectedProject: null, // Selected project in song selection screen
+            selectedCategory: 'All', // Selected category for filtering
+            categoryColors: null // Category color configuration
         };
 
         // Particle system
@@ -2403,6 +2518,8 @@
                 selectionCharacter: document.getElementById('selectionCharacter'),
                 songInfoFrame: document.getElementById('songInfoFrame'),
                 startPerformanceBtn: document.getElementById('startPerformanceBtn'),
+                categoryNavPanel: document.getElementById('categoryNavPanel'),
+                categoryList: document.getElementById('categoryList'),
                 // Curtain elements
                 curtain: document.getElementById('curtain'),
                 curtainText: document.getElementById('curtainText')
@@ -2420,6 +2537,7 @@
             };
 
             await loadProjects();
+            await loadCategoryColors();
             elements.loadingScreen.style.display = 'none';
             
             // Show song selection screen directly instead of song selector
@@ -3638,7 +3756,10 @@
                         elements.songList.appendChild(navButtonRight);
                     }
                     
-                    data.projects.forEach(project => {
+                    // Filter projects by selected category
+                    const filteredProjects = await filterProjectsByCategory(data.projects);
+                    
+                    filteredProjects.forEach(project => {
                         const songItem = createSongItem(project, true);
                         elements.songList.appendChild(songItem);
                     });
@@ -3950,6 +4071,144 @@
                 }
             });
 
+            // Category navigation event listeners
+            if (elements.categoryList) {
+                elements.categoryList.addEventListener('click', (e) => {
+                    const categoryItem = e.target.closest('.category-item');
+                    if (categoryItem) {
+                        const selectedCategory = categoryItem.dataset.category;
+                        selectCategory(selectedCategory);
+                    }
+                });
+            }
+
+        }
+
+        // Category selection functionality
+        function selectCategory(category) {
+            // Update visual state of category items
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.category === category) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Update game state
+            gameState.selectedCategory = category;
+
+            // Apply category colors
+            applyCategoryColors(category);
+
+            // Re-populate song list with filtered results
+            populateSongList();
+
+            console.log('[Category] Selected category:', category);
+        }
+
+        // Filter projects by selected category
+        async function filterProjectsByCategory(projects) {
+            if (gameState.selectedCategory === 'All') {
+                return projects;
+            }
+
+            const filteredProjects = [];
+            
+            for (const project of projects) {
+                try {
+                    const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                    const metadata = await response.json();
+                    
+                    if (response.ok && metadata) {
+                        // Check if project matches selected category (default to 'Pop' if no category set)
+                        const projectCategory = metadata.category || 'Pop';
+                        if (projectCategory === gameState.selectedCategory) {
+                            filteredProjects.push(project);
+                        }
+                    } else {
+                        // If can't load metadata, include in 'Pop' category by default
+                        if (gameState.selectedCategory === 'Pop') {
+                            filteredProjects.push(project);
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Failed to load metadata for ${project.folder_name}:`, error);
+                    // If error loading metadata, include in 'Pop' category by default
+                    if (gameState.selectedCategory === 'Pop') {
+                        filteredProjects.push(project);
+                    }
+                }
+            }
+            
+            return filteredProjects;
+        }
+
+        // Load category colors configuration
+        async function loadCategoryColors() {
+            try {
+                const response = await fetch('/category-colors.json');
+                const colorConfig = await response.json();
+                gameState.categoryColors = colorConfig;
+                console.log('[Colors] Category colors loaded:', colorConfig);
+                return colorConfig;
+            } catch (error) {
+                console.warn('[Colors] Failed to load category colors configuration:', error);
+                // Return default color configuration
+                return {
+                    categories: {
+                        Pop: { primary: '#FF6B9D', secondary: '#FFE1EC', accent: '#FF1F6A' },
+                        Trance: { primary: '#00D4FF', secondary: '#E0F7FF', accent: '#0099CC' },
+                        Brutal: { primary: '#FF4444', secondary: '#FFE6E6', accent: '#CC0000' },
+                        Softcore: { primary: '#90EE90', secondary: '#F0FFF0', accent: '#32CD32' }
+                    }
+                };
+            }
+        }
+
+        // Apply category colors to UI elements
+        function applyCategoryColors(category) {
+            if (!gameState.categoryColors || category === 'All') {
+                // Reset to default colors if no category selected or colors not loaded
+                document.documentElement.style.removeProperty('--category-primary');
+                document.documentElement.style.removeProperty('--category-secondary');
+                document.documentElement.style.removeProperty('--category-accent');
+                return;
+            }
+
+            const categoryConfig = gameState.categoryColors.categories[category];
+            if (!categoryConfig) {
+                console.warn(`[Colors] No color configuration found for category: ${category}`);
+                return;
+            }
+
+            // Update CSS custom properties for dynamic theming
+            document.documentElement.style.setProperty('--category-primary', categoryConfig.primary);
+            document.documentElement.style.setProperty('--category-secondary', categoryConfig.secondary);
+            document.documentElement.style.setProperty('--category-accent', categoryConfig.accent);
+
+            // Apply colors to specific UI elements
+            const activeCategory = document.querySelector('.category-item.active');
+            if (activeCategory) {
+                activeCategory.style.borderColor = categoryConfig.accent;
+                activeCategory.style.background = `rgba(${hexToRgb(categoryConfig.primary)}, 0.2)`;
+                activeCategory.style.color = categoryConfig.accent;
+            }
+
+            // Apply accent color to selected song items
+            document.querySelectorAll('.song-item.selected').forEach(item => {
+                item.style.borderColor = categoryConfig.accent;
+                item.style.background = `linear-gradient(45deg, ${categoryConfig.primary}, ${categoryConfig.secondary})`;
+            });
+
+            console.log(`[Colors] Applied colors for category: ${category}`, categoryConfig);
+        }
+
+        // Helper function to convert hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? 
+                `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+                '255, 255, 255';
         }
 
         // Setup navigation buttons - called after songs are populated

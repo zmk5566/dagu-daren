@@ -1,1288 +1,1291 @@
 {
-  "project_name": "大声点",
-  "display_name": "阿大",
-  "audio_file": "大声点.mp3",
-  "creation_method": "beatnet_smart_generation",
-  "bpm_data": {
-    "bpm": 105.02898474872886,
-    "confidence": 0.9879944657802369,
-    "beat_times": [
-      0.2,
-      0.86,
-      1.5,
-      2.16,
-      2.8,
-      3.42,
-      4.06,
-      4.72,
-      5.36,
-      5.98,
-      6.62,
-      7.26,
-      7.92,
-      8.62,
-      9.24,
-      9.94,
-      10.68,
-      11.3,
-      11.94,
-      12.56,
-      13.16,
-      13.8,
-      14.46,
-      15.14,
-      15.76,
-      16.4,
-      17.06,
-      17.74,
-      18.42,
-      19.06,
-      19.76,
-      20.4,
-      21.12,
-      21.76,
-      22.46,
-      23.16,
-      23.84,
-      24.48,
-      25.1,
-      25.74,
-      26.38,
-      27.0,
-      27.64,
-      28.3,
-      28.94,
-      29.54,
-      30.18,
-      30.82,
-      31.46,
-      32.08,
-      32.7,
-      33.34,
-      34.0,
-      34.64,
-      35.3,
-      35.9,
-      36.52,
-      37.16,
-      37.78,
-      38.42,
-      39.06,
-      39.72,
-      40.38,
-      41.1,
-      41.76,
-      42.46,
-      43.1,
-      43.82,
-      44.52,
-      45.24,
-      45.92,
-      46.62,
-      47.32,
-      47.96,
-      48.66,
-      49.36,
-      50.0,
-      50.66,
-      51.28,
-      51.94,
-      52.56,
-      53.2,
-      53.8,
-      54.44,
-      55.06,
-      55.72,
-      56.36,
-      57.0,
-      57.64,
-      58.28,
-      58.9,
-      59.54,
-      60.18,
-      60.78,
-      61.4,
-      62.06,
-      62.7,
-      63.32,
-      63.94,
-      64.56,
-      65.22,
-      65.86,
-      66.5,
-      67.12,
-      67.78,
-      68.4,
-      69.04,
-      69.68,
-      70.32,
-      70.96,
-      71.6,
-      72.2,
-      72.84,
-      73.42,
-      73.98,
-      74.54,
-      75.08,
-      75.7,
-      76.36,
-      76.98,
-      77.6,
-      78.24,
-      78.88,
-      79.5,
-      80.16,
-      80.78,
-      81.4,
-      82.0,
-      82.54,
-      83.1,
-      83.66,
-      84.24,
-      84.76,
-      85.3,
-      85.86,
-      86.38,
-      86.94,
-      87.46,
-      87.94,
-      88.42,
-      88.88,
-      89.36,
-      89.86,
-      90.32,
-      90.82,
-      91.28,
-      91.74,
-      92.22,
-      92.66,
-      93.12,
-      93.6,
-      94.02,
-      94.42,
-      94.84,
-      95.26,
-      95.68,
-      96.06,
-      96.44,
-      96.84,
-      97.2,
-      97.52,
-      97.88,
-      98.2,
-      98.56,
-      98.88,
-      99.24,
-      99.58,
-      99.9,
-      100.26,
-      100.58,
-      100.94,
-      101.26,
-      101.62,
-      101.94,
-      102.28,
-      102.62,
-      102.96,
-      103.3,
-      103.64,
-      103.98,
-      104.32,
-      104.66,
-      105.0,
-      105.34,
-      105.68,
-      106.02,
-      106.36,
-      106.7,
-      107.04,
-      107.38,
-      107.74,
-      108.06,
-      108.42,
-      108.74,
-      109.1,
-      109.44,
-      109.78,
-      110.12,
-      110.46,
-      110.8,
-      111.14,
-      111.48,
-      111.82,
-      112.16,
-      112.5,
-      112.84,
-      113.16,
-      113.5,
-      113.86,
-      114.18,
-      114.52
-    ],
-    "beat_data": [
-      {
-        "time": 0.2,
-        "type": "downbeat",
-        "index": 0
-      },
-      {
-        "time": 0.86,
-        "type": "beat",
-        "index": 1
-      },
-      {
-        "time": 1.5,
-        "type": "downbeat",
-        "index": 2
-      },
-      {
-        "time": 2.16,
-        "type": "beat",
-        "index": 3
-      },
-      {
-        "time": 2.8,
-        "type": "downbeat",
-        "index": 4
-      },
-      {
-        "time": 3.42,
-        "type": "beat",
-        "index": 5
-      },
-      {
-        "time": 4.06,
-        "type": "downbeat",
-        "index": 6
-      },
-      {
-        "time": 4.72,
-        "type": "beat",
-        "index": 7
-      },
-      {
-        "time": 5.36,
-        "type": "downbeat",
-        "index": 8
-      },
-      {
-        "time": 5.98,
-        "type": "beat",
-        "index": 9
-      },
-      {
-        "time": 6.62,
-        "type": "downbeat",
-        "index": 10
-      },
-      {
-        "time": 7.26,
-        "type": "beat",
-        "index": 11
-      },
-      {
-        "time": 7.92,
-        "type": "downbeat",
-        "index": 12
-      },
-      {
-        "time": 8.62,
-        "type": "beat",
-        "index": 13
-      },
-      {
-        "time": 9.24,
-        "type": "downbeat",
-        "index": 14
-      },
-      {
-        "time": 9.94,
-        "type": "beat",
-        "index": 15
-      },
-      {
-        "time": 10.68,
-        "type": "downbeat",
-        "index": 16
-      },
-      {
-        "time": 11.3,
-        "type": "beat",
-        "index": 17
-      },
-      {
-        "time": 11.94,
-        "type": "downbeat",
-        "index": 18
-      },
-      {
-        "time": 12.56,
-        "type": "beat",
-        "index": 19
-      },
-      {
-        "time": 13.16,
-        "type": "downbeat",
-        "index": 20
-      },
-      {
-        "time": 13.8,
-        "type": "beat",
-        "index": 21
-      },
-      {
-        "time": 14.46,
-        "type": "downbeat",
-        "index": 22
-      },
-      {
-        "time": 15.14,
-        "type": "beat",
-        "index": 23
-      },
-      {
-        "time": 15.76,
-        "type": "downbeat",
-        "index": 24
-      },
-      {
-        "time": 16.4,
-        "type": "beat",
-        "index": 25
-      },
-      {
-        "time": 17.06,
-        "type": "downbeat",
-        "index": 26
-      },
-      {
-        "time": 17.74,
-        "type": "beat",
-        "index": 27
-      },
-      {
-        "time": 18.42,
-        "type": "downbeat",
-        "index": 28
-      },
-      {
-        "time": 19.06,
-        "type": "beat",
-        "index": 29
-      },
-      {
-        "time": 19.76,
-        "type": "downbeat",
-        "index": 30
-      },
-      {
-        "time": 20.4,
-        "type": "beat",
-        "index": 31
-      },
-      {
-        "time": 21.12,
-        "type": "downbeat",
-        "index": 32
-      },
-      {
-        "time": 21.76,
-        "type": "beat",
-        "index": 33
-      },
-      {
-        "time": 22.46,
-        "type": "downbeat",
-        "index": 34
-      },
-      {
-        "time": 23.16,
-        "type": "beat",
-        "index": 35
-      },
-      {
-        "time": 23.84,
-        "type": "downbeat",
-        "index": 36
-      },
-      {
-        "time": 24.48,
-        "type": "beat",
-        "index": 37
-      },
-      {
-        "time": 25.1,
-        "type": "downbeat",
-        "index": 38
-      },
-      {
-        "time": 25.74,
-        "type": "beat",
-        "index": 39
-      },
-      {
-        "time": 26.38,
-        "type": "downbeat",
-        "index": 40
-      },
-      {
-        "time": 27.0,
-        "type": "beat",
-        "index": 41
-      },
-      {
-        "time": 27.64,
-        "type": "downbeat",
-        "index": 42
-      },
-      {
-        "time": 28.3,
-        "type": "beat",
-        "index": 43
-      },
-      {
-        "time": 28.94,
-        "type": "downbeat",
-        "index": 44
-      },
-      {
-        "time": 29.54,
-        "type": "beat",
-        "index": 45
-      },
-      {
-        "time": 30.18,
-        "type": "downbeat",
-        "index": 46
-      },
-      {
-        "time": 30.82,
-        "type": "beat",
-        "index": 47
-      },
-      {
-        "time": 31.46,
-        "type": "downbeat",
-        "index": 48
-      },
-      {
-        "time": 32.08,
-        "type": "beat",
-        "index": 49
-      },
-      {
-        "time": 32.7,
-        "type": "downbeat",
-        "index": 50
-      },
-      {
-        "time": 33.34,
-        "type": "beat",
-        "index": 51
-      },
-      {
-        "time": 34.0,
-        "type": "downbeat",
-        "index": 52
-      },
-      {
-        "time": 34.64,
-        "type": "beat",
-        "index": 53
-      },
-      {
-        "time": 35.3,
-        "type": "downbeat",
-        "index": 54
-      },
-      {
-        "time": 35.9,
-        "type": "beat",
-        "index": 55
-      },
-      {
-        "time": 36.52,
-        "type": "downbeat",
-        "index": 56
-      },
-      {
-        "time": 37.16,
-        "type": "beat",
-        "index": 57
-      },
-      {
-        "time": 37.78,
-        "type": "downbeat",
-        "index": 58
-      },
-      {
-        "time": 38.42,
-        "type": "beat",
-        "index": 59
-      },
-      {
-        "time": 39.06,
-        "type": "downbeat",
-        "index": 60
-      },
-      {
-        "time": 39.72,
-        "type": "beat",
-        "index": 61
-      },
-      {
-        "time": 40.38,
-        "type": "downbeat",
-        "index": 62
-      },
-      {
-        "time": 41.1,
-        "type": "beat",
-        "index": 63
-      },
-      {
-        "time": 41.76,
-        "type": "downbeat",
-        "index": 64
-      },
-      {
-        "time": 42.46,
-        "type": "beat",
-        "index": 65
-      },
-      {
-        "time": 43.1,
-        "type": "downbeat",
-        "index": 66
-      },
-      {
-        "time": 43.82,
-        "type": "beat",
-        "index": 67
-      },
-      {
-        "time": 44.52,
-        "type": "downbeat",
-        "index": 68
-      },
-      {
-        "time": 45.24,
-        "type": "beat",
-        "index": 69
-      },
-      {
-        "time": 45.92,
-        "type": "downbeat",
-        "index": 70
-      },
-      {
-        "time": 46.62,
-        "type": "beat",
-        "index": 71
-      },
-      {
-        "time": 47.32,
-        "type": "downbeat",
-        "index": 72
-      },
-      {
-        "time": 47.96,
-        "type": "beat",
-        "index": 73
-      },
-      {
-        "time": 48.66,
-        "type": "downbeat",
-        "index": 74
-      },
-      {
-        "time": 49.36,
-        "type": "beat",
-        "index": 75
-      },
-      {
-        "time": 50.0,
-        "type": "downbeat",
-        "index": 76
-      },
-      {
-        "time": 50.66,
-        "type": "beat",
-        "index": 77
-      },
-      {
-        "time": 51.28,
-        "type": "downbeat",
-        "index": 78
-      },
-      {
-        "time": 51.94,
-        "type": "beat",
-        "index": 79
-      },
-      {
-        "time": 52.56,
-        "type": "downbeat",
-        "index": 80
-      },
-      {
-        "time": 53.2,
-        "type": "beat",
-        "index": 81
-      },
-      {
-        "time": 53.8,
-        "type": "downbeat",
-        "index": 82
-      },
-      {
-        "time": 54.44,
-        "type": "beat",
-        "index": 83
-      },
-      {
-        "time": 55.06,
-        "type": "downbeat",
-        "index": 84
-      },
-      {
-        "time": 55.72,
-        "type": "beat",
-        "index": 85
-      },
-      {
-        "time": 56.36,
-        "type": "downbeat",
-        "index": 86
-      },
-      {
-        "time": 57.0,
-        "type": "beat",
-        "index": 87
-      },
-      {
-        "time": 57.64,
-        "type": "downbeat",
-        "index": 88
-      },
-      {
-        "time": 58.28,
-        "type": "beat",
-        "index": 89
-      },
-      {
-        "time": 58.9,
-        "type": "downbeat",
-        "index": 90
-      },
-      {
-        "time": 59.54,
-        "type": "beat",
-        "index": 91
-      },
-      {
-        "time": 60.18,
-        "type": "downbeat",
-        "index": 92
-      },
-      {
-        "time": 60.78,
-        "type": "beat",
-        "index": 93
-      },
-      {
-        "time": 61.4,
-        "type": "downbeat",
-        "index": 94
-      },
-      {
-        "time": 62.06,
-        "type": "beat",
-        "index": 95
-      },
-      {
-        "time": 62.7,
-        "type": "downbeat",
-        "index": 96
-      },
-      {
-        "time": 63.32,
-        "type": "beat",
-        "index": 97
-      },
-      {
-        "time": 63.94,
-        "type": "downbeat",
-        "index": 98
-      },
-      {
-        "time": 64.56,
-        "type": "beat",
-        "index": 99
-      },
-      {
-        "time": 65.22,
-        "type": "downbeat",
-        "index": 100
-      },
-      {
-        "time": 65.86,
-        "type": "beat",
-        "index": 101
-      },
-      {
-        "time": 66.5,
-        "type": "downbeat",
-        "index": 102
-      },
-      {
-        "time": 67.12,
-        "type": "beat",
-        "index": 103
-      },
-      {
-        "time": 67.78,
-        "type": "downbeat",
-        "index": 104
-      },
-      {
-        "time": 68.4,
-        "type": "beat",
-        "index": 105
-      },
-      {
-        "time": 69.04,
-        "type": "downbeat",
-        "index": 106
-      },
-      {
-        "time": 69.68,
-        "type": "beat",
-        "index": 107
-      },
-      {
-        "time": 70.32,
-        "type": "downbeat",
-        "index": 108
-      },
-      {
-        "time": 70.96,
-        "type": "beat",
-        "index": 109
-      },
-      {
-        "time": 71.6,
-        "type": "downbeat",
-        "index": 110
-      },
-      {
-        "time": 72.2,
-        "type": "beat",
-        "index": 111
-      },
-      {
-        "time": 72.84,
-        "type": "downbeat",
-        "index": 112
-      },
-      {
-        "time": 73.42,
-        "type": "beat",
-        "index": 113
-      },
-      {
-        "time": 73.98,
-        "type": "downbeat",
-        "index": 114
-      },
-      {
-        "time": 74.54,
-        "type": "beat",
-        "index": 115
-      },
-      {
-        "time": 75.08,
-        "type": "downbeat",
-        "index": 116
-      },
-      {
-        "time": 75.7,
-        "type": "beat",
-        "index": 117
-      },
-      {
-        "time": 76.36,
-        "type": "downbeat",
-        "index": 118
-      },
-      {
-        "time": 76.98,
-        "type": "beat",
-        "index": 119
-      },
-      {
-        "time": 77.6,
-        "type": "downbeat",
-        "index": 120
-      },
-      {
-        "time": 78.24,
-        "type": "beat",
-        "index": 121
-      },
-      {
-        "time": 78.88,
-        "type": "downbeat",
-        "index": 122
-      },
-      {
-        "time": 79.5,
-        "type": "beat",
-        "index": 123
-      },
-      {
-        "time": 80.16,
-        "type": "downbeat",
-        "index": 124
-      },
-      {
-        "time": 80.78,
-        "type": "beat",
-        "index": 125
-      },
-      {
-        "time": 81.4,
-        "type": "downbeat",
-        "index": 126
-      },
-      {
-        "time": 82.0,
-        "type": "beat",
-        "index": 127
-      },
-      {
-        "time": 82.54,
-        "type": "downbeat",
-        "index": 128
-      },
-      {
-        "time": 83.1,
-        "type": "beat",
-        "index": 129
-      },
-      {
-        "time": 83.66,
-        "type": "downbeat",
-        "index": 130
-      },
-      {
-        "time": 84.24,
-        "type": "beat",
-        "index": 131
-      },
-      {
-        "time": 84.76,
-        "type": "downbeat",
-        "index": 132
-      },
-      {
-        "time": 85.3,
-        "type": "beat",
-        "index": 133
-      },
-      {
-        "time": 85.86,
-        "type": "downbeat",
-        "index": 134
-      },
-      {
-        "time": 86.38,
-        "type": "beat",
-        "index": 135
-      },
-      {
-        "time": 86.94,
-        "type": "downbeat",
-        "index": 136
-      },
-      {
-        "time": 87.46,
-        "type": "beat",
-        "index": 137
-      },
-      {
-        "time": 87.94,
-        "type": "downbeat",
-        "index": 138
-      },
-      {
-        "time": 88.42,
-        "type": "beat",
-        "index": 139
-      },
-      {
-        "time": 88.88,
-        "type": "downbeat",
-        "index": 140
-      },
-      {
-        "time": 89.36,
-        "type": "beat",
-        "index": 141
-      },
-      {
-        "time": 89.86,
-        "type": "downbeat",
-        "index": 142
-      },
-      {
-        "time": 90.32,
-        "type": "beat",
-        "index": 143
-      },
-      {
-        "time": 90.82,
-        "type": "downbeat",
-        "index": 144
-      },
-      {
-        "time": 91.28,
-        "type": "beat",
-        "index": 145
-      },
-      {
-        "time": 91.74,
-        "type": "downbeat",
-        "index": 146
-      },
-      {
-        "time": 92.22,
-        "type": "beat",
-        "index": 147
-      },
-      {
-        "time": 92.66,
-        "type": "downbeat",
-        "index": 148
-      },
-      {
-        "time": 93.12,
-        "type": "beat",
-        "index": 149
-      },
-      {
-        "time": 93.6,
-        "type": "downbeat",
-        "index": 150
-      },
-      {
-        "time": 94.02,
-        "type": "beat",
-        "index": 151
-      },
-      {
-        "time": 94.42,
-        "type": "downbeat",
-        "index": 152
-      },
-      {
-        "time": 94.84,
-        "type": "beat",
-        "index": 153
-      },
-      {
-        "time": 95.26,
-        "type": "downbeat",
-        "index": 154
-      },
-      {
-        "time": 95.68,
-        "type": "beat",
-        "index": 155
-      },
-      {
-        "time": 96.06,
-        "type": "downbeat",
-        "index": 156
-      },
-      {
-        "time": 96.44,
-        "type": "beat",
-        "index": 157
-      },
-      {
-        "time": 96.84,
-        "type": "downbeat",
-        "index": 158
-      },
-      {
-        "time": 97.2,
-        "type": "beat",
-        "index": 159
-      },
-      {
-        "time": 97.52,
-        "type": "downbeat",
-        "index": 160
-      },
-      {
-        "time": 97.88,
-        "type": "beat",
-        "index": 161
-      },
-      {
-        "time": 98.2,
-        "type": "downbeat",
-        "index": 162
-      },
-      {
-        "time": 98.56,
-        "type": "beat",
-        "index": 163
-      },
-      {
-        "time": 98.88,
-        "type": "downbeat",
-        "index": 164
-      },
-      {
-        "time": 99.24,
-        "type": "beat",
-        "index": 165
-      },
-      {
-        "time": 99.58,
-        "type": "downbeat",
-        "index": 166
-      },
-      {
-        "time": 99.9,
-        "type": "beat",
-        "index": 167
-      },
-      {
-        "time": 100.26,
-        "type": "downbeat",
-        "index": 168
-      },
-      {
-        "time": 100.58,
-        "type": "beat",
-        "index": 169
-      },
-      {
-        "time": 100.94,
-        "type": "downbeat",
-        "index": 170
-      },
-      {
-        "time": 101.26,
-        "type": "beat",
-        "index": 171
-      },
-      {
-        "time": 101.62,
-        "type": "downbeat",
-        "index": 172
-      },
-      {
-        "time": 101.94,
-        "type": "beat",
-        "index": 173
-      },
-      {
-        "time": 102.28,
-        "type": "downbeat",
-        "index": 174
-      },
-      {
-        "time": 102.62,
-        "type": "beat",
-        "index": 175
-      },
-      {
-        "time": 102.96,
-        "type": "downbeat",
-        "index": 176
-      },
-      {
-        "time": 103.3,
-        "type": "beat",
-        "index": 177
-      },
-      {
-        "time": 103.64,
-        "type": "downbeat",
-        "index": 178
-      },
-      {
-        "time": 103.98,
-        "type": "beat",
-        "index": 179
-      },
-      {
-        "time": 104.32,
-        "type": "downbeat",
-        "index": 180
-      },
-      {
-        "time": 104.66,
-        "type": "beat",
-        "index": 181
-      },
-      {
-        "time": 105.0,
-        "type": "downbeat",
-        "index": 182
-      },
-      {
-        "time": 105.34,
-        "type": "beat",
-        "index": 183
-      },
-      {
-        "time": 105.68,
-        "type": "downbeat",
-        "index": 184
-      },
-      {
-        "time": 106.02,
-        "type": "beat",
-        "index": 185
-      },
-      {
-        "time": 106.36,
-        "type": "downbeat",
-        "index": 186
-      },
-      {
-        "time": 106.7,
-        "type": "beat",
-        "index": 187
-      },
-      {
-        "time": 107.04,
-        "type": "downbeat",
-        "index": 188
-      },
-      {
-        "time": 107.38,
-        "type": "beat",
-        "index": 189
-      },
-      {
-        "time": 107.74,
-        "type": "downbeat",
-        "index": 190
-      },
-      {
-        "time": 108.06,
-        "type": "beat",
-        "index": 191
-      },
-      {
-        "time": 108.42,
-        "type": "downbeat",
-        "index": 192
-      },
-      {
-        "time": 108.74,
-        "type": "beat",
-        "index": 193
-      },
-      {
-        "time": 109.1,
-        "type": "downbeat",
-        "index": 194
-      },
-      {
-        "time": 109.44,
-        "type": "beat",
-        "index": 195
-      },
-      {
-        "time": 109.78,
-        "type": "downbeat",
-        "index": 196
-      },
-      {
-        "time": 110.12,
-        "type": "beat",
-        "index": 197
-      },
-      {
-        "time": 110.46,
-        "type": "downbeat",
-        "index": 198
-      },
-      {
-        "time": 110.8,
-        "type": "beat",
-        "index": 199
-      },
-      {
-        "time": 111.14,
-        "type": "downbeat",
-        "index": 200
-      },
-      {
-        "time": 111.48,
-        "type": "beat",
-        "index": 201
-      },
-      {
-        "time": 111.82,
-        "type": "downbeat",
-        "index": 202
-      },
-      {
-        "time": 112.16,
-        "type": "beat",
-        "index": 203
-      },
-      {
-        "time": 112.5,
-        "type": "downbeat",
-        "index": 204
-      },
-      {
-        "time": 112.84,
-        "type": "beat",
-        "index": 205
-      },
-      {
-        "time": 113.16,
-        "type": "downbeat",
-        "index": 206
-      },
-      {
-        "time": 113.5,
-        "type": "beat",
-        "index": 207
-      },
-      {
-        "time": 113.86,
-        "type": "downbeat",
-        "index": 208
-      },
-      {
-        "time": 114.18,
-        "type": "beat",
-        "index": 209
-      },
-      {
-        "time": 114.52,
-        "type": "downbeat",
-        "index": 210
-      }
-    ],
-    "offset": -2.0773486357484647,
-    "method_used": "beatnet_deep_learning",
-    "r_squared": 0.9879944657802369,
-    "max_residual": 17.42175528596755,
-    "total_beats": 211,
-    "downbeat_count": 106
-  },
-  "created_at": 1756148049.233108,
-  "finalized_at": 1756148067.7614012
+    "project_name": "大声点",
+    "display_name": "阿大",
+    "audio_file": "大声点.mp3",
+    "creation_method": "beatnet_smart_generation",
+    "bpm_data": {
+        "bpm": 105.02898474872886,
+        "confidence": 0.9879944657802369,
+        "beat_times": [
+            0.2,
+            0.86,
+            1.5,
+            2.16,
+            2.8,
+            3.42,
+            4.06,
+            4.72,
+            5.36,
+            5.98,
+            6.62,
+            7.26,
+            7.92,
+            8.62,
+            9.24,
+            9.94,
+            10.68,
+            11.3,
+            11.94,
+            12.56,
+            13.16,
+            13.8,
+            14.46,
+            15.14,
+            15.76,
+            16.4,
+            17.06,
+            17.74,
+            18.42,
+            19.06,
+            19.76,
+            20.4,
+            21.12,
+            21.76,
+            22.46,
+            23.16,
+            23.84,
+            24.48,
+            25.1,
+            25.74,
+            26.38,
+            27.0,
+            27.64,
+            28.3,
+            28.94,
+            29.54,
+            30.18,
+            30.82,
+            31.46,
+            32.08,
+            32.7,
+            33.34,
+            34.0,
+            34.64,
+            35.3,
+            35.9,
+            36.52,
+            37.16,
+            37.78,
+            38.42,
+            39.06,
+            39.72,
+            40.38,
+            41.1,
+            41.76,
+            42.46,
+            43.1,
+            43.82,
+            44.52,
+            45.24,
+            45.92,
+            46.62,
+            47.32,
+            47.96,
+            48.66,
+            49.36,
+            50.0,
+            50.66,
+            51.28,
+            51.94,
+            52.56,
+            53.2,
+            53.8,
+            54.44,
+            55.06,
+            55.72,
+            56.36,
+            57.0,
+            57.64,
+            58.28,
+            58.9,
+            59.54,
+            60.18,
+            60.78,
+            61.4,
+            62.06,
+            62.7,
+            63.32,
+            63.94,
+            64.56,
+            65.22,
+            65.86,
+            66.5,
+            67.12,
+            67.78,
+            68.4,
+            69.04,
+            69.68,
+            70.32,
+            70.96,
+            71.6,
+            72.2,
+            72.84,
+            73.42,
+            73.98,
+            74.54,
+            75.08,
+            75.7,
+            76.36,
+            76.98,
+            77.6,
+            78.24,
+            78.88,
+            79.5,
+            80.16,
+            80.78,
+            81.4,
+            82.0,
+            82.54,
+            83.1,
+            83.66,
+            84.24,
+            84.76,
+            85.3,
+            85.86,
+            86.38,
+            86.94,
+            87.46,
+            87.94,
+            88.42,
+            88.88,
+            89.36,
+            89.86,
+            90.32,
+            90.82,
+            91.28,
+            91.74,
+            92.22,
+            92.66,
+            93.12,
+            93.6,
+            94.02,
+            94.42,
+            94.84,
+            95.26,
+            95.68,
+            96.06,
+            96.44,
+            96.84,
+            97.2,
+            97.52,
+            97.88,
+            98.2,
+            98.56,
+            98.88,
+            99.24,
+            99.58,
+            99.9,
+            100.26,
+            100.58,
+            100.94,
+            101.26,
+            101.62,
+            101.94,
+            102.28,
+            102.62,
+            102.96,
+            103.3,
+            103.64,
+            103.98,
+            104.32,
+            104.66,
+            105.0,
+            105.34,
+            105.68,
+            106.02,
+            106.36,
+            106.7,
+            107.04,
+            107.38,
+            107.74,
+            108.06,
+            108.42,
+            108.74,
+            109.1,
+            109.44,
+            109.78,
+            110.12,
+            110.46,
+            110.8,
+            111.14,
+            111.48,
+            111.82,
+            112.16,
+            112.5,
+            112.84,
+            113.16,
+            113.5,
+            113.86,
+            114.18,
+            114.52
+        ],
+        "beat_data": [
+            {
+                "time": 0.2,
+                "type": "downbeat",
+                "index": 0
+            },
+            {
+                "time": 0.86,
+                "type": "beat",
+                "index": 1
+            },
+            {
+                "time": 1.5,
+                "type": "downbeat",
+                "index": 2
+            },
+            {
+                "time": 2.16,
+                "type": "beat",
+                "index": 3
+            },
+            {
+                "time": 2.8,
+                "type": "downbeat",
+                "index": 4
+            },
+            {
+                "time": 3.42,
+                "type": "beat",
+                "index": 5
+            },
+            {
+                "time": 4.06,
+                "type": "downbeat",
+                "index": 6
+            },
+            {
+                "time": 4.72,
+                "type": "beat",
+                "index": 7
+            },
+            {
+                "time": 5.36,
+                "type": "downbeat",
+                "index": 8
+            },
+            {
+                "time": 5.98,
+                "type": "beat",
+                "index": 9
+            },
+            {
+                "time": 6.62,
+                "type": "downbeat",
+                "index": 10
+            },
+            {
+                "time": 7.26,
+                "type": "beat",
+                "index": 11
+            },
+            {
+                "time": 7.92,
+                "type": "downbeat",
+                "index": 12
+            },
+            {
+                "time": 8.62,
+                "type": "beat",
+                "index": 13
+            },
+            {
+                "time": 9.24,
+                "type": "downbeat",
+                "index": 14
+            },
+            {
+                "time": 9.94,
+                "type": "beat",
+                "index": 15
+            },
+            {
+                "time": 10.68,
+                "type": "downbeat",
+                "index": 16
+            },
+            {
+                "time": 11.3,
+                "type": "beat",
+                "index": 17
+            },
+            {
+                "time": 11.94,
+                "type": "downbeat",
+                "index": 18
+            },
+            {
+                "time": 12.56,
+                "type": "beat",
+                "index": 19
+            },
+            {
+                "time": 13.16,
+                "type": "downbeat",
+                "index": 20
+            },
+            {
+                "time": 13.8,
+                "type": "beat",
+                "index": 21
+            },
+            {
+                "time": 14.46,
+                "type": "downbeat",
+                "index": 22
+            },
+            {
+                "time": 15.14,
+                "type": "beat",
+                "index": 23
+            },
+            {
+                "time": 15.76,
+                "type": "downbeat",
+                "index": 24
+            },
+            {
+                "time": 16.4,
+                "type": "beat",
+                "index": 25
+            },
+            {
+                "time": 17.06,
+                "type": "downbeat",
+                "index": 26
+            },
+            {
+                "time": 17.74,
+                "type": "beat",
+                "index": 27
+            },
+            {
+                "time": 18.42,
+                "type": "downbeat",
+                "index": 28
+            },
+            {
+                "time": 19.06,
+                "type": "beat",
+                "index": 29
+            },
+            {
+                "time": 19.76,
+                "type": "downbeat",
+                "index": 30
+            },
+            {
+                "time": 20.4,
+                "type": "beat",
+                "index": 31
+            },
+            {
+                "time": 21.12,
+                "type": "downbeat",
+                "index": 32
+            },
+            {
+                "time": 21.76,
+                "type": "beat",
+                "index": 33
+            },
+            {
+                "time": 22.46,
+                "type": "downbeat",
+                "index": 34
+            },
+            {
+                "time": 23.16,
+                "type": "beat",
+                "index": 35
+            },
+            {
+                "time": 23.84,
+                "type": "downbeat",
+                "index": 36
+            },
+            {
+                "time": 24.48,
+                "type": "beat",
+                "index": 37
+            },
+            {
+                "time": 25.1,
+                "type": "downbeat",
+                "index": 38
+            },
+            {
+                "time": 25.74,
+                "type": "beat",
+                "index": 39
+            },
+            {
+                "time": 26.38,
+                "type": "downbeat",
+                "index": 40
+            },
+            {
+                "time": 27.0,
+                "type": "beat",
+                "index": 41
+            },
+            {
+                "time": 27.64,
+                "type": "downbeat",
+                "index": 42
+            },
+            {
+                "time": 28.3,
+                "type": "beat",
+                "index": 43
+            },
+            {
+                "time": 28.94,
+                "type": "downbeat",
+                "index": 44
+            },
+            {
+                "time": 29.54,
+                "type": "beat",
+                "index": 45
+            },
+            {
+                "time": 30.18,
+                "type": "downbeat",
+                "index": 46
+            },
+            {
+                "time": 30.82,
+                "type": "beat",
+                "index": 47
+            },
+            {
+                "time": 31.46,
+                "type": "downbeat",
+                "index": 48
+            },
+            {
+                "time": 32.08,
+                "type": "beat",
+                "index": 49
+            },
+            {
+                "time": 32.7,
+                "type": "downbeat",
+                "index": 50
+            },
+            {
+                "time": 33.34,
+                "type": "beat",
+                "index": 51
+            },
+            {
+                "time": 34.0,
+                "type": "downbeat",
+                "index": 52
+            },
+            {
+                "time": 34.64,
+                "type": "beat",
+                "index": 53
+            },
+            {
+                "time": 35.3,
+                "type": "downbeat",
+                "index": 54
+            },
+            {
+                "time": 35.9,
+                "type": "beat",
+                "index": 55
+            },
+            {
+                "time": 36.52,
+                "type": "downbeat",
+                "index": 56
+            },
+            {
+                "time": 37.16,
+                "type": "beat",
+                "index": 57
+            },
+            {
+                "time": 37.78,
+                "type": "downbeat",
+                "index": 58
+            },
+            {
+                "time": 38.42,
+                "type": "beat",
+                "index": 59
+            },
+            {
+                "time": 39.06,
+                "type": "downbeat",
+                "index": 60
+            },
+            {
+                "time": 39.72,
+                "type": "beat",
+                "index": 61
+            },
+            {
+                "time": 40.38,
+                "type": "downbeat",
+                "index": 62
+            },
+            {
+                "time": 41.1,
+                "type": "beat",
+                "index": 63
+            },
+            {
+                "time": 41.76,
+                "type": "downbeat",
+                "index": 64
+            },
+            {
+                "time": 42.46,
+                "type": "beat",
+                "index": 65
+            },
+            {
+                "time": 43.1,
+                "type": "downbeat",
+                "index": 66
+            },
+            {
+                "time": 43.82,
+                "type": "beat",
+                "index": 67
+            },
+            {
+                "time": 44.52,
+                "type": "downbeat",
+                "index": 68
+            },
+            {
+                "time": 45.24,
+                "type": "beat",
+                "index": 69
+            },
+            {
+                "time": 45.92,
+                "type": "downbeat",
+                "index": 70
+            },
+            {
+                "time": 46.62,
+                "type": "beat",
+                "index": 71
+            },
+            {
+                "time": 47.32,
+                "type": "downbeat",
+                "index": 72
+            },
+            {
+                "time": 47.96,
+                "type": "beat",
+                "index": 73
+            },
+            {
+                "time": 48.66,
+                "type": "downbeat",
+                "index": 74
+            },
+            {
+                "time": 49.36,
+                "type": "beat",
+                "index": 75
+            },
+            {
+                "time": 50.0,
+                "type": "downbeat",
+                "index": 76
+            },
+            {
+                "time": 50.66,
+                "type": "beat",
+                "index": 77
+            },
+            {
+                "time": 51.28,
+                "type": "downbeat",
+                "index": 78
+            },
+            {
+                "time": 51.94,
+                "type": "beat",
+                "index": 79
+            },
+            {
+                "time": 52.56,
+                "type": "downbeat",
+                "index": 80
+            },
+            {
+                "time": 53.2,
+                "type": "beat",
+                "index": 81
+            },
+            {
+                "time": 53.8,
+                "type": "downbeat",
+                "index": 82
+            },
+            {
+                "time": 54.44,
+                "type": "beat",
+                "index": 83
+            },
+            {
+                "time": 55.06,
+                "type": "downbeat",
+                "index": 84
+            },
+            {
+                "time": 55.72,
+                "type": "beat",
+                "index": 85
+            },
+            {
+                "time": 56.36,
+                "type": "downbeat",
+                "index": 86
+            },
+            {
+                "time": 57.0,
+                "type": "beat",
+                "index": 87
+            },
+            {
+                "time": 57.64,
+                "type": "downbeat",
+                "index": 88
+            },
+            {
+                "time": 58.28,
+                "type": "beat",
+                "index": 89
+            },
+            {
+                "time": 58.9,
+                "type": "downbeat",
+                "index": 90
+            },
+            {
+                "time": 59.54,
+                "type": "beat",
+                "index": 91
+            },
+            {
+                "time": 60.18,
+                "type": "downbeat",
+                "index": 92
+            },
+            {
+                "time": 60.78,
+                "type": "beat",
+                "index": 93
+            },
+            {
+                "time": 61.4,
+                "type": "downbeat",
+                "index": 94
+            },
+            {
+                "time": 62.06,
+                "type": "beat",
+                "index": 95
+            },
+            {
+                "time": 62.7,
+                "type": "downbeat",
+                "index": 96
+            },
+            {
+                "time": 63.32,
+                "type": "beat",
+                "index": 97
+            },
+            {
+                "time": 63.94,
+                "type": "downbeat",
+                "index": 98
+            },
+            {
+                "time": 64.56,
+                "type": "beat",
+                "index": 99
+            },
+            {
+                "time": 65.22,
+                "type": "downbeat",
+                "index": 100
+            },
+            {
+                "time": 65.86,
+                "type": "beat",
+                "index": 101
+            },
+            {
+                "time": 66.5,
+                "type": "downbeat",
+                "index": 102
+            },
+            {
+                "time": 67.12,
+                "type": "beat",
+                "index": 103
+            },
+            {
+                "time": 67.78,
+                "type": "downbeat",
+                "index": 104
+            },
+            {
+                "time": 68.4,
+                "type": "beat",
+                "index": 105
+            },
+            {
+                "time": 69.04,
+                "type": "downbeat",
+                "index": 106
+            },
+            {
+                "time": 69.68,
+                "type": "beat",
+                "index": 107
+            },
+            {
+                "time": 70.32,
+                "type": "downbeat",
+                "index": 108
+            },
+            {
+                "time": 70.96,
+                "type": "beat",
+                "index": 109
+            },
+            {
+                "time": 71.6,
+                "type": "downbeat",
+                "index": 110
+            },
+            {
+                "time": 72.2,
+                "type": "beat",
+                "index": 111
+            },
+            {
+                "time": 72.84,
+                "type": "downbeat",
+                "index": 112
+            },
+            {
+                "time": 73.42,
+                "type": "beat",
+                "index": 113
+            },
+            {
+                "time": 73.98,
+                "type": "downbeat",
+                "index": 114
+            },
+            {
+                "time": 74.54,
+                "type": "beat",
+                "index": 115
+            },
+            {
+                "time": 75.08,
+                "type": "downbeat",
+                "index": 116
+            },
+            {
+                "time": 75.7,
+                "type": "beat",
+                "index": 117
+            },
+            {
+                "time": 76.36,
+                "type": "downbeat",
+                "index": 118
+            },
+            {
+                "time": 76.98,
+                "type": "beat",
+                "index": 119
+            },
+            {
+                "time": 77.6,
+                "type": "downbeat",
+                "index": 120
+            },
+            {
+                "time": 78.24,
+                "type": "beat",
+                "index": 121
+            },
+            {
+                "time": 78.88,
+                "type": "downbeat",
+                "index": 122
+            },
+            {
+                "time": 79.5,
+                "type": "beat",
+                "index": 123
+            },
+            {
+                "time": 80.16,
+                "type": "downbeat",
+                "index": 124
+            },
+            {
+                "time": 80.78,
+                "type": "beat",
+                "index": 125
+            },
+            {
+                "time": 81.4,
+                "type": "downbeat",
+                "index": 126
+            },
+            {
+                "time": 82.0,
+                "type": "beat",
+                "index": 127
+            },
+            {
+                "time": 82.54,
+                "type": "downbeat",
+                "index": 128
+            },
+            {
+                "time": 83.1,
+                "type": "beat",
+                "index": 129
+            },
+            {
+                "time": 83.66,
+                "type": "downbeat",
+                "index": 130
+            },
+            {
+                "time": 84.24,
+                "type": "beat",
+                "index": 131
+            },
+            {
+                "time": 84.76,
+                "type": "downbeat",
+                "index": 132
+            },
+            {
+                "time": 85.3,
+                "type": "beat",
+                "index": 133
+            },
+            {
+                "time": 85.86,
+                "type": "downbeat",
+                "index": 134
+            },
+            {
+                "time": 86.38,
+                "type": "beat",
+                "index": 135
+            },
+            {
+                "time": 86.94,
+                "type": "downbeat",
+                "index": 136
+            },
+            {
+                "time": 87.46,
+                "type": "beat",
+                "index": 137
+            },
+            {
+                "time": 87.94,
+                "type": "downbeat",
+                "index": 138
+            },
+            {
+                "time": 88.42,
+                "type": "beat",
+                "index": 139
+            },
+            {
+                "time": 88.88,
+                "type": "downbeat",
+                "index": 140
+            },
+            {
+                "time": 89.36,
+                "type": "beat",
+                "index": 141
+            },
+            {
+                "time": 89.86,
+                "type": "downbeat",
+                "index": 142
+            },
+            {
+                "time": 90.32,
+                "type": "beat",
+                "index": 143
+            },
+            {
+                "time": 90.82,
+                "type": "downbeat",
+                "index": 144
+            },
+            {
+                "time": 91.28,
+                "type": "beat",
+                "index": 145
+            },
+            {
+                "time": 91.74,
+                "type": "downbeat",
+                "index": 146
+            },
+            {
+                "time": 92.22,
+                "type": "beat",
+                "index": 147
+            },
+            {
+                "time": 92.66,
+                "type": "downbeat",
+                "index": 148
+            },
+            {
+                "time": 93.12,
+                "type": "beat",
+                "index": 149
+            },
+            {
+                "time": 93.6,
+                "type": "downbeat",
+                "index": 150
+            },
+            {
+                "time": 94.02,
+                "type": "beat",
+                "index": 151
+            },
+            {
+                "time": 94.42,
+                "type": "downbeat",
+                "index": 152
+            },
+            {
+                "time": 94.84,
+                "type": "beat",
+                "index": 153
+            },
+            {
+                "time": 95.26,
+                "type": "downbeat",
+                "index": 154
+            },
+            {
+                "time": 95.68,
+                "type": "beat",
+                "index": 155
+            },
+            {
+                "time": 96.06,
+                "type": "downbeat",
+                "index": 156
+            },
+            {
+                "time": 96.44,
+                "type": "beat",
+                "index": 157
+            },
+            {
+                "time": 96.84,
+                "type": "downbeat",
+                "index": 158
+            },
+            {
+                "time": 97.2,
+                "type": "beat",
+                "index": 159
+            },
+            {
+                "time": 97.52,
+                "type": "downbeat",
+                "index": 160
+            },
+            {
+                "time": 97.88,
+                "type": "beat",
+                "index": 161
+            },
+            {
+                "time": 98.2,
+                "type": "downbeat",
+                "index": 162
+            },
+            {
+                "time": 98.56,
+                "type": "beat",
+                "index": 163
+            },
+            {
+                "time": 98.88,
+                "type": "downbeat",
+                "index": 164
+            },
+            {
+                "time": 99.24,
+                "type": "beat",
+                "index": 165
+            },
+            {
+                "time": 99.58,
+                "type": "downbeat",
+                "index": 166
+            },
+            {
+                "time": 99.9,
+                "type": "beat",
+                "index": 167
+            },
+            {
+                "time": 100.26,
+                "type": "downbeat",
+                "index": 168
+            },
+            {
+                "time": 100.58,
+                "type": "beat",
+                "index": 169
+            },
+            {
+                "time": 100.94,
+                "type": "downbeat",
+                "index": 170
+            },
+            {
+                "time": 101.26,
+                "type": "beat",
+                "index": 171
+            },
+            {
+                "time": 101.62,
+                "type": "downbeat",
+                "index": 172
+            },
+            {
+                "time": 101.94,
+                "type": "beat",
+                "index": 173
+            },
+            {
+                "time": 102.28,
+                "type": "downbeat",
+                "index": 174
+            },
+            {
+                "time": 102.62,
+                "type": "beat",
+                "index": 175
+            },
+            {
+                "time": 102.96,
+                "type": "downbeat",
+                "index": 176
+            },
+            {
+                "time": 103.3,
+                "type": "beat",
+                "index": 177
+            },
+            {
+                "time": 103.64,
+                "type": "downbeat",
+                "index": 178
+            },
+            {
+                "time": 103.98,
+                "type": "beat",
+                "index": 179
+            },
+            {
+                "time": 104.32,
+                "type": "downbeat",
+                "index": 180
+            },
+            {
+                "time": 104.66,
+                "type": "beat",
+                "index": 181
+            },
+            {
+                "time": 105.0,
+                "type": "downbeat",
+                "index": 182
+            },
+            {
+                "time": 105.34,
+                "type": "beat",
+                "index": 183
+            },
+            {
+                "time": 105.68,
+                "type": "downbeat",
+                "index": 184
+            },
+            {
+                "time": 106.02,
+                "type": "beat",
+                "index": 185
+            },
+            {
+                "time": 106.36,
+                "type": "downbeat",
+                "index": 186
+            },
+            {
+                "time": 106.7,
+                "type": "beat",
+                "index": 187
+            },
+            {
+                "time": 107.04,
+                "type": "downbeat",
+                "index": 188
+            },
+            {
+                "time": 107.38,
+                "type": "beat",
+                "index": 189
+            },
+            {
+                "time": 107.74,
+                "type": "downbeat",
+                "index": 190
+            },
+            {
+                "time": 108.06,
+                "type": "beat",
+                "index": 191
+            },
+            {
+                "time": 108.42,
+                "type": "downbeat",
+                "index": 192
+            },
+            {
+                "time": 108.74,
+                "type": "beat",
+                "index": 193
+            },
+            {
+                "time": 109.1,
+                "type": "downbeat",
+                "index": 194
+            },
+            {
+                "time": 109.44,
+                "type": "beat",
+                "index": 195
+            },
+            {
+                "time": 109.78,
+                "type": "downbeat",
+                "index": 196
+            },
+            {
+                "time": 110.12,
+                "type": "beat",
+                "index": 197
+            },
+            {
+                "time": 110.46,
+                "type": "downbeat",
+                "index": 198
+            },
+            {
+                "time": 110.8,
+                "type": "beat",
+                "index": 199
+            },
+            {
+                "time": 111.14,
+                "type": "downbeat",
+                "index": 200
+            },
+            {
+                "time": 111.48,
+                "type": "beat",
+                "index": 201
+            },
+            {
+                "time": 111.82,
+                "type": "downbeat",
+                "index": 202
+            },
+            {
+                "time": 112.16,
+                "type": "beat",
+                "index": 203
+            },
+            {
+                "time": 112.5,
+                "type": "downbeat",
+                "index": 204
+            },
+            {
+                "time": 112.84,
+                "type": "beat",
+                "index": 205
+            },
+            {
+                "time": 113.16,
+                "type": "downbeat",
+                "index": 206
+            },
+            {
+                "time": 113.5,
+                "type": "beat",
+                "index": 207
+            },
+            {
+                "time": 113.86,
+                "type": "downbeat",
+                "index": 208
+            },
+            {
+                "time": 114.18,
+                "type": "beat",
+                "index": 209
+            },
+            {
+                "time": 114.52,
+                "type": "downbeat",
+                "index": 210
+            }
+        ],
+        "offset": -2.0773486357484647,
+        "method_used": "beatnet_deep_learning",
+        "r_squared": 0.9879944657802369,
+        "max_residual": 17.42175528596755,
+        "total_beats": 211,
+        "downbeat_count": 106
+    },
+    "created_at": 1756148049.233108,
+    "finalized_at": 1756148067.7614012,
+    "category": "Pop",
+    "difficulty": 5,
+    "last_updated": 1756190796.427451
 }
