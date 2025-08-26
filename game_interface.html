@@ -16,15 +16,20 @@
             --vaporwave-white: #FFFFFF;
             --vaporwave-black: #000000;
             
-            /* Main theme colors */
+            /* Main theme colors for don/ka */
             --primary-red: var(--vaporwave-pink);
-            --primary-blue: var(--vaporwave-blue);
+            --primary-blue: var(--vaporwave-purple);
+            --don-color: var(--vaporwave-pink);
+            --ka-color: var(--vaporwave-purple);
+            --don-accent: #FF6B9D;
+            --ka-accent: #B366EC;
             --bg-gradient: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF, #06FFA5, #FFBE0B);
             --text-white: #FFFFFF;
             --text-dark: #000000;
             --score-bg: rgba(255, 255, 255, 0.95);
             --drum-shadow: rgba(0, 0, 0, 0.4);
-            --hit-effect: rgba(255, 255, 255, 0.9);
+            --hit-effect: rgba(255, 0, 110, 0.9);
+            --ka-hit-effect: rgba(131, 56, 236, 0.9);
             
             /* Dynamic category colors - will be updated by JavaScript */
             --category-primary: #FF006E;
@@ -80,7 +85,7 @@
             width: 100%;
             height: 100%;
             z-index: 2;
-            opacity: 0.3;
+            opacity: 0.6;
         }
 
         /* Legacy background support - hidden */
@@ -200,8 +205,8 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
-            border: 4px solid #F5F5DC;
+            background: linear-gradient(45deg, var(--vaporwave-white), #E0E0E0);
+            border: 4px solid var(--vaporwave-white);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -238,16 +243,16 @@
             z-index: 2;
         }
 
-        /* Ka击打效果 - 外圈亮蓝 */
+        /* Ka击打效果 - 外圈蒸汽波紫 */
         .don-face.hit-ka::before {
-            background: linear-gradient(45deg, #4A90E2, #0066CC);
-            box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+            background: linear-gradient(45deg, var(--ka-color), var(--ka-accent));
+            box-shadow: 0 0 15px rgba(131, 56, 236, 0.8);
         }
 
-        /* Don击打效果 - 内圈亮红 */
+        /* Don击打效果 - 内圈蒸汽波粉 */
         .don-face.hit-don::after {
-            background: linear-gradient(45deg, #FF6B47, #FF4500);
-            box-shadow: 0 0 15px rgba(255, 107, 71, 0.8);
+            background: linear-gradient(45deg, var(--don-color), var(--don-accent));
+            box-shadow: 0 0 15px rgba(255, 0, 110, 0.8);
         }
 
         .don-combo {
@@ -282,96 +287,275 @@
             min-width: 60px;
         }
 
-        /* Spirit System Display - Horizontal Bar */
+        /* Spirit System Display - Vaporwave + Mondrian Style */
         .spirit-system {
             position: absolute;
             right: 0px;
-            top: calc(30% - 85px); /* 15px above game-track-container (30% - 65px container half-height - 20px spirit height) */
-            width: 50vw; /* 50% of viewport width */
-            max-width: 400px; /* Maximum width */
-            height: 20px;
+            top: calc(30% - 85px);
+            width: 50vw;
+            max-width: 400px;
+            height: 40px;
             z-index: 15;
-            background: rgba(0, 0, 0, 0.8); /* 20% transparency */
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(255, 0, 110, 0.1) 30%,
+                rgba(131, 56, 236, 0.1) 70%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+            border: 4px solid #FFFFFF;
+            border-radius: 0; /* 蒙德里安风格：无圆角 */
             overflow: hidden;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 110, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -2px 0 rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            animation: mondrianGlow 4s ease-in-out infinite;
+            /* 蒙德里安几何分割线 */
+            position: relative;
+        }
+        
+        /* 蒙德里安分割线效果 */
+        .spirit-system::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30%;
+            width: 2px;
+            height: 100%;
+            background: #FFFFFF;
+            opacity: 0.6;
+        }
+        
+        .spirit-system::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 70%;
+            width: 2px;
+            height: 100%;
+            background: #FFFFFF;
+            opacity: 0.6;
+        }
+        
+        @keyframes mondrianGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 15px rgba(255, 0, 110, 0.3),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                    inset 0 -2px 0 rgba(255, 255, 255, 0.3);
+                border-color: #FFFFFF;
+            }
+            25% {
+                box-shadow: 
+                    0 0 25px rgba(255, 0, 110, 0.6),
+                    inset 0 2px 0 rgba(255, 0, 110, 0.5),
+                    inset 0 -2px 0 rgba(255, 0, 110, 0.5);
+                border-color: #FF006E;
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px rgba(58, 134, 255, 0.6),
+                    inset 0 2px 0 rgba(58, 134, 255, 0.5),
+                    inset 0 -2px 0 rgba(58, 134, 255, 0.5);
+                border-color: #3A86FF;
+            }
+            75% {
+                box-shadow: 
+                    0 0 25px rgba(131, 56, 236, 0.6),
+                    inset 0 2px 0 rgba(131, 56, 236, 0.5),
+                    inset 0 -2px 0 rgba(131, 56, 236, 0.5);
+                border-color: #8338EC;
+            }
         }
 
-        /* DDR-style spirit lines container */
+        /* Mondrian-style spirit progress container */
         .spirit-lines {
             position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 0, 110, 0.1) 30%,
+                rgba(131, 56, 236, 0.1) 70%,
+                transparent 100%
+            );
         }
 
-        /* Individual spirit line */
+        /* Mondrian geometric spirit segments */
         .spirit-line {
-            width: 1px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
+            width: 2px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0; /* 蒙德里安风格：无圆角 */
+            transition: all 0.4s ease;
+            position: relative;
         }
 
-        /* Active spirit lines - different colors and thickness based on percentage */
+        /* Vaporwave progression stages */
         .spirit-line.active-yellow {
-            background: #FFD700;
-            width: 1px;
-            height: 12px;
+            background: linear-gradient(180deg, #FFBE0B 0%, #FFD700 100%);
+            width: 3px;
+            height: 32px;
+            box-shadow: 0 0 8px rgba(255, 190, 11, 0.6);
         }
 
         .spirit-line.active-orange {
-            background: #FF8C00;
-            width: 1px;
-            height: 12px;
+            background: linear-gradient(180deg, #FF006E 0%, #FF6B9D 100%);
+            width: 4px;
+            height: 32px;
+            box-shadow: 0 0 12px rgba(255, 0, 110, 0.8);
         }
 
-        /* 85%+ state - all lines become thick and get rainbow animation */
+        /* Chinese-inspired high energy state (85%+) */
         .spirit-line.active-rainbow {
-            width: 3px;
-            height: 16px;
-            animation: rainbowPulse 1.5s ease-in-out infinite;
+            width: 6px;
+            height: 36px;
+            background: linear-gradient(180deg, #FF006E 0%, #8338EC 50%, #3A86FF 100%);
+            animation: chineseDragonPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(255, 0, 110, 0.9);
         }
 
-        /* Rainbow color cycling animation - softer, more elegant */
-        @keyframes rainbowPulse {
-            0% { background: hsl(0, 65%, 55%); }      /* Soft Red */
-            16.67% { background: hsl(60, 65%, 55%); } /* Soft Yellow */
-            33.33% { background: hsl(120, 65%, 55%); }/* Soft Green */
-            50% { background: hsl(180, 65%, 55%); }   /* Soft Cyan */
-            66.67% { background: hsl(240, 65%, 55%); }/* Soft Blue */
-            83.33% { background: hsl(300, 65%, 55%); }/* Soft Magenta */
-            100% { background: hsl(360, 65%, 55%); }  /* Soft Red again */
+        /* Chinese dragon-inspired energy pulse */
+        @keyframes chineseDragonPulse {
+            0%, 100% { 
+                background: linear-gradient(180deg, #FF006E 0%, #8338EC 50%, #3A86FF 100%);
+                box-shadow: 0 0 15px rgba(255, 0, 110, 0.9);
+            }
+            33% { 
+                background: linear-gradient(180deg, #8338EC 0%, #3A86FF 50%, #06FFA5 100%);
+                box-shadow: 0 0 20px rgba(131, 56, 236, 0.9);
+            }
+            66% { 
+                background: linear-gradient(180deg, #3A86FF 0%, #06FFA5 50%, #FFBE0B 100%);
+                box-shadow: 0 0 18px rgba(58, 134, 255, 0.9);
+            }
         }
 
-        /* Spirit system container rainbow glow when 85%+ - softer glow */
+        /* Chinese-inspired high energy container effect */
         .spirit-system.rainbow-mode {
-            animation: rainbowGlow 2s ease-in-out infinite;
+            animation: dragonGlow 3s ease-in-out infinite;
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(255, 0, 110, 0.2) 20%,
+                rgba(131, 56, 236, 0.2) 40%,
+                rgba(58, 134, 255, 0.2) 60%,
+                rgba(6, 255, 165, 0.2) 80%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
         }
 
-        @keyframes rainbowGlow {
-            0% { box-shadow: 0 0 15px hsla(0, 65%, 55%, 0.4); }
-            16.67% { box-shadow: 0 0 15px hsla(60, 65%, 55%, 0.4); }
-            33.33% { box-shadow: 0 0 15px hsla(120, 65%, 55%, 0.4); }
-            50% { box-shadow: 0 0 15px hsla(180, 65%, 55%, 0.4); }
-            66.67% { box-shadow: 0 0 15px hsla(240, 65%, 55%, 0.4); }
-            83.33% { box-shadow: 0 0 15px hsla(300, 65%, 55%, 0.4); }
-            100% { box-shadow: 0 0 15px hsla(360, 65%, 55%, 0.4); }
+        @keyframes dragonGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 25px rgba(255, 0, 110, 0.4),
+                    inset 0 2px 0 rgba(255, 0, 110, 0.5),
+                    inset 0 -2px 0 rgba(255, 0, 110, 0.5);
+                border-color: #FF006E;
+            }
+            25% {
+                box-shadow: 
+                    0 0 30px rgba(131, 56, 236, 0.6),
+                    inset 0 2px 0 rgba(131, 56, 236, 0.6),
+                    inset 0 -2px 0 rgba(131, 56, 236, 0.6);
+                border-color: #8338EC;
+            }
+            50% {
+                box-shadow: 
+                    0 0 35px rgba(58, 134, 255, 0.6),
+                    inset 0 2px 0 rgba(58, 134, 255, 0.6),
+                    inset 0 -2px 0 rgba(58, 134, 255, 0.6);
+                border-color: #3A86FF;
+            }
+            75% {
+                box-shadow: 
+                    0 0 30px rgba(6, 255, 165, 0.6),
+                    inset 0 2px 0 rgba(6, 255, 165, 0.6),
+                    inset 0 -2px 0 rgba(6, 255, 165, 0.6);
+                border-color: #06FFA5;
+            }
         }
 
         .spirit-label {
             position: absolute;
-            right: calc(50vw + 10px); /* Responsive positioning (adjusted for right: 0px) */
-            top: calc(30% - 85px + 10px); /* Align with spirit bar */
+            right: calc(50vw + 20px);
+            top: calc(30% - 85px + 20px);
             transform: translateY(-50%);
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             color: #FFFFFF;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 
+                0 0 8px rgba(255, 0, 110, 0.8),
+                2px 2px 4px rgba(0, 0, 0, 0.9);
             white-space: nowrap;
+            padding: 8px 16px;
+            background: linear-gradient(45deg, 
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(255, 0, 110, 0.1) 50%,
+                rgba(0, 0, 0, 0.9) 100%
+            );
+            border: 2px solid #FFFFFF;
+            border-radius: 0;
+            backdrop-filter: blur(5px);
+            animation: labelGlow 4s ease-in-out infinite;
+            /* 中国风小装饰 */
+            position: relative;
+        }
+
+        /* 标签左侧小装饰 */
+        .spirit-label::before {
+            content: '◆';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FF006E;
+            font-size: 8px;
+            text-shadow: 0 0 6px rgba(255, 0, 110, 0.9);
+            animation: sparkle 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes labelGlow {
+            0%, 100% {
+                border-color: #FFFFFF;
+                text-shadow: 
+                    0 0 8px rgba(255, 255, 255, 0.6),
+                    2px 2px 4px rgba(0, 0, 0, 0.9);
+            }
+            25% {
+                border-color: #FF006E;
+                text-shadow: 
+                    0 0 10px rgba(255, 0, 110, 0.8),
+                    2px 2px 4px rgba(0, 0, 0, 0.9);
+            }
+            50% {
+                border-color: #8338EC;
+                text-shadow: 
+                    0 0 10px rgba(131, 56, 236, 0.8),
+                    2px 2px 4px rgba(0, 0, 0, 0.9);
+            }
+            75% {
+                border-color: #3A86FF;
+                text-shadow: 
+                    0 0 10px rgba(58, 134, 255, 0.8),
+                    2px 2px 4px rgba(0, 0, 0, 0.9);
+            }
+        }
+
+        @keyframes sparkle {
+            0% {
+                color: #FF006E;
+                text-shadow: 0 0 6px rgba(255, 0, 110, 0.9);
+            }
+            100% {
+                color: #06FFA5;
+                text-shadow: 0 0 8px rgba(6, 255, 165, 0.9);
+            }
         }
 
         /* Song Name Display - Top Right Corner */
@@ -1307,10 +1491,10 @@
         /* Golden Hit Effects - Target Drum Only */
         .target-drum.golden-hit {
             /* Keep original border color - don't change border */
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.6), rgba(255, 165, 0, 0.3));
+            background: radial-gradient(circle, rgba(6, 255, 165, 0.6), rgba(255, 190, 11, 0.3));
             box-shadow: 
-                0 0 30px rgba(255, 215, 0, 0.8),
-                inset 0 0 25px rgba(255, 215, 0, 0.4);
+                0 0 30px rgba(6, 255, 165, 0.8),
+                inset 0 0 25px rgba(255, 190, 11, 0.4);
             animation: goldenFillAndFade 0.8s ease-out;
         }
 
@@ -1387,11 +1571,13 @@
         }
 
         .beat-note.don {
-            background: radial-gradient(circle, var(--primary-red), #CC5238);
+            background: radial-gradient(circle, var(--don-color), var(--don-accent));
+            border: 2px solid var(--vaporwave-white);
         }
 
         .beat-note.ka {
-            background: radial-gradient(circle, var(--primary-blue), #3A72B8);
+            background: radial-gradient(circle, var(--ka-color), var(--ka-accent));
+            border: 2px solid var(--vaporwave-white);
         }
 
         .beat-note.hit {
@@ -1428,7 +1614,7 @@
             cursor: pointer;
             position: relative;
             transition: all 0.1s ease;
-            background: #4A90E2; /* 整个鼓面是蓝色 - Ka区域 */
+            background: var(--ka-color); /* 整个鼓面是蒸汽波紫色 - Ka区域 */
         }
 
         /* Don区域 - 独立的可点击元素 */
@@ -1439,7 +1625,7 @@
             width: 270px; /* 2倍大小：135 * 2 */
             height: 180px; /* 2倍大小：90 * 2 */
             border-radius: 270px 270px 0 0; /* 2倍大小：135 * 2 */
-            background: linear-gradient(45deg, #FFF8E1, #F5F5DC);
+            background: linear-gradient(45deg, var(--don-color), var(--don-accent));
             transform: translate(-50%, -50%);
             transition: all 0.1s ease;
             z-index: 3; /* 高于Ka区域 */
@@ -1449,14 +1635,14 @@
         /* Don击打效果 - Don区域放大 */
         .drum-don.hit {
             transform: translate(-50%, -50%) scale(1.2);
-            background: linear-gradient(45deg, #FFE5B4, #FFF8E1);
+            background: linear-gradient(45deg, var(--don-accent), #FF9BCE);
         }
 
         /* Ka击打效果 - 外圈变大变色，Don区域保持原大小 */
         .drum.unified.hit-ka {
             transform: scaleX(1.1) scaleY(1.1);
-            background: #5BA0E8;
-            box-shadow: 0 0 20px rgba(91, 160, 232, 0.6);
+            background: var(--ka-accent);
+            box-shadow: 0 0 20px rgba(179, 102, 236, 0.6);
         }
 
         /* 当Ka变大时，Don区域反向缩放保持原始大小 */
@@ -1467,7 +1653,7 @@
         /* Ka区域按下效果 - 变小变色，Don区域保持原大小 */
         .drum.unified:active {
             transform: scaleX(0.98) scaleY(0.98);
-            background: #3A80D2;
+            background: #5C2A8E;
         }
 
         /* 当Ka被按下时，Don区域反向缩放保持原始大小 */
@@ -1516,10 +1702,14 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+            background: radial-gradient(circle, var(--hit-effect), transparent);
             pointer-events: none;
             animation: hitExplosion 0.3s ease-out forwards;
             z-index: 15; /* Above everything for hit effects */
+        }
+        
+        .hit-effect.ka {
+            background: radial-gradient(circle, var(--ka-hit-effect), transparent);
         }
 
         @keyframes hitExplosion {
@@ -1551,6 +1741,85 @@
         .particle-white {
             background: radial-gradient(circle, #FFFFFF, #E0E0E0);
             box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Chinese Element Particles */
+        .particle-chinese {
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .particle-chinese.particle-golden {
+            filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8));
+        }
+        
+        .particle-chinese.particle-white {
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+        }
+        
+        .particle-lotus-petal {
+            animation: petalFloat 2s ease-out forwards;
+        }
+        
+        .particle-cloud-wisp {
+            animation: cloudDrift 2.5s ease-out forwards;
+        }
+        
+        .particle-bamboo-leaf {
+            animation: leafFall 2.2s ease-out forwards;
+        }
+        
+        /* Chinese particle animations */
+        @keyframes petalFloat {
+            0% {
+                transform: scale(0.5) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes cloudDrift {
+            0% {
+                transform: scale(0.3) translateY(0px);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(1.2) translateY(-20px);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1.8) translateY(-40px);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes leafFall {
+            0% {
+                transform: scale(0.8) rotate(-10deg) translateY(0px);
+                opacity: 1;
+            }
+            30% {
+                transform: scale(1) rotate(15deg) translateY(10px);
+                opacity: 0.9;
+            }
+            70% {
+                transform: scale(1.1) rotate(-25deg) translateY(30px);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.3) rotate(45deg) translateY(50px);
+                opacity: 0;
+            }
         }
 
         /* Judgment Text */
@@ -2129,21 +2398,207 @@
         
         <!-- Chinese Elements Background -->
         <svg class="chinese-elements" viewBox="0 0 1920 1080">
-            <!-- Cloud patterns -->
-            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3">
-                <!-- Top clouds -->
-                <path d="M 100,100 Q 150,50 200,100 Q 250,50 300,100 Q 250,150 200,100 Q 150,150 100,100 Z"/>
-                <path d="M 1620,100 Q 1670,50 1720,100 Q 1770,50 1820,100 Q 1770,150 1720,100 Q 1670,150 1620,100 Z"/>
+            <!-- Auspicious Clouds (祥云) - Floating foreground elements -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4">
+                <!-- Traditional Chinese cloud patterns -->
+                <g transform="translate(500,150)">
+                    <path d="M 0,20 Q -10,10 0,0 Q 20,-5 40,0 Q 60,-5 80,0 Q 90,10 80,20 Q 90,30 80,40 Q 60,45 40,40 Q 20,45 0,40 Q -10,30 0,20 Z" fill="#FFFFFF" opacity="0.1"/>
+                    <path d="M 15,15 Q 25,5 35,15 Q 45,5 55,15 Q 65,10 75,20 Q 70,25 60,25 Q 50,30 40,25 Q 30,30 20,25 Q 10,25 15,15 Z" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+                
+                <g transform="translate(1200,180) scale(0.8)">
+                    <path d="M 0,20 Q -10,10 0,0 Q 20,-5 40,0 Q 60,-5 80,0 Q 90,10 80,20 Q 90,30 80,40 Q 60,45 40,40 Q 20,45 0,40 Q -10,30 0,20 Z" fill="#FFFFFF" opacity="0.1"/>
+                    <path d="M 15,15 Q 25,5 35,15 Q 45,5 55,15 Q 65,10 75,20 Q 70,25 60,25 Q 50,30 40,25 Q 30,30 20,25 Q 10,25 15,15 Z" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
                 
                 <!-- Bottom clouds -->
-                <path d="M 100,980 Q 150,930 200,980 Q 250,930 300,980 Q 250,1030 200,980 Q 150,1030 100,980 Z"/>
-                <path d="M 1620,980 Q 1670,930 1720,980 Q 1770,930 1820,980 Q 1770,1030 1720,980 Q 1670,1030 1620,980 Z"/>
+                <g transform="translate(300,900) scale(1.2)">
+                    <path d="M 0,20 Q -10,10 0,0 Q 20,-5 40,0 Q 60,-5 80,0 Q 90,10 80,20 Q 90,30 80,40 Q 60,45 40,40 Q 20,45 0,40 Q -10,30 0,20 Z" fill="#FFFFFF" opacity="0.08"/>
+                </g>
+                
+                <g transform="translate(1400,880) scale(0.9)">
+                    <path d="M 0,20 Q -10,10 0,0 Q 20,-5 40,0 Q 60,-5 80,0 Q 90,10 80,20 Q 90,30 80,40 Q 60,45 40,40 Q 20,45 0,40 Q -10,30 0,20 Z" fill="#FFFFFF" opacity="0.08"/>
+                </g>
             </g>
             
-            <!-- Mountain silhouettes -->
-            <g fill="#FFFFFF" opacity="0.2">
-                <polygon points="50,1080 150,950 250,1080"/>
-                <polygon points="1670,1080 1770,950 1870,1080"/>
+            <!-- Traditional Chinese Decorative Elements -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3">
+                <!-- Chinese Knot (中国结) patterns in corners -->
+                <g transform="translate(100,100)">
+                    <circle cx="0" cy="0" r="8" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="16" stroke="#FFFFFF" stroke-width="1"/>
+                    <path d="M -12,-12 L 12,12 M 12,-12 L -12,12" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.2"/>
+                </g>
+                
+                <g transform="translate(1820,100) rotate(90)">
+                    <circle cx="0" cy="0" r="8" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="16" stroke="#FFFFFF" stroke-width="1"/>
+                    <path d="M -12,-12 L 12,12 M 12,-12 L -12,12" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.2"/>
+                </g>
+                
+                <g transform="translate(100,980) rotate(270)">
+                    <circle cx="0" cy="0" r="8" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="16" stroke="#FFFFFF" stroke-width="1"/>
+                    <path d="M -12,-12 L 12,12 M 12,-12 L -12,12" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.2"/>
+                </g>
+                
+                <g transform="translate(1820,980) rotate(180)">
+                    <circle cx="0" cy="0" r="8" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="16" stroke="#FFFFFF" stroke-width="1"/>
+                    <path d="M -12,-12 L 12,12 M 12,-12 L -12,12" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.2"/>
+                </g>
+            </g>
+            
+            <!-- Mountain silhouettes with varying heights -->
+            <g fill="#FFFFFF" opacity="0.15">
+                <polygon points="50,1080 150,900 250,1080"/>
+                <polygon points="200,1080 320,850 440,1080"/>
+                <polygon points="1480,1080 1600,920 1720,1080"/>
+                <polygon points="1670,1080 1770,880 1870,1080"/>
+                <!-- Layered mountains for depth -->
+                <polygon points="100,1080 200,950 300,1080" opacity="0.8"/>
+                <polygon points="1520,1080 1650,940 1780,1080" opacity="0.8"/>
+                <!-- Distant mountains -->
+                <polygon points="600,1080 700,980 800,1080" opacity="0.6"/>
+                <polygon points="1000,1080 1100,970 1200,1080" opacity="0.6"/>
+            </g>
+            
+            <!-- Chinese Musical Instruments -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9">
+                <!-- Ancient Guqin (古琴) - traditional Chinese zither -->
+                <g class="floating-instrument" style="animation: floatGuqin 12s ease-in-out infinite;">
+                    <animateTransform attributeName="transform" type="translate" values="300,200; 325,180; 280,220; 305,190; 300,200" dur="12s" repeatCount="indefinite"/>
+                    <rect x="0" y="0" width="120" height="15" rx="7" fill="#FFFFFF" opacity="0.3"/>
+                    <line x1="10" y1="0" x2="10" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="30" y1="0" x2="30" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="50" y1="0" x2="50" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="70" y1="0" x2="70" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="90" y1="0" x2="90" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="110" y1="0" x2="110" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+                
+                <!-- Bamboo Flute (竹笛) -->
+                <g class="floating-instrument">
+                    <animateTransform attributeName="transform" type="translate" values="1400,300; 1430,275; 1370,325; 1415,285; 1400,300" dur="10s" repeatCount="indefinite"/>
+                    <animateTransform attributeName="transform" type="rotate" values="15; 35; -5; 25; 15" dur="8s" repeatCount="indefinite" additive="sum"/>
+                    <rect x="0" y="0" width="80" height="6" rx="3" fill="#FFFFFF" opacity="0.3"/>
+                    <circle cx="15" cy="3" r="2" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="25" cy="3" r="1.5" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="35" cy="3" r="1.5" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="45" cy="3" r="1.5" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="55" cy="3" r="1.5" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="65" cy="3" r="1.5" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+                
+                <!-- Ancient Bells (编钟) -->
+                <g class="floating-instrument">
+                    <animateTransform attributeName="transform" type="translate" values="400,800; 375,780; 425,820; 390,790; 400,800" dur="14s" repeatCount="indefinite"/>
+                    <path d="M 0,20 Q 0,5 10,5 Q 20,5 20,20 L 18,40 L 2,40 Z" fill="#FFFFFF" opacity="0.3"/>
+                    <path d="M 25,15 Q 25,2 35,2 Q 45,2 45,15 L 43,35 L 27,35 Z" fill="#FFFFFF" opacity="0.3"/>
+                    <path d="M 50,25 Q 50,8 60,8 Q 70,8 70,25 L 68,45 L 52,45 Z" fill="#FFFFFF" opacity="0.3"/>
+                    <line x1="10" y1="0" x2="10" y2="5" stroke="#FFFFFF"/>
+                    <line x1="35" y1="0" x2="35" y2="2" stroke="#FFFFFF"/>
+                    <line x1="60" y1="0" x2="60" y2="8" stroke="#FFFFFF"/>
+                </g>
+                
+                <!-- Pipa (琵琶) - Chinese lute -->
+                <g class="floating-instrument">
+                    <animateTransform attributeName="transform" type="translate" values="1300,750; 1330,720; 1270,770; 1310,740; 1300,750" dur="11s" repeatCount="indefinite"/>
+                    <animateTransform attributeName="transform" type="rotate" values="0; 8; -8; 5; 0" dur="15s" repeatCount="indefinite" additive="sum"/>
+                    <ellipse cx="15" cy="40" rx="15" ry="25" fill="#FFFFFF" opacity="0.3"/>
+                    <rect x="10" y="0" width="10" height="25" rx="5" fill="#FFFFFF" opacity="0.3"/>
+                    <line x1="8" y1="5" x2="22" y2="5" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="8" y1="10" x2="22" y2="10" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="8" y1="15" x2="22" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="8" y1="20" x2="22" y2="20" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+                
+                <!-- Erhu (二胡) - Traditional fiddle -->
+                <g class="floating-instrument">
+                    <animateTransform attributeName="transform" type="translate" values="800,300; 825,275; 775,325; 810,285; 800,300" dur="9s" repeatCount="indefinite"/>
+                    <animateTransform attributeName="transform" type="rotate" values="0; -10; 10; -5; 0" dur="12s" repeatCount="indefinite" additive="sum"/>
+                    <rect x="0" y="0" width="4" height="60" fill="#FFFFFF" opacity="0.3"/>
+                    <circle cx="2" cy="0" r="8" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="2" cy="0" r="12" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="-6" y1="10" x2="10" y2="10" stroke="#FFFFFF" stroke-width="1"/>
+                    <line x1="-6" y1="15" x2="10" y2="15" stroke="#FFFFFF" stroke-width="1"/>
+                </g>
+                
+                <!-- Traditional Gong (锣) -->
+                <g class="floating-instrument">
+                    <animateTransform attributeName="transform" type="translate" values="1500,600; 1470,580; 1530,620; 1485,590; 1500,600" dur="13s" repeatCount="indefinite"/>
+                    <animateTransform attributeName="transform" type="rotate" values="0; 15; -15; 8; 0" dur="7s" repeatCount="indefinite" additive="sum"/>
+                    <circle cx="0" cy="0" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="0" cy="0" r="15" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="8" fill="#FFFFFF" opacity="0.3"/>
+                    <line x1="-30" y1="-30" x2="-20" y2="-20" stroke="#FFFFFF" stroke-width="3"/>
+                    <line x1="-35" y1="-25" x2="-25" y2="-15" stroke="#FFFFFF" stroke-width="2"/>
+                </g>
+            </g>
+            
+            <!-- Bamboo Grove (竹林) -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.2">
+                <g transform="translate(80,600)">
+                    <line x1="0" y1="0" x2="0" y2="480" stroke="#FFFFFF" stroke-width="3"/>
+                    <line x1="15" y1="50" x2="15" y2="480" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="30" y1="30" x2="30" y2="480" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="45" y1="70" x2="45" y2="480" stroke="#FFFFFF" stroke-width="2"/>
+                    <!-- Bamboo segments -->
+                    <line x1="-3" y1="100" x2="3" y2="100" stroke="#FFFFFF"/>
+                    <line x1="-3" y1="200" x2="3" y2="200" stroke="#FFFFFF"/>
+                    <line x1="-3" y1="300" x2="3" y2="300" stroke="#FFFFFF"/>
+                    <line x1="-3" y1="400" x2="3" y2="400" stroke="#FFFFFF"/>
+                    <!-- Bamboo leaves -->
+                    <path d="M 5,150 Q 15,145 20,155 Q 15,165 5,160" fill="#FFFFFF" opacity="0.1"/>
+                    <path d="M 35,250 Q 45,245 50,255 Q 45,265 35,260" fill="#FFFFFF" opacity="0.1"/>
+                    <path d="M 20,350 Q 30,345 35,355 Q 30,365 20,360" fill="#FFFFFF" opacity="0.1"/>
+                </g>
+                
+                <g transform="translate(1800,500)">
+                    <line x1="0" y1="0" x2="0" y2="580" stroke="#FFFFFF" stroke-width="3"/>
+                    <line x1="-15" y1="80" x2="-15" y2="580" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="-30" y1="60" x2="-30" y2="580" stroke="#FFFFFF" stroke-width="2"/>
+                    <!-- Bamboo segments -->
+                    <line x1="-3" y1="150" x2="3" y2="150" stroke="#FFFFFF"/>
+                    <line x1="-3" y1="280" x2="3" y2="280" stroke="#FFFFFF"/>
+                    <line x1="-3" y1="410" x2="3" y2="410" stroke="#FFFFFF"/>
+                    <!-- Bamboo leaves -->
+                    <path d="M -35,200 Q -25,195 -20,205 Q -25,215 -35,210" fill="#FFFFFF" opacity="0.1"/>
+                    <path d="M -18,330 Q -8,325 -3,335 Q -8,345 -18,340" fill="#FFFFFF" opacity="0.1"/>
+                </g>
+            </g>
+            
+            <!-- Flowing Water (流水) -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.2">
+                <path d="M 200,900 Q 300,880 400,900 Q 500,920 600,900" stroke="#FFFFFF" stroke-width="2"/>
+                <path d="M 210,910 Q 310,890 410,910 Q 510,930 610,910" stroke="#FFFFFF" stroke-width="1.5"/>
+                <path d="M 220,920 Q 320,900 420,920 Q 520,940 620,920" stroke="#FFFFFF" stroke-width="1"/>
+                
+                <path d="M 1300,950 Q 1400,930 1500,950 Q 1600,970 1700,950" stroke="#FFFFFF" stroke-width="2"/>
+                <path d="M 1310,960 Q 1410,940 1510,960 Q 1610,980 1710,960" stroke="#FFFFFF" stroke-width="1.5"/>
+                
+                <!-- Additional water streams through mountains -->
+                <path d="M 700,1000 Q 800,980 900,1000 Q 1000,1020 1100,1000" stroke="#FFFFFF" stroke-width="1.5" opacity="0.15"/>
+                <path d="M 710,1010 Q 810,990 910,1010 Q 1010,1030 1110,1010" stroke="#FFFFFF" stroke-width="1" opacity="0.15"/>
+            </g>
+            
+            <!-- Lotus Patterns (荷花) - For future hit effects -->
+            <g fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.3">
+                <g transform="translate(960,300) scale(0.5)">
+                    <path d="M 0,20 Q -10,10 -15,0 Q -10,-10 0,-15 Q 10,-10 15,0 Q 10,10 0,20 Z" fill="#FFFFFF" opacity="0.05"/>
+                    <path d="M 0,15 Q -8,5 -12,-5 Q -5,-12 0,-10 Q 5,-12 12,-5 Q 8,5 0,15 Z" fill="#FFFFFF" opacity="0.05"/>
+                    <circle cx="0" cy="0" r="3" fill="#FFFFFF" opacity="0.1"/>
+                </g>
+                
+                <g transform="translate(960,780) scale(0.4)">
+                    <path d="M 0,20 Q -10,10 -15,0 Q -10,-10 0,-15 Q 10,-10 15,0 Q 10,10 0,20 Z" fill="#FFFFFF" opacity="0.05"/>
+                    <path d="M 0,15 Q -8,5 -12,-5 Q -5,-12 0,-10 Q 5,-12 12,-5 Q 8,5 0,15 Z" fill="#FFFFFF" opacity="0.05"/>
+                    <circle cx="0" cy="0" r="3" fill="#FFFFFF" opacity="0.1"/>
+                </g>
             </g>
             
             <!-- Geometric circles -->
@@ -3060,7 +3515,8 @@
             gameState.notes.forEach((note, index) => {
                 const noteElement = document.createElement('div');
                 noteElement.className = `beat-note ${note.type}`;
-                noteElement.textContent = note.type === 'don' ? '咚' : '咔';
+                // Create SVG icon instead of text
+                noteElement.innerHTML = note.type === 'don' ? createDonSVG() : createKaSVG();
                 noteElement.dataset.noteIndex = index;
                 noteElement.dataset.time = note.time;
                 noteElement.dataset.hit = 'false';
@@ -3348,7 +3804,7 @@
             // Find the closest note of matching type
             notes.forEach(noteElement => {
                 if (noteElement.dataset.hit === 'true') return;
-                if (!noteElement.textContent.includes(type === 'don' ? '咚' : '咔')) return;
+                if (!noteElement.classList.contains(type)) return;
                 
                 const noteTime = parseFloat(noteElement.dataset.time);
                 const timeDiff = Math.abs(noteTime - gameState.currentTime);
@@ -3469,7 +3925,7 @@
         // Create hit effect
         function createHitEffect(type) {
             const effect = document.createElement('div');
-            effect.className = 'hit-effect';
+            effect.className = type === 'ka' ? 'hit-effect ka' : 'hit-effect';
             
             // Position exactly at target drum center
             const targetDrum = document.querySelector('.target-drum');
@@ -3491,7 +3947,7 @@
             }, 300);
         }
 
-        // Create particles for hit effects
+        // Create particles for hit effects with Chinese elements
         function createParticles(type, count = 8) {
             const targetDrum = document.querySelector('.target-drum');
             const drumRect = targetDrum.getBoundingClientRect();
@@ -3504,7 +3960,23 @@
             
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
-                particle.className = `hit-particle particle-${type}`;
+                
+                // Create different particle types for Chinese elements
+                const chineseElements = ['lotus-petal', 'cloud-wisp', 'bamboo-leaf'];
+                const randomElement = chineseElements[Math.floor(Math.random() * chineseElements.length)];
+                
+                if (type === 'golden' && Math.random() < 0.6) {
+                    // Golden hits spawn more lotus petals and cloud wisps
+                    particle.className = `hit-particle particle-chinese particle-${randomElement} particle-golden`;
+                    particle.innerHTML = createChineseParticleSVG(randomElement, 'golden');
+                } else if (type === 'white' && Math.random() < 0.4) {
+                    // White hits spawn some Chinese elements too
+                    particle.className = `hit-particle particle-chinese particle-${randomElement} particle-white`;
+                    particle.innerHTML = createChineseParticleSVG(randomElement, 'white');
+                } else {
+                    // Fallback to original particle system
+                    particle.className = `hit-particle particle-${type}`;
+                }
                 
                 // Random initial position around the center (slight spread)
                 const spread = 15;
@@ -3534,6 +4006,58 @@
                 };
                 
                 particles.push(particleObj);
+            }
+        }
+        
+        // Create Chinese particle SVG elements
+        function createChineseParticleSVG(elementType, colorType) {
+            const goldColor = colorType === 'golden' ? '#FFD700' : '#FFFFFF';
+            const accentColor = colorType === 'golden' ? '#FFA500' : '#E0E0E0';
+            
+            switch (elementType) {
+                case 'lotus-petal':
+                    return `
+                        <svg width="12" height="12" viewBox="0 0 20 20" style="pointer-events: none;">
+                            <path d="M 10,18 Q 5,10 2,2 Q 10,5 18,2 Q 15,10 10,18 Z" 
+                                  fill="${goldColor}" 
+                                  stroke="${accentColor}" 
+                                  stroke-width="1" 
+                                  opacity="0.9"/>
+                            <path d="M 10,15 Q 7,10 5,5 Q 10,7 15,5 Q 13,10 10,15 Z" 
+                                  fill="${accentColor}" 
+                                  opacity="0.6"/>
+                        </svg>
+                    `;
+                
+                case 'cloud-wisp':
+                    return `
+                        <svg width="16" height="8" viewBox="0 0 32 16" style="pointer-events: none;">
+                            <path d="M 2,8 Q 0,4 4,4 Q 8,2 12,4 Q 16,2 20,4 Q 24,2 28,4 Q 32,4 30,8 Q 28,12 24,10 Q 20,12 16,10 Q 12,12 8,10 Q 4,12 2,8 Z" 
+                                  fill="${goldColor}" 
+                                  opacity="0.7"/>
+                            <path d="M 6,7 Q 4,5 6,5 Q 10,4 14,5 Q 18,4 22,5 Q 26,4 28,7 Q 26,9 22,8 Q 18,9 14,8 Q 10,9 6,7 Z" 
+                                  fill="${accentColor}" 
+                                  opacity="0.5"/>
+                        </svg>
+                    `;
+                
+                case 'bamboo-leaf':
+                    return `
+                        <svg width="8" height="16" viewBox="0 0 16 32" style="pointer-events: none;">
+                            <path d="M 8,30 Q 4,20 2,10 Q 4,5 8,2 Q 12,5 14,10 Q 12,20 8,30 Z" 
+                                  fill="${goldColor}" 
+                                  stroke="${accentColor}" 
+                                  stroke-width="1" 
+                                  opacity="0.8"/>
+                            <line x1="8" y1="4" x2="8" y2="28" 
+                                  stroke="${accentColor}" 
+                                  stroke-width="1" 
+                                  opacity="0.6"/>
+                        </svg>
+                    `;
+                
+                default:
+                    return '';
             }
         }
 
@@ -4724,6 +5248,39 @@
             
             // Setup song selection screen listeners
             setupSongSelectionListeners();
+        }
+
+        // Create SVG icons for don and ka notes
+        function createDonSVG() {
+            return `
+                <svg width="30" height="30" viewBox="0 0 100 100" style="pointer-events: none;">
+                    <!-- Mondrian-style don icon - square with geometric divisions -->
+                    <rect x="10" y="10" width="80" height="80" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
+                    <rect x="10" y="10" width="40" height="40" fill="#FF006E"/>
+                    <rect x="50" y="10" width="40" height="40" fill="#FF6B9D"/>
+                    <rect x="10" y="50" width="40" height="40" fill="#FF6B9D"/>
+                    <rect x="50" y="50" width="40" height="40" fill="#FFFFFF"/>
+                    <!-- Central geometric element -->
+                    <circle cx="50" cy="50" r="12" fill="#000000"/>
+                    <circle cx="50" cy="50" r="6" fill="#FFFFFF"/>
+                </svg>
+            `;
+        }
+
+        function createKaSVG() {
+            return `
+                <svg width="30" height="30" viewBox="0 0 100 100" style="pointer-events: none;">
+                    <!-- Mondrian-style ka icon - square with different geometric divisions -->
+                    <rect x="10" y="10" width="80" height="80" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
+                    <rect x="10" y="10" width="30" height="30" fill="#8338EC"/>
+                    <rect x="40" y="10" width="50" height="30" fill="#B366EC"/>
+                    <rect x="10" y="40" width="50" height="50" fill="#B366EC"/>
+                    <rect x="60" y="40" width="30" height="50" fill="#8338EC"/>
+                    <!-- Central cross element -->
+                    <rect x="45" y="20" width="10" height="60" fill="#000000"/>
+                    <rect x="20" y="45" width="60" height="10" fill="#000000"/>
+                </svg>
+            `;
         }
 
         // Initialize when page loads
