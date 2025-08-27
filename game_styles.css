@@ -557,24 +557,24 @@ body {
 /* Vaporwave Cloud Title Block SVG */
 .song-name-cloud {
     position: relative;
-    animation: cloudDrift 10s ease-in-out infinite;
+    animation: cloudDrift 15s ease-in-out infinite;
     max-width: 100%;
     height: auto;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
 }
 
 @keyframes cloudDrift {
     0%, 100% {
-        transform: translateY(0px) translateX(0px) scale(1);
+        transform: translateY(0px) translateX(0px);
     }
     25% {
-        transform: translateY(-3px) translateX(2px) scale(1.002);
+        transform: translateY(-2px) translateX(1px);
     }
     50% {
-        transform: translateY(-1px) translateX(-1px) scale(1.001);
+        transform: translateY(-1px) translateX(-1px);
     }
     75% {
-        transform: translateY(-4px) translateX(1px) scale(1.003);
+        transform: translateY(-3px) translateX(1px);
     }
 }
 
