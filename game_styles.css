@@ -568,13 +568,13 @@ body {
         transform: translateY(0px) translateX(0px);
     }
     25% {
-        transform: translateY(-2px) translateX(1px);
+        transform: translateY(-1px) translateX(1px);
     }
     50% {
-        transform: translateY(-1px) translateX(-1px);
+        transform: translateY(0px) translateX(-1px);
     }
     75% {
-        transform: translateY(-3px) translateX(1px);
+        transform: translateY(-1px) translateX(0px);
     }
 }
 
@@ -1869,7 +1869,7 @@ body {
 }
 
 .particle-cloud-wisp {
-    animation: cloudDrift 2.5s ease-out forwards;
+    animation: particleCloudDrift 2.5s ease-out forwards;
 }
 
 .particle-bamboo-leaf {
@@ -1892,7 +1892,7 @@ body {
     }
 }
 
-@keyframes cloudDrift {
+@keyframes particleCloudDrift {
     0% {
         transform: scale(0.3) translateY(0px);
         opacity: 1;
