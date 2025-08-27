@@ -542,183 +542,40 @@ body {
     }
 }
 
-/* Song Name Container with Vaporwave Cloud - Top Right Corner */
-.song-name-container {
+/* Song Name - Simple Text Above Spirit System */
+.song-name-simple {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    max-width: 55vw;
-    z-index: 20; /* Above all other elements */
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    right: 0px;
+    top: calc(30% - 140px); /* 35px above spirit system (105px - 140px = -35px) */
+    z-index: 20;
+    text-align: right;
 }
 
-/* Vaporwave Cloud Title Block SVG */
-.song-name-cloud {
-    position: relative;
-    animation: cloudDrift 15s ease-in-out infinite;
-    max-width: 100%;
-    height: auto;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
-}
-
-@keyframes cloudDrift {
-    0%, 100% {
-        transform: translateY(0px) translateX(0px);
-    }
-    25% {
-        transform: translateY(-1px) translateX(1px);
-    }
-    50% {
-        transform: translateY(0px) translateX(-1px);
-    }
-    75% {
-        transform: translateY(-1px) translateX(0px);
-    }
-}
-
-/* Song Name Text - Enhanced Styling */
-.song-name {
-    position: relative;
-    font-size: 20px;
+.song-name-simple #songNameText {
+    font-family: 'Microsoft YaHei', sans-serif;
+    font-size: 24px;
     font-weight: bold;
     color: #FFFFFF;
-    text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.6),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 20px rgba(255, 0, 110, 0.4);
-    text-align: right;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background: linear-gradient(135deg, 
-        rgba(255, 0, 110, 0.2) 0%, 
-        rgba(131, 56, 236, 0.2) 25%, 
-        rgba(58, 134, 255, 0.2) 50%, 
-        rgba(6, 255, 165, 0.2) 75%, 
-        rgba(255, 190, 11, 0.2) 100%);
-    padding: 12px 20px;
-    backdrop-filter: blur(8px);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: 0; /* Mondrian style - no rounded corners */
-    box-shadow: 
-        0 0 15px rgba(255, 0, 110, 0.3),
-        inset 0 2px 0 rgba(255, 255, 255, 0.2);
-    animation: titleGlow 4s ease-in-out infinite;
-    max-width: 300px;
 }
 
-/* Mondrian-style geometric accent for title */
-.song-name::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, #FF006E, #8338EC, #3A86FF);
-    animation: accentShift 3s ease-in-out infinite;
-}
-
-@keyframes titleGlow {
-    0%, 100% {
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 
-            0 0 15px rgba(255, 0, 110, 0.3),
-            inset 0 2px 0 rgba(255, 255, 255, 0.2);
-    }
-    25% {
-        border-color: rgba(255, 0, 110, 0.6);
-        box-shadow: 
-            0 0 20px rgba(255, 0, 110, 0.5),
-            inset 0 2px 0 rgba(255, 0, 110, 0.3);
-    }
-    50% {
-        border-color: rgba(131, 56, 236, 0.6);
-        box-shadow: 
-            0 0 20px rgba(131, 56, 236, 0.5),
-            inset 0 2px 0 rgba(131, 56, 236, 0.3);
-    }
-    75% {
-        border-color: rgba(58, 134, 255, 0.6);
-        box-shadow: 
-            0 0 20px rgba(58, 134, 255, 0.5),
-            inset 0 2px 0 rgba(58, 134, 255, 0.3);
-    }
-}
-
-@keyframes accentShift {
-    0%, 100% {
-        background: linear-gradient(180deg, #FF006E, #8338EC, #3A86FF);
-    }
-    33% {
-        background: linear-gradient(180deg, #8338EC, #3A86FF, #06FFA5);
-    }
-    66% {
-        background: linear-gradient(180deg, #3A86FF, #06FFA5, #FFBE0B);
-    }
-}
-
-/* Mobile responsive adjustments for enhanced song title */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .song-name-container {
-        top: 10px;
-        right: 10px;
-        max-width: 70vw;
-    }
-    
-    .song-name-cloud {
-        width: 350px;
-        height: 98px;
-    }
-    
-    .song-name-cloud #songNameText {
-        font-size: 22px;
-        font-weight: 800;
-    }
-    
-    .song-name {
-        font-size: 16px;
-        padding: 8px 14px;
-        max-width: 200px;
+    .song-name-simple #songNameText {
+        font-size: 20px;
     }
 }
 
 @media (max-width: 480px) {
-    .song-name-container {
-        top: 8px;
-        right: 8px;
-        max-width: 80vw;
-    }
-    
-    .song-name-cloud {
-        width: 280px;
-        height: 78px;
-    }
-    
-    .song-name-cloud #songNameText {
+    .song-name-simple #songNameText {
         font-size: 18px;
-        font-weight: 800;
     }
 }
 
-/* Large screen optimizations for cloud title block */
-@media (min-width: 1024px) {
-    .song-name-container {
-        max-width: 55vw;
-    }
-    
-    .song-name-cloud {
-        width: 500px;
-        height: 140px;
-    }
-    
-    .song-name-cloud #songNameText {
-        font-size: 32px;
-        font-weight: 900;
-    }
-}
+
+
+
 
 /* Song Selection Screen - Full screen overlay */
 .song-selection-screen {

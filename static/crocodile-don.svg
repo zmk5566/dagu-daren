@@ -1,0 +1,62 @@
+<svg width="40" height="40" viewBox="0 0 100 100" style="pointer-events: none;">
+    <!-- Chinese mountain/vaporwave style crocodile (don) - line art style like user image -->
+    
+    <!-- Main body - rounded like the cute line art -->
+    <ellipse cx="50" cy="55" rx="28" ry="20" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="3" opacity="0.9"/>
+    
+    <!-- Head part of body -->
+    <ellipse cx="35" cy="45" rx="15" ry="12" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="3" opacity="0.9"/>
+    
+    <!-- Long snout - extending from head -->
+    <ellipse cx="18" cy="42" rx="12" ry="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="3" opacity="0.9"/>
+    
+    <!-- Eyes on stalks like the line art - very characteristic feature -->
+    <circle cx="28" cy="35" r="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    <circle cx="28" cy="35" r="3" fill="#333333"/>
+    <circle cx="29" cy="34" r="1" fill="#FFFFFF"/>
+    
+    <circle cx="38" cy="33" r="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    <circle cx="38" cy="33" r="3" fill="#333333"/>
+    <circle cx="39" cy="32" r="1" fill="#FFFFFF"/>
+    
+    <!-- Nostrils - simple dots -->
+    <circle cx="8" cy="40" r="1.5" fill="#666666"/>
+    <circle cx="8" cy="44" r="1.5" fill="#666666"/>
+    
+    <!-- Mouth opening with teeth -->
+    <path d="M 12,46 Q 8,48 12,50 L 25,48 Z" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    
+    <!-- Zigzag teeth pattern like the line art -->
+    <path d="M 15,46 L 17,48 L 19,46 L 21,48 L 23,46" stroke="#E0E0E0" stroke-width="2" fill="none"/>
+    
+    <!-- Curved tail - flowing like the line art -->
+    <path d="M 75,60 Q 85,55 90,65 Q 88,75 80,72 Q 75,68 75,60 Z" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="3" opacity="0.9"/>
+    
+    <!-- Four legs - stumpy and cute -->
+    <ellipse cx="30" cy="70" rx="3" ry="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    <ellipse cx="42" cy="72" rx="3" ry="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    <ellipse cx="58" cy="72" rx="3" ry="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    <ellipse cx="68" cy="70" rx="3" ry="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
+    
+    <!-- Belly pattern - curved lines like scales -->
+    <path d="M 40,60 Q 50,58 60,60" stroke="#D0D0D0" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <path d="M 38,65 Q 50,63 62,65" stroke="#D0D0D0" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <path d="M 35,70 Q 50,68 65,70" stroke="#D0D0D0" stroke-width="1.5" fill="none" opacity="0.6"/>
+    
+    <!-- Chinese/vaporwave elements integrated subtly -->
+    <!-- Mountain silhouette at bottom -->
+    <path d="M 5,88 Q 20,83 35,88 Q 50,83 65,88 Q 80,83 95,88 L 95,95 L 5,95 Z" 
+          fill="#3A86FF" opacity="0.15" stroke="#E0E0E0" stroke-width="1"/>
+    
+    <!-- Flowing mist lines -->
+    <path d="M 10,80 Q 25,78 40,80" stroke="#06FFA5" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M 60,82 Q 75,80 90,82" stroke="#8338EC" stroke-width="1" fill="none" opacity="0.3"/>
+    
+    <!-- Geometric vaporwave accents - very subtle -->
+    <rect x="75" y="35" width="3" height="3" fill="#06FFA5" opacity="0.25"/>
+    <rect x="15" y="75" width="2" height="2" fill="#FFBE0B" opacity="0.25"/>
+    
+    <!-- Water ripples around the crocodile -->
+    <circle cx="80" cy="25" r="2" fill="none" stroke="#06FFA5" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="80" cy="25" r="4" fill="none" stroke="#06FFA5" stroke-width="0.5" opacity="0.2"/>
+</svg>

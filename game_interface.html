@@ -366,85 +366,9 @@
 
         <!-- Main Game Area -->
         <div class="game-area">
-            <!-- Song Name Display with Integrated Chinese Cloud -->
-            <div class="song-name-container" id="songNameContainer">
-                <!-- Vaporwave Cloud Title Block -->
-                <svg class="song-name-cloud" width="500" height="140" viewBox="0 0 500 140">
-                    <!-- Cloud with vaporwave colors and Mondrian accents -->
-                    <defs>
-                        <!-- Cloud gradient with vaporwave colors -->
-                        <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FF006E;stop-opacity:0.9" />
-                            <stop offset="25%" style="stop-color:#8338EC;stop-opacity:0.85" />
-                            <stop offset="50%" style="stop-color:#3A86FF;stop-opacity:0.85" />
-                            <stop offset="75%" style="stop-color:#06FFA5;stop-opacity:0.85" />
-                            <stop offset="100%" style="stop-color:#FFBE0B;stop-opacity:0.9" />
-                        </linearGradient>
-                        
-                        <!-- Cloud shadow -->
-                        <filter id="cloudShadow">
-                            <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.2"/>
-                        </filter>
-                        
-                        <!-- Text glow for visibility on colorful cloud -->
-                        <filter id="textGlow">
-                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    
-                    <!-- Main Cloud Shape - Natural cloud using ellipses -->
-                    <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#cloudGradient)"/>
-                    <ellipse cx="160" cy="60" rx="60" ry="30" fill="url(#cloudGradient)"/>
-                    <ellipse cx="230" cy="65" rx="55" ry="28" fill="url(#cloudGradient)"/>
-                    <ellipse cx="300" cy="58" rx="50" ry="26" fill="url(#cloudGradient)"/>
-                    <ellipse cx="370" cy="70" rx="45" ry="22" fill="url(#cloudGradient)"/>
-                    
-                    <!-- Upper cloud puffs -->
-                    <ellipse cx="130" cy="40" rx="30" ry="18" fill="url(#cloudGradient)" opacity="0.8"/>
-                    <ellipse cx="200" cy="35" rx="35" ry="20" fill="url(#cloudGradient)" opacity="0.8"/>
-                    <ellipse cx="270" cy="38" rx="32" ry="19" fill="url(#cloudGradient)" opacity="0.8"/>
-                    <ellipse cx="340" cy="42" rx="28" ry="16" fill="url(#cloudGradient)" opacity="0.8"/>
-                    
-                    <!-- Lower cloud base -->
-                    <ellipse cx="180" cy="85" rx="40" ry="20" fill="url(#cloudGradient)" opacity="0.9"/>
-                    <ellipse cx="250" cy="88" rx="45" ry="22" fill="url(#cloudGradient)" opacity="0.9"/>
-                    <ellipse cx="320" cy="83" rx="38" ry="18" fill="url(#cloudGradient)" opacity="0.9"/>
-                    
-                    <!-- Cloud highlights -->
-                    <ellipse cx="120" cy="50" rx="15" ry="12" fill="#FFFFFF" opacity="0.4"/>
-                    <ellipse cx="200" cy="45" rx="18" ry="14" fill="#FFFFFF" opacity="0.3"/>
-                    <ellipse cx="280" cy="48" rx="16" ry="13" fill="#FFFFFF" opacity="0.35"/>
-                    <ellipse cx="360" cy="52" rx="14" ry="11" fill="#FFFFFF" opacity="0.4"/>
-                    
-                    <!-- Song Title Text -->
-                    <text id="songNameText" x="250" y="65" 
-                          text-anchor="middle" 
-                          dominant-baseline="middle"
-                          font-family="'Microsoft YaHei', sans-serif" 
-                          font-size="32" 
-                          font-weight="900"
-                          fill="#FFFFFF"
-                          letter-spacing="1px"
-                          stroke="#000000"
-                          stroke-width="1">
-                        待加载
-                    </text>
-                    
-                    <!-- Floating sparkles -->
-                    <circle cx="420" cy="35" r="2" fill="#FFD700" opacity="0.8">
-                        <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="90" cy="45" r="1.5" fill="#06FFA5" opacity="0.9">
-                        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="380" cy="95" r="1" fill="#FF006E" opacity="0.7">
-                        <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.3s" repeatCount="indefinite"/>
-                    </circle>
-                </svg>
+            <!-- Song Name Display - Simple Text Above Spirit System -->
+            <div class="song-name-simple" id="songNameSimple">
+                <span id="songNameText">待加载</span>
             </div>
             
             <!-- Background Image Container -->
@@ -455,7 +379,7 @@
             
             <!-- Character Display (Above game track) -->
             <div class="character-display" id="characterDisplay">
-                <img id="characterImage" alt="Character" src="cute-chinese-drum.svg" />
+                <img id="characterImage" alt="Character" src="/static/cute-chinese-drum.svg" />
             </div>
             
             <!-- Game Track Container (Don + Beat Track) -->
@@ -548,7 +472,7 @@
             <!-- Character Display -->
             <div class="character-panel">
                 <div class="character-avatar">
-                    <img src="cute-chinese-drum.svg" alt="Character" id="selectionCharacter" />
+                    <img src="/static/cute-chinese-drum.svg" alt="Character" id="selectionCharacter" />
                 </div>
                 <div class="difficulty-info">
                     <div class="difficulty-label">蒙德里安大鼓</div>
@@ -1926,7 +1850,7 @@
             }
 
             // Always use the cute Chinese drum SVG
-            elements.characterImage.src = 'cute-chinese-drum.svg';
+            elements.characterImage.src = '/static/cute-chinese-drum.svg';
             elements.characterDisplay.classList.add('loaded');
             
             console.log(`[Character] Using cute Chinese drum SVG (spirit: ${Math.round(gameState.spiritValue)}%)`);
@@ -2974,35 +2898,11 @@
 
         // Create SVG icons for don and ka notes
         function createDonSVG() {
-            return `
-                <svg width="30" height="30" viewBox="0 0 100 100" style="pointer-events: none;">
-                    <!-- Mondrian-style don icon - square with geometric divisions -->
-                    <rect x="10" y="10" width="80" height="80" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
-                    <rect x="10" y="10" width="40" height="40" fill="#FF006E"/>
-                    <rect x="50" y="10" width="40" height="40" fill="#FF6B9D"/>
-                    <rect x="10" y="50" width="40" height="40" fill="#FF6B9D"/>
-                    <rect x="50" y="50" width="40" height="40" fill="#FFFFFF"/>
-                    <!-- Central geometric element -->
-                    <circle cx="50" cy="50" r="12" fill="#000000"/>
-                    <circle cx="50" cy="50" r="6" fill="#FFFFFF"/>
-                </svg>
-            `;
+            return `<img src="/static/crocodile-don.svg" alt="Don" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
         }
 
         function createKaSVG() {
-            return `
-                <svg width="30" height="30" viewBox="0 0 100 100" style="pointer-events: none;">
-                    <!-- Mondrian-style ka icon - square with different geometric divisions -->
-                    <rect x="10" y="10" width="80" height="80" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
-                    <rect x="10" y="10" width="30" height="30" fill="#8338EC"/>
-                    <rect x="40" y="10" width="50" height="30" fill="#B366EC"/>
-                    <rect x="10" y="40" width="50" height="50" fill="#B366EC"/>
-                    <rect x="60" y="40" width="30" height="50" fill="#8338EC"/>
-                    <!-- Central cross element -->
-                    <rect x="45" y="20" width="10" height="60" fill="#000000"/>
-                    <rect x="20" y="45" width="60" height="10" fill="#000000"/>
-                </svg>
-            `;
+            return `<img src="/static/bird-ka.svg" alt="Ka" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
         }
 
         // Initialize when page loads

@@ -37,7 +37,7 @@ except ImportError as e:
     print(f"[Warning] Auto-alignment modules not available: {e}")
     ALIGNMENT_MODULES_AVAILABLE = False
 
-app = Flask(__name__, static_folder=None)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 def convert_beatnet_to_annotations_then_score(beatnet_notes, project_data):
     """
