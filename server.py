@@ -37,7 +37,20 @@ except ImportError as e:
     print(f"[Warning] Auto-alignment modules not available: {e}")
     ALIGNMENT_MODULES_AVAILABLE = False
 
-app = Flask(__name__, static_folder='static', static_url_path='/static')
+app = Flask(__name__, static_folder='static', static_url_path=None)
+
+# Add SVG MIME type support
+import mimetypes
+mimetypes.add_type('image/svg+xml', '.svg')
+
+@app.route('/static/<path:filename>')
+def custom_static(filename):
+    """Custom static file handler with proper SVG MIME type"""
+    response = send_from_directory('static', filename)
+    if filename.endswith('.svg'):
+        response.headers['Content-Type'] = 'image/svg+xml'
+        response.headers['Cache-Control'] = 'no-cache'
+    return response
 
 def convert_beatnet_to_annotations_then_score(beatnet_notes, project_data):
     """
@@ -109,6 +122,11 @@ def serve_game_interface():
 def serve_beatnet_test():
     """Serves the BeatNet API test page."""
     return send_from_directory(PROJECT_ROOT, 'test_beatnet_api.html')
+
+@app.route('/svg-test')
+def serve_svg_test():
+    """Serves the SVG test page for debugging SVG loading issues."""
+    return send_from_directory(PROJECT_ROOT, 'svg_test.html')
 
 @app.route('/favicon.ico')
 def favicon():

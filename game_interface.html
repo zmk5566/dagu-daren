@@ -379,7 +379,7 @@
             
             <!-- Character Display (Above game track) -->
             <div class="character-display" id="characterDisplay">
-                <img id="characterImage" alt="Character" src="/static/cute-chinese-drum.svg" />
+                <img id="characterImage" alt="Character" src="/static/ghost-drum.svg" />
             </div>
             
             <!-- Game Track Container (Don + Beat Track) -->
@@ -472,10 +472,10 @@
             <!-- Character Display -->
             <div class="character-panel">
                 <div class="character-avatar">
-                    <img src="/static/cute-chinese-drum.svg" alt="Character" id="selectionCharacter" />
+                    <img src="/static/ghost-drum.svg" alt="Character" id="selectionCharacter" />
                 </div>
                 <div class="difficulty-info">
-                    <div class="difficulty-label">蒙德里安大鼓</div>
+                    <div class="difficulty-label">幽灵大鼓</div>
                 </div>
             </div>
 
@@ -1850,7 +1850,7 @@
             }
 
             // Always use the cute Chinese drum SVG
-            elements.characterImage.src = '/static/cute-chinese-drum.svg';
+            elements.characterImage.src = '/static/ghost-drum.svg';
             elements.characterDisplay.classList.add('loaded');
             
             console.log(`[Character] Using cute Chinese drum SVG (spirit: ${Math.round(gameState.spiritValue)}%)`);
@@ -2898,11 +2898,11 @@
 
         // Create SVG icons for don and ka notes
         function createDonSVG() {
-            return `<img src="/static/crocodile-don.svg" alt="Don" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
+            return `<img src="/static/user-crocodile.svg" alt="Don" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
         }
 
         function createKaSVG() {
-            return `<img src="/static/bird-ka.svg" alt="Ka" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
+            return `<img src="/static/user-bird.svg" alt="Ka" style="width: 40px; height: 40px; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));" />`;
         }
 
         // Initialize when page loads

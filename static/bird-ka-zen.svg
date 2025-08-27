@@ -1,0 +1,39 @@
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- 禅意极简水墨鸟 - 如首页mountain风格 -->
+    
+    <!-- 主体 - 简洁弧形如山峰 -->
+    <path d="M 20,55 Q 40,30 60,55 Q 50,65 40,60 Q 30,65 20,55 Z" 
+          fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- 头部 - 与body连接的简单圆 -->
+    <circle cx="18" cy="48" r="8" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- 眼睛 - 单个黑点 -->
+    <circle cx="16" cy="46" r="1.5" fill="#333333"/>
+    
+    <!-- 嘴 - 极简三角，如山峰 -->
+    <path d="M 10,48 L 5,49.5 L 10,51 Z" fill="#FFBE0B" opacity="0.7"/>
+    
+    <!-- 翅膀轮廓 - 单条弧线如山脊 -->
+    <path d="M 45,40 Q 65,35 70,55" 
+          fill="none" stroke="#E0E0E0" stroke-width="2" opacity="0.6"/>
+    
+    <!-- 尾部 - 两条简洁线条 -->
+    <path d="M 55,58 Q 75,55 80,70" 
+          fill="none" stroke="#E0E0E0" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- 腿 - 两条短线 -->
+    <line x1="30" y1="62" x2="28" y2="70" stroke="#FFBE0B" stroke-width="1.5" opacity="0.7"/>
+    <line x1="35" y1="62" x2="33" y2="70" stroke="#FFBE0B" stroke-width="1.5" opacity="0.7"/>
+    
+    <!-- 底部山水轮廓 - 如首页polygon风格 -->
+    <polygon points="5,80 25,75 45,80 65,75 85,80 95,85 95,95 5,95" 
+             fill="#8338EC" opacity="0.12"/>
+    
+    <!-- 飘逸线条 - 如首页的几何线 -->
+    <path d="M 15,65 Q 40,63 65,65" stroke="#06FFA5" stroke-width="1" fill="none" opacity="0.3"/>
+    
+    <!-- 点缀 - 如首页的几何圆 -->
+    <circle cx="75" cy="20" r="1" fill="#06FFA5" opacity="0.4"/>
+    <circle cx="20" cy="25" r="1" fill="#FF006E" opacity="0.4"/>
+</svg>

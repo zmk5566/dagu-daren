@@ -141,10 +141,10 @@ body {
 /* Character Display (Above don-display) */
 .character-display {
     position: absolute;
-    left: -20px; /* Character center aligns with don center (60px - 80px) */
-    top: calc(30% - 210px); /* Down 15px from previous position */
-    width: 160px; /* Character size */
-    height: 160px; /* Character size */
+    left: -80px; /* Character center aligns with don center - adjusted for bigger size */
+    top: calc(30% - 250px); /* Adjusted for bigger character */
+    width: 280px; /* Character size - 3.5x bigger (160 * 1.75) */
+    height: 280px; /* Character size - 3.5x bigger */
     z-index: 15; /* Above banner and other elements */
     display: flex;
     align-items: center;
@@ -163,6 +163,16 @@ body {
     object-fit: contain;
     border-radius: 0;
     display: block;
+    animation: ghostFloat 3s ease-in-out infinite;
+}
+
+@keyframes ghostFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 /* Hide character when no image loaded */
@@ -760,9 +770,10 @@ body {
 }
 
 .character-avatar img {
-    width: 60px;
-    height: 60px;
+    width: 105px; /* 60px * 1.75 = 105px */
+    height: 105px;
     border-radius: 50%;
+    animation: ghostFloat 3s ease-in-out infinite;
 }
 
 .difficulty-info {

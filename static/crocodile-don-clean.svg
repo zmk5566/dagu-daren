@@ -1,41 +1,30 @@
-<svg width="40" height="40" viewBox="0 0 100 100" style="pointer-events: none;">
-    <!-- Chinese mountain/vaporwave style crocodile (don) - enlarged and white -->
-    <!-- Body in white with subtle shadows -->
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <ellipse cx="50" cy="55" rx="30" ry="18" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
     <ellipse cx="50" cy="55" rx="25" ry="14" fill="#F8F8F8" opacity="0.8"/>
     
-    <!-- Long snout/head extending left -->
     <ellipse cx="25" cy="40" rx="18" ry="9" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
     <ellipse cx="22" cy="38" rx="14" ry="6" fill="#F8F8F8" opacity="0.8"/>
     
-    <!-- Eye - simple dot -->
     <circle cx="28" cy="35" r="3" fill="#333333"/>
     <circle cx="29" cy="34" r="1" fill="#FFFFFF"/>
     
-    <!-- Nostril -->
     <circle cx="10" cy="37" r="1.5" fill="#666666"/>
     
-    <!-- Tail -->
     <path d="M 80,58 Q 90,52 95,62 Q 90,72 80,68 Z" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" opacity="0.9"/>
     
-    <!-- Chinese-style scale patterns in light gray -->
     <path d="M 35,45 Q 45,42 55,45 Q 45,48 35,45 Z" fill="#F0F0F0" stroke="#D0D0D0" stroke-width="1" opacity="0.6"/>
     <path d="M 33,58 Q 43,55 53,58 Q 43,61 33,58 Z" fill="#F0F0F0" stroke="#D0D0D0" stroke-width="1" opacity="0.6"/>
     <path d="M 37,68 Q 47,65 57,68 Q 47,71 37,68 Z" fill="#F0F0F0" stroke="#D0D0D0" stroke-width="1" opacity="0.6"/>
     
-    <!-- Vaporwave geometric accent in subtle colors -->
     <rect x="60" y="45" width="6" height="6" fill="#06FFA5" opacity="0.3"/>
     <rect x="40" y="52" width="4" height="4" fill="#FFBE0B" opacity="0.3"/>
     
-    <!-- Mountain/water wave pattern at bottom -->
     <path d="M 5,85 Q 20,78 35,85 Q 50,78 65,85 Q 80,78 95,85 Q 95,95 5,95 Z" 
           fill="#3A86FF" opacity="0.2" stroke="#E0E0E0" stroke-width="1"/>
     
-    <!-- Flowing lines suggesting water/mist -->
     <path d="M 10,75 Q 25,72 40,75" stroke="#06FFA5" stroke-width="2" fill="none" opacity="0.4"/>
     <path d="M 60,70 Q 75,67 90,70" stroke="#8338EC" stroke-width="2" fill="none" opacity="0.4"/>
     
-    <!-- Additional Chinese elements -->
     <circle cx="75" cy="25" r="2" fill="#06FFA5" opacity="0.3"/>
     <circle cx="15" cy="70" r="1.5" fill="#FF006E" opacity="0.3"/>
 </svg>

@@ -1,0 +1,46 @@
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- 极简中国水墨画风格鸟 -->
+    
+    <!-- 鸟身 - 简单的水滴形状 -->
+    <path d="M 30,50 Q 50,35 70,50 Q 65,65 50,60 Q 35,65 30,50 Z" 
+          fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5" opacity="0.95"/>
+    
+    <!-- 鸟头 - 圆润简洁 -->
+    <circle cx="25" cy="45" r="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5" opacity="0.95"/>
+    
+    <!-- 眼睛 - 极简黑点 -->
+    <circle cx="22" cy="42" r="2" fill="#333333"/>
+    <circle cx="23" cy="41" r="0.5" fill="#FFFFFF"/>
+    
+    <!-- 鸟嘴 - 简单三角 -->
+    <path d="M 15,45 L 8,47 L 15,49 Z" fill="#FFBE0B" opacity="0.8"/>
+    
+    <!-- 翅膀 - 水墨画笔触风格 -->
+    <path d="M 50,45 Q 70,35 75,50 Q 65,55 55,50 Z" 
+          fill="none" stroke="#E0E0E0" stroke-width="2" opacity="0.7"/>
+    
+    <!-- 尾羽 - 简洁的线条 -->
+    <path d="M 65,55 Q 80,50 85,65" 
+          fill="none" stroke="#E0E0E0" stroke-width="2" opacity="0.7"/>
+    <path d="M 65,58 Q 75,55 80,68" 
+          fill="none" stroke="#E0E0E0" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- 腿部 - 极简线条 -->
+    <line x1="35" y1="62" x2="32" y2="75" stroke="#FFBE0B" stroke-width="2" opacity="0.8"/>
+    <line x1="40" y1="62" x2="37" y2="75" stroke="#FFBE0B" stroke-width="2" opacity="0.8"/>
+    
+    <!-- 山水元素 - 底部简化的山峰轮廓 -->
+    <path d="M 5,85 Q 25,78 45,85 Q 65,78 85,85 Q 95,88 95,95 Q 5,95 5,88 Z" 
+          fill="#3A86FF" opacity="0.15" stroke="none"/>
+    
+    <!-- 飘逸的云雾线条 -->
+    <path d="M 10,70 Q 30,68 50,70" stroke="#06FFA5" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M 55,75 Q 75,73 90,75" stroke="#8338EC" stroke-width="1" fill="none" opacity="0.4"/>
+    
+    <!-- 点缀的几何元素 - 如首页风格 -->
+    <circle cx="80" cy="25" r="1.5" fill="#06FFA5" opacity="0.4"/>
+    <circle cx="15" cy="25" r="1" fill="#FF006E" opacity="0.4"/>
+    
+    <!-- 水墨画的"留白"效果 - 内部简单线条 -->
+    <path d="M 35,48 Q 45,46 55,48" stroke="#F0F0F0" stroke-width="1" fill="none" opacity="0.5"/>
+</svg>

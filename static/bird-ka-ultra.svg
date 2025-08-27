@@ -1,0 +1,29 @@
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- 超极简线条鸟 - 只用关键线条 -->
+    
+    <!-- 身体主线 - 一笔勾勒 -->
+    <path d="M 15,50 Q 35,35 60,50 Q 55,65 35,60 Q 20,65 15,50" 
+          fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.95"/>
+    
+    <!-- 头部 - 简单圆 -->
+    <circle cx="15" cy="48" r="6" 
+            fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
+    
+    <!-- 眼睛 - 点 -->
+    <circle cx="13" cy="46" r="1.2" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- 嘴 - 短线 -->
+    <line x1="9" y1="48" x2="5" y2="49" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+    
+    <!-- 翅膀 - 单线 -->
+    <path d="M 45,45 Q 65,40 70,55" 
+          fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.85"/>
+    
+    <!-- 尾部 - 简单弧线 -->
+    <path d="M 55,58 Q 75,55 80,70" 
+          fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.85"/>
+    
+    <!-- 腿 - 两条短线 -->
+    <line x1="28" y1="62" x2="26" y2="72" stroke="#FFFFFF" stroke-width="1.8" opacity="0.8"/>
+    <line x1="33" y1="62" x2="31" y2="72" stroke="#FFFFFF" stroke-width="1.8" opacity="0.8"/>
+</svg>

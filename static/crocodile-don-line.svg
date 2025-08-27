@@ -1,0 +1,31 @@
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- 纯线条鳄鱼 -->
+    
+    <!-- 身体轮廓 -->
+    <ellipse cx="50" cy="55" rx="28" ry="16" 
+             fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.95"/>
+    
+    <!-- 长嘴/头部轮廓 -->
+    <ellipse cx="25" cy="40" rx="16" ry="8" 
+             fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
+    
+    <!-- 眼睛 -->
+    <circle cx="28" cy="35" r="2" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- 鼻孔 -->
+    <circle cx="12" cy="37" r="1" fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- 尾巴轮廓 -->
+    <path d="M 75,58 Q 85,52 90,62 Q 85,72 75,68" 
+          fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
+    
+    <!-- 背部鳞片线条 -->
+    <path d="M 35,45 Q 45,43 55,45" 
+          fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6"/>
+    <path d="M 33,58 Q 43,56 53,58" 
+          fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6"/>
+    
+    <!-- 底部山水线条 -->
+    <path d="M 10,80 Q 30,75 50,80 Q 70,75 90,80" 
+          fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+</svg>

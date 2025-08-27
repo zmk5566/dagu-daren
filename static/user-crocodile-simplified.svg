@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 1328 1328" xmlns="http://www.w3.org/2000/svg">
+<g fill="#FFFFFF" stroke="none" opacity="0.95">
+<!-- 简化的鳄鱼身体 -->
+<ellipse cx="650" cy="550" rx="300" ry="180"/>
+
+<!-- 简化的长嘴 -->
+<ellipse cx="250" cy="400" rx="180" ry="90"/>
+
+<!-- 眼睛 -->
+<circle cx="280" cy="350" r="30"/>
+<circle cx="290" cy="340" r="10" fill="#333333"/>
+
+<!-- 鼻孔 -->
+<circle cx="100" cy="370" r="15"/>
+
+<!-- 简化的尾巴 -->
+<path d="M900 580 Q1050 520 1100 620 Q1050 720 900 680"/>
+
+<!-- 简化的腿部 -->
+<ellipse cx="500" cy="650" rx="40" ry="80"/>
+<ellipse cx="600" cy="650" rx="40" ry="80"/>
+<ellipse cx="700" cy="650" rx="40" ry="80"/>
+<ellipse cx="800" cy="650" rx="40" ry="80"/>
+
+<!-- 背部鳞片装饰 -->
+<path d="M400 450 Q500 430 600 450"/>
+<path d="M430 580 Q530 560 630 580"/>
+</g>
+</svg>
