@@ -7,6 +7,8 @@ import json
 import uuid
 import shutil
 import numpy as np
+import sqlite3
+from datetime import datetime
 from werkzeug.utils import secure_filename
 
 # Import our new DAW modules from audio_processor folder
@@ -42,6 +44,40 @@ app = Flask(__name__, static_folder='static', static_url_path=None)
 # Add SVG MIME type support
 import mimetypes
 mimetypes.add_type('image/svg+xml', '.svg')
+
+# Database setup
+DB_PATH = os.path.join(PROJECT_ROOT, 'game_stats.db')
+
+def init_database():
+    """Initialize the SQLite database with game statistics table"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Create game_results table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS game_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            song_name TEXT NOT NULL,
+            final_score INTEGER NOT NULL,
+            max_combo INTEGER NOT NULL,
+            accuracy REAL NOT NULL,
+            final_spirit REAL NOT NULL,
+            perfect_hits INTEGER NOT NULL,
+            good_hits INTEGER NOT NULL,
+            miss_hits INTEGER NOT NULL,
+            total_notes INTEGER NOT NULL,
+            duration_seconds REAL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    conn.commit()
+    conn.close()
+    print(f"[Database] Initialized SQLite database at {DB_PATH}")
+
+# Initialize database on startup
+init_database()
 
 @app.route('/static/<path:filename>')
 def custom_static(filename):
@@ -1273,6 +1309,141 @@ def process_audio():
         })
 
     except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/save-game-result', methods=['POST'])
+def save_game_result():
+    """Save game result to database"""
+    try:
+        data = request.json
+        
+        # Extract game result data
+        song_name = data.get('song_name', 'Unknown')
+        final_score = data.get('final_score', 0)
+        max_combo = data.get('max_combo', 0)
+        accuracy = data.get('accuracy', 0.0)
+        final_spirit = data.get('final_spirit', 0.0)
+        perfect_hits = data.get('perfect_hits', 0)
+        good_hits = data.get('good_hits', 0)
+        miss_hits = data.get('miss_hits', 0)
+        total_notes = data.get('total_notes', 0)
+        duration_seconds = data.get('duration_seconds', 0.0)
+        
+        # Save to database
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO game_results (
+                song_name, final_score, max_combo, accuracy, final_spirit,
+                perfect_hits, good_hits, miss_hits, total_notes, duration_seconds
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            song_name, final_score, max_combo, accuracy, final_spirit,
+            perfect_hits, good_hits, miss_hits, total_notes, duration_seconds
+        ))
+        
+        conn.commit()
+        result_id = cursor.lastrowid
+        conn.close()
+        
+        print(f"[Database] Saved game result ID {result_id} for song '{song_name}'")
+        
+        return jsonify({
+            "status": "success", 
+            "message": "游戏结果已保存",
+            "result_id": result_id
+        })
+        
+    except Exception as e:
+        print(f"[Database] Error saving game result: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/game-stats', methods=['GET'])
+def get_game_stats():
+    """Get game statistics and history"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Get overall stats
+        cursor.execute('''
+            SELECT 
+                COUNT(*) as total_games,
+                MAX(final_score) as best_score,
+                AVG(accuracy) as avg_accuracy,
+                MAX(max_combo) as best_combo,
+                AVG(final_spirit) as avg_spirit
+            FROM game_results
+        ''')
+        overall_stats = cursor.fetchone()
+        
+        # Get recent games (last 10)
+        cursor.execute('''
+            SELECT 
+                song_name, final_score, max_combo, accuracy, final_spirit,
+                perfect_hits, good_hits, miss_hits, total_notes,
+                datetime(created_at, 'localtime') as play_date
+            FROM game_results 
+            ORDER BY created_at DESC 
+            LIMIT 10
+        ''')
+        recent_games = cursor.fetchall()
+        
+        # Get song-specific stats
+        cursor.execute('''
+            SELECT 
+                song_name,
+                COUNT(*) as play_count,
+                MAX(final_score) as best_score,
+                MAX(accuracy) as best_accuracy,
+                MAX(max_combo) as best_combo
+            FROM game_results 
+            GROUP BY song_name
+            ORDER BY play_count DESC, best_score DESC
+        ''')
+        song_stats = cursor.fetchall()
+        
+        conn.close()
+        
+        # Format response
+        response = {
+            "overall_stats": {
+                "total_games": overall_stats[0] or 0,
+                "best_score": overall_stats[1] or 0,
+                "avg_accuracy": round(overall_stats[2] or 0, 2),
+                "best_combo": overall_stats[3] or 0,
+                "avg_spirit": round(overall_stats[4] or 0, 2)
+            },
+            "recent_games": [
+                {
+                    "song_name": game[0],
+                    "final_score": game[1],
+                    "max_combo": game[2],
+                    "accuracy": game[3],
+                    "final_spirit": game[4],
+                    "perfect_hits": game[5],
+                    "good_hits": game[6],
+                    "miss_hits": game[7],
+                    "total_notes": game[8],
+                    "play_date": game[9]
+                } for game in recent_games
+            ],
+            "song_stats": [
+                {
+                    "song_name": song[0],
+                    "play_count": song[1],
+                    "best_score": song[2],
+                    "best_accuracy": song[3],
+                    "best_combo": song[4]
+                } for song in song_stats
+            ]
+        }
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        print(f"[Database] Error getting game stats: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
