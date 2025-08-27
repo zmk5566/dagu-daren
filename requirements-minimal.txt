@@ -1,0 +1,18 @@
+# 最小化依赖 - 不包含BeatNet深度学习功能
+# 适合快速部署和测试
+
+# Web Framework
+Flask>=2.3.0
+Werkzeug>=2.3.0
+
+# Audio Processing
+pydub>=0.25.1
+librosa>=0.10.0
+soundfile>=0.12.1
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Audio format support
+ffmpeg-python>=0.2.0

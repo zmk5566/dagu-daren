@@ -1,0 +1,29 @@
+# Web Framework
+Flask>=2.3.0
+Werkzeug>=2.3.0
+
+# Audio Processing
+pydub>=0.25.1
+librosa>=0.10.0
+soundfile>=0.12.1
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Machine Learning (optional - for advanced BPM detection)
+# BeatNet requires torch ecosystem
+torch>=2.0.0
+torchaudio>=2.0.0
+BeatNet>=1.0.0
+
+# Utilities
+uuid
+shutil
+
+# Additional audio format support
+ffmpeg-python>=0.2.0
+
+# Development dependencies (optional)
+# pytest>=7.0.0
+# pytest-flask>=1.2.0
