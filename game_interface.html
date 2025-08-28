@@ -2167,7 +2167,7 @@
             }
             
             try {
-                const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                const response = await fetch(`/api/metadata/${project.folder_name}`);
                 const metadata = await response.json();
                 
                 if (response.ok && metadata) {
@@ -2565,6 +2565,7 @@
             for (const project of projects) {
                 try {
                     const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                    const response = await fetch(`/api/metadata/${project.folder_name}`);
                     const metadata = await response.json();
                     
                     if (response.ok && metadata) {
@@ -2681,7 +2682,7 @@
             }
             
             try {
-                const response = await fetch(`/api/project/${project.folder_name}/metadata`);
+                const response = await fetch(`/api/metadata/${project.folder_name}`);
                 const metadata = await response.json();
                 
                 if (response.ok && metadata) {
