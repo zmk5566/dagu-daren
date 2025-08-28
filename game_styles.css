@@ -2204,92 +2204,115 @@ body {
 }
 
 
-/* Game Over Screen */
+/* Game Over Screen - Compact & Responsive */
 .game-over {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     color: var(--text-white);
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling on small screens */
 }
 
 .game-over h2 {
-    font-size: 48px;
-    margin-bottom: 30px;
+    font-size: clamp(1.5rem, 6vw, 3rem); /* Responsive title: 24px-48px */
+    margin-bottom: clamp(0.5rem, 3vw, 1.5rem);
     color: #FFD700;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .final-stats {
-    display: flex;
-    gap: 40px;
-    margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: clamp(0.5rem, 3vw, 1.5rem);
+    margin-bottom: clamp(1rem, 4vw, 2rem);
+    width: 100%;
+    max-width: 400px;
 }
 
 .stat-item {
     text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: clamp(0.5rem, 2vw, 1rem);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
 }
 
 .stat-value {
-    font-size: 32px;
+    font-size: clamp(1.2rem, 4vw, 2rem); /* Responsive: 19px-32px */
     font-weight: bold;
     color: var(--primary-red);
+    line-height: 1.2;
 }
 
 .stat-label {
-    font-size: 16px;
-    margin-top: 5px;
+    font-size: clamp(0.7rem, 2.5vw, 1rem); /* Responsive: 11px-16px */
+    margin-top: clamp(0.2rem, 1vw, 0.3rem);
+    opacity: 0.9;
 }
 
-/* Hit Statistics Section */
+/* Hit Statistics Section - Compact Grid */
 .hit-stats {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 30px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: clamp(0.5rem, 2vw, 1rem);
+    margin-bottom: clamp(1rem, 4vw, 2rem);
+    width: 100%;
+    max-width: 320px;
 }
 
 .hit-stat-item {
     text-align: center;
-    padding: 20px;
+    padding: clamp(0.5rem, 2vw, 1rem);
     border-radius: 0;
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid transparent;
-    min-width: 120px;
+    backdrop-filter: blur(5px);
+    transition: transform 0.2s ease;
+}
+
+.hit-stat-item:hover {
+    transform: translateY(-2px);
 }
 
 .hit-stat-item.perfect {
     border-color: #FFD700;
-    background: rgba(255, 215, 0, 0.1);
+    background: rgba(255, 215, 0, 0.15);
 }
 
 .hit-stat-item.good {
     border-color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .hit-stat-item.miss {
     border-color: #CCCCCC;
-    background: rgba(204, 204, 204, 0.1);
+    background: rgba(204, 204, 204, 0.15);
 }
 
 .hit-stat-count {
-    font-size: 28px;
+    font-size: clamp(1rem, 4vw, 1.8rem); /* Responsive: 16px-29px */
     font-weight: bold;
     color: var(--text-white);
-    margin-bottom: 5px;
+    margin-bottom: clamp(0.1rem, 1vw, 0.3rem);
+    line-height: 1.2;
 }
 
 .hit-stat-label {
-    font-size: 18px;
+    font-size: clamp(0.6rem, 2.5vw, 1rem); /* Responsive: 10px-16px */
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: clamp(0.1rem, 1vw, 0.3rem);
+    line-height: 1.2;
 }
 
 .hit-stat-item.perfect .hit-stat-label {
@@ -2305,44 +2328,122 @@ body {
 }
 
 .hit-stat-score {
-    font-size: 14px;
+    font-size: clamp(0.5rem, 2vw, 0.8rem); /* Responsive: 8px-13px */
     color: var(--text-white);
     opacity: 0.8;
+    line-height: 1.2;
 }
 
-/* Game Over Action Buttons */
+/* Game Over Action Buttons - Responsive */
 .game-over-actions {
     display: flex;
-    gap: 20px;
+    gap: clamp(0.5rem, 3vw, 1.25rem);
     justify-content: center;
+    width: 100%;
+    max-width: 300px;
+    margin-top: clamp(0.5rem, 2vw, 1rem);
 }
 
 .action-btn {
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
+    flex: 1;
+    padding: clamp(0.7rem, 3vw, 1rem) clamp(1rem, 4vw, 1.8rem);
+    font-size: clamp(0.8rem, 3vw, 1.1rem); /* Responsive: 13px-18px */
+    border: 2px solid transparent;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.2s ease;
+    transition: all 0.3s ease;
     border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(5px);
 }
 
 .restart-btn {
     background: var(--primary-red);
     color: var(--text-white);
+    border-color: var(--primary-red);
 }
 
 .restart-btn:hover {
     background: #CC5238;
+    border-color: #CC5238;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 82, 56, 0.3);
 }
 
 .back-btn {
     background: var(--primary-blue);
     color: var(--text-white);
+    border-color: var(--primary-blue);
 }
 
 .back-btn:hover {
     background: #3A72B8;
+    border-color: #3A72B8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(58, 114, 184, 0.3);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* Game Over Mobile Optimizations */
+@media (max-width: 480px) {
+    .game-over {
+        padding: 0.5rem;
+        justify-content: flex-start;
+        padding-top: 2rem; /* Space from top on small screens */
+    }
+    
+    .final-stats {
+        grid-template-columns: repeat(2, 1fr); /* Force 2 columns on mobile */
+        max-width: 280px;
+    }
+    
+    .hit-stats {
+        grid-template-columns: repeat(3, 1fr); /* Force 3 columns for hit stats */
+        max-width: 280px;
+    }
+    
+    .game-over-actions {
+        flex-direction: column; /* Stack buttons on very small screens */
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 320px) {
+    .game-over h2 {
+        font-size: 1.3rem; /* Even smaller on tiny screens */
+    }
+    
+    .final-stats {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+        max-width: 200px;
+    }
+    
+    .hit-stats {
+        grid-template-columns: repeat(3, minmax(50px, 1fr)); /* Tighter grid */
+        max-width: 250px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-over {
+        padding: 0.3rem;
+        justify-content: flex-start;
+        padding-top: 0.5rem;
+    }
+    
+    .game-over h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .final-stats,
+    .hit-stats {
+        margin-bottom: 0.8rem;
+    }
 }
 
 /* Responsive Design */
