@@ -3076,6 +3076,116 @@
             }
         }
 
+        // Multi-touch support for drum input
+        function setupMultiTouchSupport() {
+            // Track active touches to prevent duplicate hits
+            let activeTouches = new Set();
+            
+            // Get drum elements boundaries for touch detection
+            function getDrumBoundaries() {
+                const drumKit = elements.drumKit;
+                const drumDon = elements.drumDon;
+                const unifiedDrum = elements.unifiedDrum;
+                
+                if (!drumKit || !drumDon || !unifiedDrum) return null;
+                
+                const drumKitRect = drumKit.getBoundingClientRect();
+                const donRect = drumDon.getBoundingClientRect();
+                
+                return {
+                    drumKit: drumKitRect,
+                    don: {
+                        left: donRect.left,
+                        top: donRect.top,
+                        right: donRect.right,
+                        bottom: donRect.bottom
+                    }
+                };
+            }
+            
+            // Handle touch start - supports multiple simultaneous touches
+            function handleTouchStart(e) {
+                e.preventDefault();
+                const boundaries = getDrumBoundaries();
+                if (!boundaries) return;
+                
+                // Process each new touch
+                for (let touch of e.changedTouches) {
+                    // Skip if this touch is already being tracked
+                    if (activeTouches.has(touch.identifier)) continue;
+                    
+                    const touchX = touch.clientX;
+                    const touchY = touch.clientY;
+                    
+                    // Check if touch is within drum kit area
+                    if (touchX >= boundaries.drumKit.left && 
+                        touchX <= boundaries.drumKit.right && 
+                        touchY >= boundaries.drumKit.top && 
+                        touchY <= boundaries.drumKit.bottom) {
+                        
+                        // Track this touch
+                        activeTouches.add(touch.identifier);
+                        
+                        // Determine if it's Don or Ka area
+                        if (touchX >= boundaries.don.left && 
+                            touchX <= boundaries.don.right && 
+                            touchY >= boundaries.don.top && 
+                            touchY <= boundaries.don.bottom) {
+                            
+                            console.log(`[MultiTouch] Don hit by touch ${touch.identifier}`);
+                            hitDrum('don');
+                        } else {
+                            console.log(`[MultiTouch] Ka hit by touch ${touch.identifier}`);
+                            hitDrum('ka');
+                        }
+                    }
+                }
+            }
+            
+            // Handle touch end - clean up finished touches
+            function handleTouchEnd(e) {
+                e.preventDefault();
+                
+                // Remove finished touches from tracking
+                for (let touch of e.changedTouches) {
+                    activeTouches.delete(touch.identifier);
+                }
+                
+                console.log(`[MultiTouch] Active touches: ${activeTouches.size}`);
+            }
+            
+            // Handle touch cancel - clean up cancelled touches
+            function handleTouchCancel(e) {
+                e.preventDefault();
+                
+                // Remove cancelled touches from tracking
+                for (let touch of e.changedTouches) {
+                    activeTouches.delete(touch.identifier);
+                }
+                
+                console.log(`[MultiTouch] Touch cancelled, active touches: ${activeTouches.size}`);
+            }
+            
+            // Add event listeners to drum kit container for multi-touch
+            if (elements.drumKit) {
+                elements.drumKit.addEventListener('touchstart', handleTouchStart, { passive: false });
+                elements.drumKit.addEventListener('touchend', handleTouchEnd, { passive: false });
+                elements.drumKit.addEventListener('touchcancel', handleTouchCancel, { passive: false });
+                
+                console.log('[MultiTouch] Multi-touch support enabled for drum kit');
+            } else {
+                console.warn('[MultiTouch] Drum kit element not found, multi-touch not initialized');
+            }
+            
+            // Prevent default touch behavior on drum elements to avoid conflicts
+            if (elements.drumDon) {
+                elements.drumDon.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+            }
+            if (elements.unifiedDrum) {
+                elements.unifiedDrum.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+            }
+        }
+
         // Setup event listeners
         function setupEventListeners() {
             // Project loading
@@ -3126,24 +3236,12 @@
                 hitDrum('don');
             });
             
-            // Don区域触控
-            elements.drumDon.addEventListener('touchstart', (e) => {
-                console.log('Don被触控了');
-                e.preventDefault();
-                e.stopPropagation();
-                hitDrum('don');
-            });
+            // 多点触控支持 - 全局触摸处理
+            setupMultiTouchSupport();
             
             // Ka区域点击（整个鼓面减去Don区域）
             elements.unifiedDrum.addEventListener('click', (e) => {
                 console.log('Ka被点击了');
-                hitDrum('ka');
-            });
-            
-            // Ka区域触控
-            elements.unifiedDrum.addEventListener('touchstart', (e) => {
-                console.log('Ka被触控了');
-                e.preventDefault();
                 hitDrum('ka');
             });
             
