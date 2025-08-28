@@ -142,7 +142,7 @@ body {
 .character-display {
     position: absolute;
     left: 0px; /* Character center aligns with don display center (20px + 40px center - 60px half-width) */
-    top: calc(30% - 160px); /* Adjusted for smaller container */
+    top: calc(30% - 170px); /* Moved up by 10px from original -160px */
     width: 120px; /* Optimal container size */
     height: 120px; /* Optimal container size */
     z-index: 15; /* Above banner and other elements */
