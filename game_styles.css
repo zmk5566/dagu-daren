@@ -141,10 +141,10 @@ body {
 /* Character Display (Above don-display) */
 .character-display {
     position: absolute;
-    left: -80px; /* Character center aligns with don center - adjusted for bigger size */
-    top: calc(30% - 250px); /* Adjusted for bigger character */
-    width: 280px; /* Character size - 3.5x bigger (160 * 1.75) */
-    height: 280px; /* Character size - 3.5x bigger */
+    left: 0px; /* Character center aligns with don display center (20px + 40px center - 60px half-width) */
+    top: calc(30% - 160px); /* Adjusted for smaller container */
+    width: 120px; /* Optimal container size */
+    height: 120px; /* Optimal container size */
     z-index: 15; /* Above banner and other elements */
     display: flex;
     align-items: center;
@@ -163,7 +163,7 @@ body {
     object-fit: contain;
     border-radius: 0;
     display: block;
-    animation: ghostFloat 3s ease-in-out infinite;
+    animation: ghostFloat 3s ease-in-out infinite; /* Default 3s, will be overridden by JavaScript based on BPM */
 }
 
 @keyframes ghostFloat {
@@ -559,6 +559,7 @@ body {
     top: calc(30% - 140px); /* 35px above spirit system (105px - 140px = -35px) */
     z-index: 20;
     text-align: right;
+    animation: titleWithCloudFloat 6s ease-in-out infinite;
 }
 
 .song-name-simple #songNameText {
@@ -566,8 +567,40 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #FFFFFF;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
+    position: relative;
+    z-index: 2; /* Above the cloud */
+}
+
+/* Title Cloud Decoration - Behind Text */
+.song-name-simple .title-cloud-decoration {
+    position: absolute;
+    top: calc(50% + 15px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Behind the text */
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+}
+
+.song-name-simple.loaded .title-cloud-decoration {
+    opacity: 0.8;
+}
+
+.song-name-simple .title-cloud-decoration img {
+    width: 300px;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+/* Title with cloud floating animation - title and cloud move together as one unit */
+@keyframes titleWithCloudFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.02);
+    }
 }
 
 /* Responsive adjustments */
@@ -575,11 +608,19 @@ body {
     .song-name-simple #songNameText {
         font-size: 20px;
     }
+    
+    .song-name-simple .title-cloud-decoration img {
+        width: 240px;
+    }
 }
 
 @media (max-width: 480px) {
     .song-name-simple #songNameText {
         font-size: 18px;
+    }
+    
+    .song-name-simple .title-cloud-decoration img {
+        width: 180px;
     }
 }
 

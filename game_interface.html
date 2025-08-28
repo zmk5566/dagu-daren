@@ -368,6 +368,9 @@
         <div class="game-area">
             <!-- Song Name Display - Simple Text Above Spirit System -->
             <div class="song-name-simple" id="songNameSimple">
+                <div class="title-cloud-decoration">
+                    <img src="/static/title-cloud.svg" alt="Cloud Decoration" />
+                </div>
                 <span id="songNameText">待加载</span>
             </div>
             
@@ -767,6 +770,7 @@
                 characterImage: document.getElementById('characterImage'),
                 topBanner: document.getElementById('topBanner'),
                 songNameText: document.getElementById('songNameText'),
+                songNameSimple: document.getElementById('songNameSimple'),
                 // Song Selection Screen elements
                 songSelectionScreen: document.getElementById('songSelectionScreen'),
                 selectedSongName: document.getElementById('selectedSongName'),
@@ -1375,6 +1379,11 @@
             gameState.isPaused = false;
             gameState.startTime = performance.now();
             
+            // Show title with cloud decoration
+            if (elements.songNameSimple) {
+                elements.songNameSimple.classList.add('loaded');
+            }
+            
             gameState.audio.currentTime = 0;
             gameState.audio.play();
             
@@ -1875,7 +1884,72 @@
             elements.characterImage.src = '/static/ghost-drum.svg';
             elements.characterDisplay.classList.add('loaded');
             
+            // Set ghost float animation duration based on BPM
+            setGhostFloatBPM();
+            
             console.log(`[Character] Using cute Chinese drum SVG (spirit: ${Math.round(gameState.spiritValue)}%)`);
+        }
+
+        // Set ghost float animation duration based on current BPM
+        function setGhostFloatBPM() {
+            // Set duration for game character
+            if (elements.characterImage) {
+                const duration = calculateGhostFloatDuration();
+                elements.characterImage.style.animationDuration = `${duration.toFixed(2)}s`;
+                console.log(`[Character] Set game ghost float duration to ${duration.toFixed(2)}s`);
+            }
+
+            // Set duration for selection character
+            if (elements.selectionCharacter) {
+                const duration = calculateGhostFloatDuration();
+                elements.selectionCharacter.style.animationDuration = `${duration.toFixed(2)}s`;
+                console.log(`[Character] Set selection ghost float duration to ${duration.toFixed(2)}s`);
+            }
+        }
+
+        // Calculate ghost float duration based on BPM
+        function calculateGhostFloatDuration() {
+            if (!gameState.metadata || !gameState.metadata.bpm_data) {
+                console.log('[Character] Using default 3s float duration (no BPM data)');
+                return 3.0; // Default 3 seconds
+            }
+
+            const bpm = gameState.metadata.bpm_data.bpm;
+            if (!bpm || bpm <= 0) {
+                console.log('[Character] Using default 3s float duration (invalid BPM)');
+                return 3.0; // Default 3 seconds
+            }
+
+            // Calculate duration: (60/bpm)*4 seconds
+            const duration = (60 / bpm) * 4;
+            console.log(`[Character] Calculated ghost float duration: ${duration.toFixed(2)}s (BPM: ${bpm})`);
+            return duration;
+        }
+
+        // Load metadata for selected song and update BPM animation
+        async function loadSelectedSongMetadata(projectName) {
+            try {
+                const response = await fetch(`/api/metadata/${projectName}`);
+                const metadataData = await response.json();
+                
+                if (response.ok && metadataData.metadata && metadataData.metadata.bpm_data) {
+                    gameState.metadata = metadataData.metadata;
+                    
+                    const bpm = gameState.metadata.bpm_data.bpm;
+                    console.log(`[Selection] Loaded metadata for ${projectName}, BPM: ${bpm}`);
+                    
+                    // Update ghost float animation for selection character
+                    setGhostFloatBPM();
+                } else {
+                    console.warn(`[Selection] No BPM data found for ${projectName}`);
+                    gameState.metadata = null;
+                    setGhostFloatBPM(); // Use default duration
+                }
+            } catch (error) {
+                console.error(`[Selection] Failed to load metadata for ${projectName}:`, error);
+                gameState.metadata = null;
+                setGhostFloatBPM(); // Use default duration
+            }
         }
 
         // Update banner display based on spirit value
@@ -1917,6 +1991,11 @@
                 elements.topBanner.classList.remove('loaded');
             }
             
+            // Clear title with cloud decoration
+            if (elements.songNameSimple) {
+                elements.songNameSimple.classList.remove('loaded');
+            }
+            
             // Clear stored image URLs
             if (gameState.characterImages) {
                 gameState.characterImages = null;
@@ -1934,6 +2013,11 @@
             }
             if (gameState.animationId) {
                 cancelAnimationFrame(gameState.animationId);
+            }
+            
+            // Hide title with cloud decoration when game ends
+            if (elements.songNameSimple) {
+                elements.songNameSimple.classList.remove('loaded');
             }
             
             showGameOverScreen();
@@ -2172,11 +2256,15 @@
             // Update song genre display and colors based on project metadata
             updateSongGenreDisplay(project);
             
-            // Store selected project (only if it's a real song)
+            // Load metadata and set BPM animation for selected song
             if (songItem.dataset.isReal === 'true') {
+                loadSelectedSongMetadata(project.folder_name);
                 gameState.selectedProject = project.folder_name;
             } else {
                 gameState.selectedProject = null; // Dummy song can't be played
+                // Reset to default animation for dummy songs
+                gameState.metadata = null;
+                setGhostFloatBPM();
             }
             
             // Show or hide start button based on selection

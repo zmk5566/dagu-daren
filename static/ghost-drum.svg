@@ -1,7 +1,7 @@
 <svg width="210" height="210" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <!-- 幽灵大鼓 - 3.5倍大小 -->
-    <circle cx="100" cy="100" r="40" fill="#8338EC" stroke="#FFFFFF" stroke-width="4"/>
-    <circle cx="100" cy="100" r="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-    <rect x="85" y="85" width="10" height="10" fill="#FFBE0B"/>
-    <rect x="105" y="85" width="10" height="10" fill="#06FFA5"/>
+    <!-- 幽灵大鼓 - 圆到边缘 -->
+    <circle cx="100" cy="100" r="90" fill="#8338EC" stroke="#FFFFFF" stroke-width="6"/>
+    <circle cx="100" cy="100" r="60" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    <rect x="75" y="75" width="20" height="20" fill="#FFBE0B"/>
+    <rect x="105" y="75" width="20" height="20" fill="#06FFA5"/>
 </svg>

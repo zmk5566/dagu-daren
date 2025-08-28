@@ -1,0 +1,15 @@
+<svg width="280" height="140" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+    <!-- 主云朵形状 - 居中对称，增大40% -->
+    <path d="M 70,70 Q 105,35 140,70 Q 175,35 210,70 Q 175,105 140,70 Q 105,105 70,70 Z" 
+          fill="none" 
+          stroke="#FFFFFF" 
+          stroke-width="2.5" 
+          opacity="0.6"/>
+    
+    <!-- 云朵内部装饰线条 - 增大40% -->
+    <path d="M 84,84 Q 119,56 140,84 Q 161,56 196,84" 
+          fill="none" 
+          stroke="#FFFFFF" 
+          stroke-width="2" 
+          opacity="0.4"/>
+</svg>
