@@ -504,7 +504,12 @@
             currentProjectName: null, // Current project name for reloading images
             selectedProject: null, // Selected project in song selection screen
             selectedCategory: 'All', // Selected category for filtering
-            categoryColors: null // Category color configuration
+            categoryColors: null, // Category color configuration
+            // 防重复请求机制
+            loadingStats: new Set(), // 正在加载统计的歌曲集合
+            cachedStats: new Map(), // 缓存已加载的统计数据
+            lastSelectedSong: null, // 上一个选中的歌曲，用于避免重复请求
+            statsDebounceTimer: null // 统计数据加载防抖定时器
         };
 
         // Particle system
@@ -1869,8 +1874,8 @@
                     setGhostFloatBPM(); // Use default duration
                 }
 
-                // Load song-specific statistics
-                await loadSongStats(projectName);
+                // 不在这里加载统计数据，避免重复请求
+                // 统计数据由选择逻辑统一处理
                 
             } catch (error) {
                 console.error(`[Selection] Failed to load metadata for ${projectName}:`, error);
@@ -1881,22 +1886,118 @@
             }
         }
 
-        // Load statistics for specific song
-        async function loadSongStats(songName) {
+        // 集中统一的统计数据加载函数 - 严格防重复
+        async function loadSongStatsOptimized(songName, immediate = false) {
+            console.log(`[Selection] loadSongStatsOptimized called: song=${songName}, immediate=${immediate}, lastSelected=${gameState.lastSelectedSong}`);
+            // 空值检查
+            if (!songName) {
+                updateStatsDisplay(null);
+                gameState.lastSelectedSong = null;
+                return;
+            }
+            
+            // 严格检查：如果是同一首歌且已经有数据（缓存或正在加载），直接返回
+            if (gameState.lastSelectedSong === songName) {
+                console.log(`[Selection] Same song (${songName}), skipping duplicate load`);
+                return;
+            }
+            
+            // 检查缓存 - 先更新状态再返回
+            if (gameState.cachedStats.has(songName)) {
+                const cachedData = gameState.cachedStats.get(songName);
+                gameState.lastSelectedSong = songName;
+                updateStatsDisplay(cachedData);
+                console.log(`[Selection] Using cached stats for ${songName}`);
+                return;
+            }
+            
+            // 如果正在加载中，直接返回
+            if (gameState.loadingStats.has(songName)) {
+                console.log(`[Selection] Stats for ${songName} already loading, skipping duplicate request`);
+                return;
+            }
+            
+            // 清除之前的防抖定时器
+            if (gameState.statsDebounceTimer) {
+                clearTimeout(gameState.statsDebounceTimer);
+                gameState.statsDebounceTimer = null;
+            }
+            
+            // 如果不是立即执行，不做任何操作
+            // 因为现在只在滚动完全停止时才加载统计数据
+            if (!immediate) {
+                console.log(`[Selection] Non-immediate load request ignored for ${songName} (waiting for scroll end)`);
+                return;
+            }
+            
             try {
+                // 标记为正在加载并更新选中状态
+                gameState.loadingStats.add(songName);
+                gameState.lastSelectedSong = songName;
+                console.log(`[Selection] Loading stats for ${songName}...`);
+                
                 const response = await fetch(`/api/song-stats/${encodeURIComponent(songName)}`);
                 const statsData = await response.json();
                 
-                if (response.ok) {
-                    console.log(`[Selection] Loaded stats for ${songName}:`, statsData);
-                    updateStatsDisplay(statsData.stats);
+                if (response.ok && statsData.stats) {
+                    // 缓存结果
+                    gameState.cachedStats.set(songName, statsData.stats);
+                    limitStatsCache();
+                    console.log(`[Selection] Loaded and cached stats for ${songName}`, statsData);
+                    
+                    // 严格检查：只有仍然选中该歌曲时才更新显示
+                    if (gameState.lastSelectedSong === songName) {
+                        updateStatsDisplay(statsData.stats);
+                    }
                 } else {
+                    // 缓存空结果
+                    gameState.cachedStats.set(songName, null);
+                    limitStatsCache();
                     console.warn(`[Selection] No stats found for ${songName}`);
-                    updateStatsDisplay(null); // Show default values
+                    
+                    if (gameState.lastSelectedSong === songName) {
+                        updateStatsDisplay(null);
+                    }
                 }
             } catch (error) {
                 console.error(`[Selection] Failed to load stats for ${songName}:`, error);
-                updateStatsDisplay(null); // Show default values
+                // 出错时不更新lastSelectedSong，允许重试
+                if (gameState.lastSelectedSong === songName) {
+                    updateStatsDisplay(null);
+                }
+            } finally {
+                // 移除加载标记
+                gameState.loadingStats.delete(songName);
+            }
+        }
+
+        // 保持原函数作为兼容性包装
+        async function loadSongStats(songName) {
+            return loadSongStatsOptimized(songName, false);
+        }
+
+        // 清理统计数据缓存 - 防止内存泄漏
+        function clearStatsCache() {
+            gameState.cachedStats.clear();
+            gameState.loadingStats.clear();
+            gameState.lastSelectedSong = null;
+            if (gameState.statsDebounceTimer) {
+                clearTimeout(gameState.statsDebounceTimer);
+                gameState.statsDebounceTimer = null;
+            }
+            console.log('[Selection] Stats cache cleared');
+        }
+
+        // 限制缓存大小，防止内存过度使用
+        function limitStatsCache() {
+            const maxCacheSize = 20; // 最多缓存20首歌曲的数据
+            if (gameState.cachedStats.size > maxCacheSize) {
+                const entries = Array.from(gameState.cachedStats.entries());
+                const entriesToRemove = entries.slice(0, entries.length - maxCacheSize);
+                entriesToRemove.forEach(([key]) => {
+                    gameState.cachedStats.delete(key);
+                });
+                console.log(`[Selection] Limited cache to ${maxCacheSize} entries`);
             }
         }
 
@@ -2217,21 +2318,21 @@
             songItem.classList.add('selected');
             songItem.classList.add('center-focus');
             
-            // Update song info display
+            // 点击选择时立即更新歌曲信息，给用户即时反馈
             elements.selectedSongName.textContent = project.display_name;
-            
-            // Update song genre display and colors based on project metadata
             updateSongGenreDisplay(project);
             
             // Load metadata and set BPM animation for selected song
             if (songItem.dataset.isReal === 'true') {
                 loadSelectedSongMetadata(project.folder_name);
                 gameState.selectedProject = project.folder_name;
+                // 点击选择时不立即加载统计，等待滚动动画完成后再加载
             } else {
                 gameState.selectedProject = null; // Dummy song can't be played
                 // Reset to default animation for dummy songs
                 gameState.metadata = null;
                 setGhostFloatBPM();
+                // 虚拟歌曲时也不立即清空统计，等待滚动完成
             }
             
             // Show or hide start button based on selection
@@ -2276,12 +2377,31 @@
                                 item.classList.remove('center-focus');
                             });
                             finalClosestItem.classList.add('center-focus');
+                            
+                            // 点击滚动完成后，统一更新歌曲信息和统计数据
+                            const finalClickProject = {
+                                folder_name: finalClosestItem.dataset.projectName,
+                                display_name: finalClosestItem.dataset.displayName
+                            };
+                            
+                            console.log(`[Selection] Click scroll completed, updating song info for: ${finalClickProject.display_name}`);
+                            elements.selectedSongName.textContent = finalClickProject.display_name;
+                            updateSongGenreDisplay(finalClickProject);
+                            
+                            if (finalClosestItem.dataset.isReal === 'true' && finalClickProject.folder_name) {
+                                console.log(`[Selection] Click scroll completed, loading stats for: ${finalClickProject.folder_name}`);
+                                loadSongStatsOptimized(finalClickProject.folder_name, true);
+                            } else {
+                                console.log('[Selection] Click scroll completed on dummy song, clearing stats');
+                                updateStatsDisplay(null);
+                                gameState.lastSelectedSong = null;
+                            }
                         }
                     };
                     
                     finalUpdate();
-                }, 100); // Small delay to ensure scroll animation is complete
-            }, 800); // Increased from 500ms to 800ms
+                }, 150); // 给足够时间让滚动动画完成
+            }, 50); // 快速响应
             
             console.log('[SongSelection] Selected song:', project.display_name);
         }
@@ -2321,20 +2441,17 @@
                             display_name: closestItem.dataset.displayName
                         };
                         
-                        elements.selectedSongName.textContent = project.display_name;
-                        
-                        // Update song genre display and colors
-                        updateSongGenreDisplay(project);
+                        // 点击滚动中不更新歌曲信息，避免跳动
+                        // elements.selectedSongName.textContent = project.display_name;
+                        // updateSongGenreDisplay(project);
                         
                         // Store selected project (only if it's a real song)
                         if (closestItem.dataset.isReal === 'true') {
                             gameState.selectedProject = project.folder_name;
-                            // Load stats for real songs during click scrolling
-                            loadSongStats(project.folder_name);
+                            // 点击滚动中不加载统计数据，等待滚动结束
                         } else {
                             gameState.selectedProject = null;
-                            // Clear stats for dummy songs
-                            updateStatsDisplay(null);
+                            // 点击滚动中也不清空统计，等待滚动结束
                         }
                         
                         return closestItem;
@@ -2358,20 +2475,21 @@
                         display_name: closestItem.dataset.displayName
                     };
                     
-                    elements.selectedSongName.textContent = project.display_name;
-                    
-                    // Update song genre display and colors
-                    updateSongGenreDisplay(project);
+                    // 正常滚动时也不更新歌曲信息，避免跳动
+                    // elements.selectedSongName.textContent = project.display_name;
+                    // updateSongGenreDisplay(project);
                     
                     // Store selected project (only if it's a real song)
                     if (closestItem.dataset.isReal === 'true') {
                         gameState.selectedProject = project.folder_name;
-                        // Load stats for real songs during normal scrolling
-                        loadSongStats(project.folder_name);
+                        // 滚动时不加载统计数据，只更新项目状态
                     } else {
                         gameState.selectedProject = null;
-                        // Clear stats for dummy songs
-                        updateStatsDisplay(null);
+                        // Clear stats for dummy songs only when not scrolling
+                        if (!isScrolling && !isUserScrolling) {
+                            updateStatsDisplay(null);
+                            gameState.lastSelectedSong = null;
+                        }
                     }
                     
                     // Update start button visibility
@@ -2401,6 +2519,27 @@
                 const centerItem = updateCenterSelection();
                 if (centerItem) {
                     centerSongItem(centerItem);
+                    
+                    // 滚动完全停止后，加载最终选中歌曲的统计数据
+                    const finalProject = {
+                        folder_name: centerItem.dataset.projectName,
+                        display_name: centerItem.dataset.displayName
+                    };
+                    
+                    // 滚动完全停止后，统一更新歌曲信息和统计数据
+                    console.log(`[Selection] Scroll ended, updating song info for: ${finalProject.display_name}`);
+                    elements.selectedSongName.textContent = finalProject.display_name;
+                    updateSongGenreDisplay(finalProject);
+                    
+                    if (centerItem.dataset.isReal === 'true' && finalProject.folder_name) {
+                        console.log(`[Selection] Scroll ended, loading stats for final selection: ${finalProject.folder_name}`);
+                        loadSongStatsOptimized(finalProject.folder_name, true); // 立即加载，不使用防抖
+                    } else {
+                        // 虚拟歌曲，清空统计显示
+                        console.log('[Selection] Scroll ended on dummy song, clearing stats');
+                        updateStatsDisplay(null);
+                        gameState.lastSelectedSong = null;
+                    }
                 }
             }
             
@@ -2418,8 +2557,8 @@
                 // Clear existing timeout
                 clearTimeout(scrollTimeout);
                 
-                // Set timeout to snap to center after scrolling stops (increased delay)
-                scrollTimeout = setTimeout(handleScrollEnd, 300); // Increased from 150ms to 300ms
+                // Set timeout to snap to center after scrolling stops (responsive delay)
+                scrollTimeout = setTimeout(handleScrollEnd, 50); // 50ms快速响应
             });
             
             // Initial center selection
@@ -2430,6 +2569,24 @@
                     container.style.scrollBehavior = 'auto';
                     centerSongItem(centerItem);
                     container.style.scrollBehavior = 'smooth';
+                    
+                    // 初始加载时也统一更新歌曲信息
+                    const initialProject = {
+                        folder_name: centerItem.dataset.projectName,
+                        display_name: centerItem.dataset.displayName
+                    };
+                    
+                    console.log(`[Selection] Initial selection: ${initialProject.display_name}`);
+                    elements.selectedSongName.textContent = initialProject.display_name;
+                    updateSongGenreDisplay(initialProject);
+                    
+                    // 初始选中的歌曲也加载统计数据
+                    if (centerItem.dataset.isReal === 'true' && initialProject.folder_name) {
+                        loadSongStatsOptimized(initialProject.folder_name, true);
+                    } else {
+                        updateStatsDisplay(null);
+                        gameState.lastSelectedSong = null;
+                    }
                 }
             }, 100);
         }
@@ -2548,6 +2705,9 @@
             // Apply category colors
             applyCategoryColors(category);
 
+            // 分类切换时清理统计缓存，因为歌曲列表会改变
+            clearStatsCache();
+
             // Re-populate song list with filtered results
             populateSongList();
 
@@ -2564,7 +2724,6 @@
             
             for (const project of projects) {
                 try {
-                    const response = await fetch(`/api/project/${project.folder_name}/metadata`);
                     const response = await fetch(`/api/metadata/${project.folder_name}`);
                     const metadata = await response.json();
                     
@@ -2775,13 +2934,18 @@
 
         function showStartButton() {
             // Show floating start button if a real song is selected
-            if (gameState.selectedProject) {
+            const shouldShow = gameState.selectedProject !== null;
+            const isCurrentlyVisible = elements.startPerformanceBtn.classList.contains('visible');
+            
+            // 只有状态真正改变时才更新DOM，避免频繁操作
+            if (shouldShow && !isCurrentlyVisible) {
                 elements.startPerformanceBtn.classList.add('visible');
                 console.log('[SongSelection] Start button shown');
-            } else {
+            } else if (!shouldShow && isCurrentlyVisible) {
                 elements.startPerformanceBtn.classList.remove('visible');
                 console.log('[SongSelection] Start button hidden - no real song selected');
             }
+            // 如果状态没变，不做任何操作，避免频繁日志
         }
 
         function hideStartButton() {
