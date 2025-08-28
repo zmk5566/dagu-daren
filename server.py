@@ -1371,9 +1371,9 @@ def get_game_stats():
             SELECT 
                 COUNT(*) as total_games,
                 MAX(final_score) as best_score,
-                AVG(accuracy) as avg_accuracy,
+                MAX(accuracy) as best_accuracy,
                 MAX(max_combo) as best_combo,
-                AVG(final_spirit) as avg_spirit
+                MAX(final_spirit) as best_spirit
             FROM game_results
         ''')
         overall_stats = cursor.fetchone()
@@ -1411,9 +1411,9 @@ def get_game_stats():
             "overall_stats": {
                 "total_games": overall_stats[0] or 0,
                 "best_score": overall_stats[1] or 0,
-                "avg_accuracy": round(overall_stats[2] or 0, 2),
+                "best_accuracy": round(overall_stats[2] or 0, 2),
                 "best_combo": overall_stats[3] or 0,
-                "avg_spirit": round(overall_stats[4] or 0, 2)
+                "best_spirit": round(overall_stats[4] or 0, 2)
             },
             "recent_games": [
                 {

@@ -770,8 +770,8 @@ body {
 }
 
 .character-avatar img {
-    width: 105px; /* 60px * 1.75 = 105px */
-    height: 105px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     animation: ghostFloat 3s ease-in-out infinite;
 }

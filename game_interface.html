@@ -492,37 +492,26 @@
 
             <!-- Stats Panel -->
             <div class="stats-panel">
-                <div class="stats-title">游戏统计</div>
-                <div class="stat-row">
-                    <span class="stat-label">总游戏次数</span>
-                    <span class="stat-value" id="totalGames">-</span>
-                </div>
+                <div class="stats-title">最佳成绩</div>
                 <div class="stat-row">
                     <span class="stat-label">最佳成绩</span>
                     <span class="stat-value" id="bestScore">-</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">平均准确率</span>
-                    <span class="stat-value" id="avgAccuracy">-</span>
+                    <span class="stat-label">最高准确率</span>
+                    <span class="stat-value" id="bestAccuracy">-</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">最大连击数</span>
                     <span class="stat-value" id="bestCombo">-</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">平均灵魂值</span>
-                    <span class="stat-value" id="avgSpirit">-</span>
+                    <span class="stat-label">最高灵魂值</span>
+                    <span class="stat-value" id="bestSpirit">-</span>
                 </div>
-            </div>
-            
-            <!-- Recent Games Panel -->
-            <div class="stats-panel" style="margin-top: 20px;">
-                <div class="stats-title">最近游戏</div>
-                <div id="recentGames">
-                    <div class="stat-row">
-                        <span class="stat-label">加载中...</span>
-                        <span class="stat-value">-</span>
-                    </div>
+                <div class="stat-row">
+                    <span class="stat-label">总游戏次数</span>
+                    <span class="stat-value" id="totalGames">-</span>
                 </div>
             </div>
 
@@ -940,37 +929,13 @@
                 const data = await response.json();
                 
                 if (data.overall_stats) {
-                    // Update overall stats
+                    // Update overall stats with best values only
                     const stats = data.overall_stats;
                     document.getElementById('totalGames').textContent = stats.total_games || '0';
                     document.getElementById('bestScore').textContent = stats.best_score ? stats.best_score.toLocaleString() + '点' : '0点';
-                    document.getElementById('avgAccuracy').textContent = stats.avg_accuracy ? stats.avg_accuracy + '%' : '0%';
+                    document.getElementById('bestAccuracy').textContent = stats.best_accuracy ? stats.best_accuracy + '%' : '0%';
                     document.getElementById('bestCombo').textContent = stats.best_combo ? stats.best_combo + '回' : '0回';
-                    document.getElementById('avgSpirit').textContent = stats.avg_spirit ? stats.avg_spirit + '%' : '0%';
-                }
-                
-                if (data.recent_games && data.recent_games.length > 0) {
-                    // Update recent games
-                    const recentGamesDiv = document.getElementById('recentGames');
-                    recentGamesDiv.innerHTML = '';
-                    
-                    data.recent_games.slice(0, 5).forEach(game => {
-                        const gameRow = document.createElement('div');
-                        gameRow.className = 'stat-row';
-                        gameRow.innerHTML = `
-                            <span class="stat-label">${game.song_name}</span>
-                            <span class="stat-value">${game.final_score.toLocaleString()}点</span>
-                        `;
-                        recentGamesDiv.appendChild(gameRow);
-                    });
-                } else {
-                    // No games yet
-                    document.getElementById('recentGames').innerHTML = `
-                        <div class="stat-row">
-                            <span class="stat-label">还没有游戏记录</span>
-                            <span class="stat-value">快去玩一局吧！</span>
-                        </div>
-                    `;
+                    document.getElementById('bestSpirit').textContent = stats.best_spirit ? stats.best_spirit + '%' : '0%';
                 }
                 
                 console.log('游戏统计数据加载成功');
