@@ -542,8 +542,8 @@
                     spiritGain += Math.floor(gameState.spiritCombo / 15); // Reduced combo bonus
                 }
                 
-                // Backend value can exceed 85%, but frontend display caps at 85%
-                gameState.spiritValue += spiritGain;
+                // Add spirit gain but cap at 100%
+                gameState.spiritValue = Math.min(gameState.spiritValue + spiritGain, 100);
             }
             
             updateSpiritDisplay();
@@ -553,8 +553,25 @@
         }
 
         function updateSpiritDisplay() {
-            // Update spirit label with actual value
-            spiritElements.label.textContent = `灵: ${Math.round(gameState.spiritValue)}%`;
+            // 映射逻辑：实际0-85% 映射到 显示0-100%
+            let displayValue;
+            if (gameState.spiritValue <= 85) {
+                // 线性映射：85% 实际值 = 100% 显示值
+                displayValue = Math.round((gameState.spiritValue / 85) * 100);
+            } else {
+                // 超过85%时，显示100%
+                displayValue = 100;
+            }
+            
+            spiritElements.label.textContent = `灵: ${displayValue}%`;
+            
+            // 调试日志
+            if (gameState.spiritValue > 85) {
+                console.log(`[Spirit] Actual: ${gameState.spiritValue.toFixed(1)}%, Display: ${displayValue}% (rainbow mode)`);
+            }
+            if (gameState.spiritValue >= 100) {
+                console.log(`[Spirit] Reached maximum spirit value: 100%`);
+            }
             
             // Reset all lines to inactive state
             spiritElements.lines.forEach(line => {
@@ -571,18 +588,19 @@
                 spiritElements.system.classList.remove('rainbow-mode');
             }
             
-            // Activate lines based on spirit value
+            // Activate lines based on mapped display value (0-100%)
             spiritElements.lines.forEach(line => {
                 const threshold = parseFloat(line.dataset.threshold);
-                if (gameState.spiritValue >= threshold) {
+                
+                if (displayValue >= threshold) {
                     if (isRainbowMode) {
-                        // 85%+: All active lines become thick rainbow lines
+                        // 实际85%+: 所有线条都是彩虹闪烁
                         line.classList.add('active-rainbow');
-                    } else if (threshold < 60) {
-                        // Below 60%: Yellow thin lines
+                    } else if (displayValue < 70.59) { // 对应实际60%: (60/85)*100 = 70.59%
+                        // 显示0-70%: Yellow thin lines (对应实际0-60%)
                         line.classList.add('active-yellow');
                     } else {
-                        // 60-84%: Orange thin lines
+                        // 显示70-100%: Orange thin lines (对应实际60-85%)
                         line.classList.add('active-orange');
                     }
                 }
@@ -1698,19 +1716,51 @@
             }
         }
 
+        // 动画清理定时器追踪
+        let goldenAnimationTimer = null;
+        let whiteAnimationTimer = null;
+
         // Create golden hit effect for perfect hits
         function createHitEffect_Golden() {
             const targetDrum = document.querySelector('.target-drum');
             
-            // Add golden effect only to target drum
-            targetDrum.classList.add('golden-hit');
+            // 改进方案A: 智能重启动画 - 只在必要时强制重启
+            const hasConflictingAnimation = targetDrum.classList.contains('white-hit');
+            const hasSameAnimation = targetDrum.classList.contains('golden-hit');
+            
+            if (hasConflictingAnimation) {
+                // 有冲突动画(white)，需要清理
+                targetDrum.classList.remove('white-hit');
+                if (whiteAnimationTimer) {
+                    clearTimeout(whiteAnimationTimer);
+                    whiteAnimationTimer = null;
+                }
+            }
+            
+            if (hasSameAnimation) {
+                // 同类动画正在进行，强制重启以确保效果可见
+                targetDrum.classList.remove('golden-hit');
+                if (goldenAnimationTimer) {
+                    clearTimeout(goldenAnimationTimer);
+                    goldenAnimationTimer = null;
+                }
+            }
+            
+            // 使用requestAnimationFrame确保DOM更新后再添加动画
+            requestAnimationFrame(() => {
+                targetDrum.classList.add('golden-hit');
+            });
             
             // Create golden particles
             createParticles('golden', 12);
             
-            // Remove effects after animation
-            setTimeout(() => {
+            // 清理之前的定时器并设置新的
+            if (goldenAnimationTimer) {
+                clearTimeout(goldenAnimationTimer);
+            }
+            goldenAnimationTimer = setTimeout(() => {
                 targetDrum.classList.remove('golden-hit');
+                goldenAnimationTimer = null;
             }, 800);
         }
 
@@ -1718,15 +1768,43 @@
         function createHitEffect_White() {
             const targetDrum = document.querySelector('.target-drum');
             
-            // Add white effect only to target drum
-            targetDrum.classList.add('white-hit');
+            // 改进方案A: 智能重启动画 - 只在必要时强制重启
+            const hasConflictingAnimation = targetDrum.classList.contains('golden-hit');
+            const hasSameAnimation = targetDrum.classList.contains('white-hit');
+            
+            if (hasConflictingAnimation) {
+                // 有冲突动画(golden)，需要清理
+                targetDrum.classList.remove('golden-hit');
+                if (goldenAnimationTimer) {
+                    clearTimeout(goldenAnimationTimer);
+                    goldenAnimationTimer = null;
+                }
+            }
+            
+            if (hasSameAnimation) {
+                // 同类动画正在进行，强制重启以确保效果可见
+                targetDrum.classList.remove('white-hit');
+                if (whiteAnimationTimer) {
+                    clearTimeout(whiteAnimationTimer);
+                    whiteAnimationTimer = null;
+                }
+            }
+            
+            // 使用requestAnimationFrame确保DOM更新后再添加动画
+            requestAnimationFrame(() => {
+                targetDrum.classList.add('white-hit');
+            });
             
             // Create white particles
             createParticles('white', 8);
             
-            // Remove effects after animation
-            setTimeout(() => {
+            // 清理之前的定时器并设置新的
+            if (whiteAnimationTimer) {
+                clearTimeout(whiteAnimationTimer);
+            }
+            whiteAnimationTimer = setTimeout(() => {
                 targetDrum.classList.remove('white-hit');
+                whiteAnimationTimer = null;
             }, 800);
         }
 

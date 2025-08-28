@@ -1,7 +1,7 @@
 {
     "metadata": {
         "scoreOffset": 0,
-        "createdAt": 1755938480466,
+        "createdAt": 1756373718243,
         "version": "2.0"
     },
     "notes": [
@@ -123,12 +123,6 @@
             "duration": 0.1,
             "id": "score-1755689782968-75s3xgjc0",
             "time": 19.386992809706022,
-            "type": "don"
-        },
-        {
-            "duration": 0.1,
-            "id": "score-1755689782968-09zm7641t",
-            "time": 19.81569781041205,
             "type": "don"
         },
         {
@@ -1490,7 +1484,7 @@
         {
             "duration": 0.09999999999999432,
             "id": "score-1755689782968-74v0pviay",
-            "time": 94.51754418343778,
+            "time": 94.47586453059135,
             "type": "don"
         },
         {
@@ -2445,6 +2439,16 @@
             "duration": 0.1,
             "id": "score-1755689782968-nhotj9lrp",
             "time": 170.7198580589346,
+            "type": "don"
+        },
+        {
+            "id": "score-1756373562493-kajdjmue6",
+            "time": 11.092741893268524,
+            "type": "don"
+        },
+        {
+            "id": "score-1756373634726-cyqwg80a4",
+            "time": 60.98328635043276,
             "type": "don"
         }
     ]
