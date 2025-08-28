@@ -1446,5 +1446,75 @@ def get_game_stats():
         print(f"[Database] Error getting game stats: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/song-stats/<song_name>', methods=['GET'])
+def get_song_stats(song_name):
+    """Get statistics for a specific song"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Get stats for specific song
+        cursor.execute('''
+            SELECT 
+                COUNT(*) as total_games,
+                MAX(final_score) as best_score,
+                MAX(accuracy) as best_accuracy,
+                MAX(max_combo) as best_combo,
+                MAX(final_spirit) as best_spirit,
+                AVG(final_score) as avg_score,
+                AVG(accuracy) as avg_accuracy
+            FROM game_results 
+            WHERE song_name = ?
+        ''', (song_name,))
+        song_stats = cursor.fetchone()
+        
+        # Get recent plays for this song (last 5)
+        cursor.execute('''
+            SELECT 
+                final_score, max_combo, accuracy, final_spirit,
+                perfect_hits, good_hits, miss_hits, total_notes,
+                datetime(created_at, 'localtime') as play_date
+            FROM game_results 
+            WHERE song_name = ?
+            ORDER BY created_at DESC 
+            LIMIT 5
+        ''', (song_name,))
+        recent_plays = cursor.fetchall()
+        
+        conn.close()
+        
+        # Format response
+        response = {
+            "song_name": song_name,
+            "stats": {
+                "total_games": song_stats[0] or 0,
+                "best_score": song_stats[1] or 0,
+                "best_accuracy": round(song_stats[2] or 0, 2),
+                "best_combo": song_stats[3] or 0,
+                "best_spirit": round(song_stats[4] or 0, 2),
+                "avg_score": round(song_stats[5] or 0, 2),
+                "avg_accuracy": round(song_stats[6] or 0, 2)
+            },
+            "recent_plays": [
+                {
+                    "final_score": play[0],
+                    "max_combo": play[1],
+                    "accuracy": play[2],
+                    "final_spirit": play[3],
+                    "perfect_hits": play[4],
+                    "good_hits": play[5],
+                    "miss_hits": play[6],
+                    "total_notes": play[7],
+                    "play_date": play[8]
+                } for play in recent_plays
+            ]
+        }
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        print(f"[Database] Error getting song stats for {song_name}: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

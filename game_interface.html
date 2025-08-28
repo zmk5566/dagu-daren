@@ -190,10 +190,6 @@
         <div class="curtain" id="curtain">
             <div class="curtain-left"></div>
             <div class="curtain-right"></div>
-            <div class="curtain-content">
-                <div class="curtain-spinner"></div>
-                <div class="curtain-text" id="curtainText">准备演奏...</div>
-            </div>
         </div>
 
         <!-- Song Selector (Floating) -->
@@ -328,7 +324,7 @@
                     </div>
                     <div class="hit-target"></div>
                     <!-- Target Drum -->
-                    <div class="target-drum"></div>
+                    <div class="target-drum" id="targetDrum"></div>
                     <div class="notes-container" id="notesContainer">
                         <!-- Beat notes will be generated here -->
                     </div>
@@ -404,8 +400,11 @@
                 <div class="character-avatar">
                     <img src="/static/ghost-drum.svg" alt="Character" id="selectionCharacter" />
                 </div>
-                <div class="difficulty-info">
-                    <div class="difficulty-label">幽灵大鼓</div>
+                <div class="avatar-info">
+                    <div class="avatar-name-stamp">
+                        <div class="stamp-line">幽灵</div>
+                        <div class="stamp-line">大鼓</div>
+                    </div>
                 </div>
             </div>
 
@@ -422,7 +421,7 @@
 
             <!-- Stats Panel -->
             <div class="stats-panel">
-                <div class="stats-title">最佳成绩</div>
+                <div class="stats-title">本曲成绩</div>
                 <div class="stat-row">
                     <span class="stat-label">最佳成绩</span>
                     <span class="stat-value" id="bestScore">-</span>
@@ -973,7 +972,6 @@
             }
 
             try {
-                updateCurtainText('加载资源...');
                 // Load project images
                 const imagesResponse = await fetch(`/api/project/${projectName}/images`);
                 let projectImages = null;
@@ -985,7 +983,6 @@
                     }
                 }
 
-                updateCurtainText('加载谱面...');
                 // Load score data (beatmap)
                 const scoreResponse = await fetch(`/api/score/${projectName}`);
                 const scoreData = await scoreResponse.json();
@@ -1043,7 +1040,6 @@
                     console.warn('Could not load beat grid data:', metaError);
                 }
 
-                updateCurtainText('加载音频...');
                 // Load audio - use original song instead of backing track
                 const audioPath = `data/${projectName}/${projectName}.mp3`;
                 gameState.audio = new Audio(audioPath);
@@ -1053,8 +1049,6 @@
                     gameState.audio.onerror = reject;
                 });
 
-                updateCurtainText('初始化游戏...');
-                
                 gameState.duration = gameState.audio.duration;
                 gameState.notes = notes.sort((a, b) => a.time - b.time);
                 gameState.totalNotes = notes.length;
@@ -1069,8 +1063,6 @@
                 
                 console.log(`Loaded ${notes.length} notes for ${projectName}`);
                 
-                updateCurtainText('即将开始演奏...');
-                
                 // Wait a moment then hide curtain and start game
                 setTimeout(() => {
                     hideCurtain();
@@ -1081,7 +1073,6 @@
                 
             } catch (error) {
                 console.error('Failed to load game:', error);
-                updateCurtainText('加载失败...');
                 setTimeout(() => {
                     hideCurtain();
                     setTimeout(() => {
@@ -1523,7 +1514,11 @@
                     break;
             }
             
-            document.querySelector('.game-area').appendChild(judgment);
+            // Add judgment text directly to target drum
+            const targetDrum = document.getElementById('targetDrum');
+            if (targetDrum) {
+                targetDrum.appendChild(judgment);
+            }
         }
 
         // Create hit effect
@@ -1853,13 +1848,14 @@
             return duration;
         }
 
-        // Load metadata for selected song and update BPM animation
+        // Load metadata and stats for selected song
         async function loadSelectedSongMetadata(projectName) {
             try {
-                const response = await fetch(`/api/metadata/${projectName}`);
-                const metadataData = await response.json();
+                // Load metadata for BPM
+                const metadataResponse = await fetch(`/api/metadata/${projectName}`);
+                const metadataData = await metadataResponse.json();
                 
-                if (response.ok && metadataData.metadata && metadataData.metadata.bpm_data) {
+                if (metadataResponse.ok && metadataData.metadata && metadataData.metadata.bpm_data) {
                     gameState.metadata = metadataData.metadata;
                     
                     const bpm = gameState.metadata.bpm_data.bpm;
@@ -1872,10 +1868,54 @@
                     gameState.metadata = null;
                     setGhostFloatBPM(); // Use default duration
                 }
+
+                // Load song-specific statistics
+                await loadSongStats(projectName);
+                
             } catch (error) {
                 console.error(`[Selection] Failed to load metadata for ${projectName}:`, error);
                 gameState.metadata = null;
                 setGhostFloatBPM(); // Use default duration
+                // Clear stats display on error
+                updateStatsDisplay(null);
+            }
+        }
+
+        // Load statistics for specific song
+        async function loadSongStats(songName) {
+            try {
+                const response = await fetch(`/api/song-stats/${encodeURIComponent(songName)}`);
+                const statsData = await response.json();
+                
+                if (response.ok) {
+                    console.log(`[Selection] Loaded stats for ${songName}:`, statsData);
+                    updateStatsDisplay(statsData.stats);
+                } else {
+                    console.warn(`[Selection] No stats found for ${songName}`);
+                    updateStatsDisplay(null); // Show default values
+                }
+            } catch (error) {
+                console.error(`[Selection] Failed to load stats for ${songName}:`, error);
+                updateStatsDisplay(null); // Show default values
+            }
+        }
+
+        // Update stats panel display with song-specific data
+        function updateStatsDisplay(stats) {
+            if (stats && stats.total_games > 0) {
+                // Show song-specific stats
+                document.getElementById('bestScore').textContent = stats.best_score ? stats.best_score.toLocaleString() + '点' : '0点';
+                document.getElementById('bestAccuracy').textContent = stats.best_accuracy ? stats.best_accuracy + '%' : '0%';
+                document.getElementById('bestCombo').textContent = stats.best_combo ? stats.best_combo + '回' : '0回';
+                document.getElementById('bestSpirit').textContent = stats.best_spirit ? stats.best_spirit + '%' : '0%';
+                document.getElementById('totalGames').textContent = stats.total_games ? stats.total_games + '次' : '0次';
+            } else {
+                // Show default values when no stats available
+                document.getElementById('bestScore').textContent = '-';
+                document.getElementById('bestAccuracy').textContent = '-';
+                document.getElementById('bestCombo').textContent = '-';
+                document.getElementById('bestSpirit').textContent = '-';
+                document.getElementById('totalGames').textContent = '0次';
             }
         }
 
@@ -2289,8 +2329,12 @@
                         // Store selected project (only if it's a real song)
                         if (closestItem.dataset.isReal === 'true') {
                             gameState.selectedProject = project.folder_name;
+                            // Load stats for real songs during click scrolling
+                            loadSongStats(project.folder_name);
                         } else {
                             gameState.selectedProject = null;
+                            // Clear stats for dummy songs
+                            updateStatsDisplay(null);
                         }
                         
                         return closestItem;
@@ -2322,8 +2366,12 @@
                     // Store selected project (only if it's a real song)
                     if (closestItem.dataset.isReal === 'true') {
                         gameState.selectedProject = project.folder_name;
+                        // Load stats for real songs during normal scrolling
+                        loadSongStats(project.folder_name);
                     } else {
                         gameState.selectedProject = null;
+                        // Clear stats for dummy songs
+                        updateStatsDisplay(null);
                     }
                     
                     // Update start button visibility
@@ -2757,19 +2805,13 @@
             }, 800);
         }
 
-        function updateCurtainText(text) {
-            if (elements.curtainText) {
-                elements.curtainText.textContent = text;
-            }
-        }
 
         function startPerformance() {
             if (gameState.selectedProject) {
                 console.log('[SongSelection] Starting performance for:', gameState.selectedProject);
                 
-                // Show curtain with loading
+                // Show curtain
                 showCurtain();
-                updateCurtainText('准备演奏...');
                 
                 // Hide song selection screen after curtain starts
                 setTimeout(() => {
