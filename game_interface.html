@@ -1338,9 +1338,18 @@
             const now = performance.now();
             gameState.currentTime = (now - gameState.startTime) / 1000;
             
-            // Update audio sync
-            if (Math.abs(gameState.audio.currentTime - gameState.currentTime) > 0.1) {
-                gameState.currentTime = gameState.audio.currentTime;
+            // Update audio sync - Improved for Firefox stability
+            const timeDiff = Math.abs(gameState.audio.currentTime - gameState.currentTime);
+            if (timeDiff > 0.15) {
+                // Large desync: use smooth transition to avoid jarring jumps
+                const smoothFactor = 0.1;
+                gameState.currentTime += (gameState.audio.currentTime - gameState.currentTime) * smoothFactor;
+                console.log(`[AudioSync] Large desync detected: ${timeDiff.toFixed(3)}s, smoothing...`);
+            } else if (timeDiff > 0.05) {
+                // Small desync: gentle correction
+                const correction = (gameState.audio.currentTime - gameState.currentTime) * 0.05;
+                gameState.currentTime += correction;
+                console.log(`[AudioSync] Small desync: ${timeDiff.toFixed(3)}s, correcting by ${correction.toFixed(3)}s`);
             }
 
             updateNotePositions();
