@@ -145,7 +145,7 @@ body {
     top: calc(30% - 170px); /* Moved up by 10px from original -160px */
     width: 120px; /* Optimal container size */
     height: 120px; /* Optimal container size */
-    z-index: 15; /* Above banner and other elements */
+    z-index: 20; /* Above spirit system (z-index: 15) and other elements */
     display: flex;
     align-items: center;
     justify-content: center;

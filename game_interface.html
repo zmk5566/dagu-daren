@@ -3109,6 +3109,10 @@
                 const boundaries = getDrumBoundaries();
                 if (!boundaries) return;
                 
+                // Get viewport dimensions for extended Ka area
+                const viewportHeight = window.innerHeight;
+                const kaExtendedAreaTop = viewportHeight * 0.65; // Bottom 35% of screen
+                
                 // Process each new touch
                 for (let touch of e.changedTouches) {
                     // Skip if this touch is already being tracked
@@ -3117,27 +3121,41 @@
                     const touchX = touch.clientX;
                     const touchY = touch.clientY;
                     
-                    // Check if touch is within drum kit area
-                    if (touchX >= boundaries.drumKit.left && 
+                    let hitDetected = false;
+                    
+                    // PRIORITY 1: Check Don area first (highest priority)
+                    if (touchX >= boundaries.don.left && 
+                        touchX <= boundaries.don.right && 
+                        touchY >= boundaries.don.top && 
+                        touchY <= boundaries.don.bottom) {
+                        
+                        activeTouches.add(touch.identifier);
+                        console.log(`[MultiTouch] Don hit by touch ${touch.identifier} (Don area)`);
+                        hitDrum('don');
+                        hitDetected = true;
+                    }
+                    // PRIORITY 2: Check original drum kit Ka area
+                    else if (touchX >= boundaries.drumKit.left && 
                         touchX <= boundaries.drumKit.right && 
                         touchY >= boundaries.drumKit.top && 
                         touchY <= boundaries.drumKit.bottom) {
                         
-                        // Track this touch
                         activeTouches.add(touch.identifier);
-                        
-                        // Determine if it's Don or Ka area
-                        if (touchX >= boundaries.don.left && 
-                            touchX <= boundaries.don.right && 
-                            touchY >= boundaries.don.top && 
-                            touchY <= boundaries.don.bottom) {
-                            
-                            console.log(`[MultiTouch] Don hit by touch ${touch.identifier}`);
-                            hitDrum('don');
-                        } else {
-                            console.log(`[MultiTouch] Ka hit by touch ${touch.identifier}`);
-                            hitDrum('ka');
-                        }
+                        console.log(`[MultiTouch] Ka hit by touch ${touch.identifier} (drum kit Ka area)`);
+                        hitDrum('ka');
+                        hitDetected = true;
+                    }
+                    // PRIORITY 3: Check extended Ka area (bottom 35% of screen)
+                    else if (touchY >= kaExtendedAreaTop) {
+                        activeTouches.add(touch.identifier);
+                        console.log(`[MultiTouch] Ka hit by touch ${touch.identifier} (extended Ka area - bottom 35%)`);
+                        hitDrum('ka');
+                        hitDetected = true;
+                    }
+                    
+                    // Debug info for missed touches
+                    if (!hitDetected) {
+                        console.log(`[MultiTouch] Touch ${touch.identifier} at (${touchX.toFixed(0)}, ${touchY.toFixed(0)}) - no hit area detected`);
                     }
                 }
             }
@@ -3166,6 +3184,54 @@
                 console.log(`[MultiTouch] Touch cancelled, active touches: ${activeTouches.size}`);
             }
             
+            // Handle mouse clicks with same logic as touch
+            function handleMouseClick(e) {
+                e.preventDefault();
+                const boundaries = getDrumBoundaries();
+                if (!boundaries) return;
+                
+                // Get viewport dimensions for extended Ka area
+                const viewportHeight = window.innerHeight;
+                const kaExtendedAreaTop = viewportHeight * 0.65; // Bottom 35% of screen
+                
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                let hitDetected = false;
+                
+                // PRIORITY 1: Check Don area first (highest priority)
+                if (mouseX >= boundaries.don.left && 
+                    mouseX <= boundaries.don.right && 
+                    mouseY >= boundaries.don.top && 
+                    mouseY <= boundaries.don.bottom) {
+                    
+                    console.log(`[Mouse] Don hit at (${mouseX.toFixed(0)}, ${mouseY.toFixed(0)}) (Don area)`);
+                    hitDrum('don');
+                    hitDetected = true;
+                }
+                // PRIORITY 2: Check original drum kit Ka area
+                else if (mouseX >= boundaries.drumKit.left && 
+                    mouseX <= boundaries.drumKit.right && 
+                    mouseY >= boundaries.drumKit.top && 
+                    mouseY <= boundaries.drumKit.bottom) {
+                    
+                    console.log(`[Mouse] Ka hit at (${mouseX.toFixed(0)}, ${mouseY.toFixed(0)}) (drum kit Ka area)`);
+                    hitDrum('ka');
+                    hitDetected = true;
+                }
+                // PRIORITY 3: Check extended Ka area (bottom 35% of screen)
+                else if (mouseY >= kaExtendedAreaTop) {
+                    console.log(`[Mouse] Ka hit at (${mouseX.toFixed(0)}, ${mouseY.toFixed(0)}) (extended Ka area - bottom 35%)`);
+                    hitDrum('ka');
+                    hitDetected = true;
+                }
+                
+                // Debug info for missed clicks
+                if (!hitDetected) {
+                    console.log(`[Mouse] Click at (${mouseX.toFixed(0)}, ${mouseY.toFixed(0)}) - no hit area detected`);
+                }
+            }
+            
             // Add event listeners to drum kit container for multi-touch
             if (elements.drumKit) {
                 elements.drumKit.addEventListener('touchstart', handleTouchStart, { passive: false });
@@ -3176,6 +3242,10 @@
             } else {
                 console.warn('[MultiTouch] Drum kit element not found, multi-touch not initialized');
             }
+            
+            // Add global mouse click listener for extended Ka area
+            document.addEventListener('click', handleMouseClick, { passive: false });
+            console.log('[Mouse] Extended Ka area mouse support enabled - bottom 35% of screen')
             
             // Prevent default touch behavior on drum elements to avoid conflicts
             if (elements.drumDon) {
