@@ -509,7 +509,18 @@
             loadingStats: new Set(), // 正在加载统计的歌曲集合
             cachedStats: new Map(), // 缓存已加载的统计数据
             lastSelectedSong: null, // 上一个选中的歌曲，用于避免重复请求
-            statsDebounceTimer: null // 统计数据加载防抖定时器
+            statsDebounceTimer: null, // 统计数据加载防抖定时器
+            // 音效系统
+            drumSounds: {
+                don: null,
+                ka: null
+            },
+            // 控制器系统
+            gamepad: {
+                connected: false,
+                previousButtons: [],
+                index: -1
+            }
         };
 
         // Particle system
@@ -749,6 +760,8 @@
             await loadProjects();
             await loadCategoryColors();
             await loadGameStats();
+            await loadDrumSounds();
+            initGamepadSupport();
             elements.loadingScreen.style.display = 'none';
             
             // Show song selection screen directly instead of song selector
@@ -898,6 +911,159 @@
                 document.getElementById('totalGames').textContent = '错误';
                 document.getElementById('bestScore').textContent = '加载失败';
             }
+        }
+
+        // Load drum sound effects
+        async function loadDrumSounds() {
+            try {
+                console.log('[Audio] Loading drum sound effects...');
+                
+                // Load don sound
+                gameState.drumSounds.don = new Audio('/static/audio/dong.mp3');
+                gameState.drumSounds.don.preload = 'auto';
+                gameState.drumSounds.don.volume = 0.8;
+                
+                // Load ka sound
+                gameState.drumSounds.ka = new Audio('/static/audio/ka.mp3');
+                gameState.drumSounds.ka.preload = 'auto';
+                gameState.drumSounds.ka.volume = 0.8;
+                
+                // Wait for both sounds to be ready
+                await Promise.all([
+                    new Promise((resolve, reject) => {
+                        gameState.drumSounds.don.addEventListener('canplaythrough', resolve);
+                        gameState.drumSounds.don.addEventListener('error', reject);
+                    }),
+                    new Promise((resolve, reject) => {
+                        gameState.drumSounds.ka.addEventListener('canplaythrough', resolve);
+                        gameState.drumSounds.ka.addEventListener('error', reject);
+                    })
+                ]);
+                
+                console.log('[Audio] Drum sound effects loaded successfully');
+            } catch (error) {
+                console.error('[Audio] Failed to load drum sound effects:', error);
+                // Continue without sound effects
+                gameState.drumSounds.don = null;
+                gameState.drumSounds.ka = null;
+            }
+        }
+
+        // Initialize gamepad support
+        function initGamepadSupport() {
+            if (!navigator.getGamepads) {
+                console.log('[Gamepad] 浏览器不支持控制器API');
+                return;
+            }
+
+            // Listen for gamepad connection events
+            window.addEventListener('gamepadconnected', (e) => {
+                console.log('[Gamepad] 控制器连接:', e.gamepad.id);
+                gameState.gamepad.connected = true;
+                gameState.gamepad.index = e.gamepad.index;
+                gameState.gamepad.previousButtons = new Array(e.gamepad.buttons.length).fill(false);
+                startGamepadPolling();
+            });
+
+            window.addEventListener('gamepaddisconnected', (e) => {
+                console.log('[Gamepad] 控制器断开:', e.gamepad.id);
+                gameState.gamepad.connected = false;
+                gameState.gamepad.index = -1;
+            });
+
+            // Check for already connected controllers
+            const gamepads = navigator.getGamepads();
+            for (let i = 0; i < gamepads.length; i++) {
+                if (gamepads[i]) {
+                    console.log('[Gamepad] 检测到已连接的控制器:', gamepads[i].id);
+                    gameState.gamepad.connected = true;
+                    gameState.gamepad.index = i;
+                    gameState.gamepad.previousButtons = new Array(gamepads[i].buttons.length).fill(false);
+                    startGamepadPolling();
+                    break;
+                }
+            }
+        }
+
+        // Start gamepad polling for button detection
+        function startGamepadPolling() {
+            function pollGamepad() {
+                if (!gameState.gamepad.connected) return;
+                
+                const gamepads = navigator.getGamepads();
+                const gamepad = gamepads[gameState.gamepad.index];
+                
+                if (!gamepad) {
+                    gameState.gamepad.connected = false;
+                    return;
+                }
+                
+                // Check button state changes
+                checkGamepadButtons(gamepad);
+                
+                requestAnimationFrame(pollGamepad);
+            }
+            
+            pollGamepad();
+        }
+
+        // Check gamepad button changes and trigger keyboard logic
+        function checkGamepadButtons(gamepad) {
+            gamepad.buttons.forEach((button, index) => {
+                const wasPressed = gameState.gamepad.previousButtons[index];
+                const isPressed = button.pressed;
+                
+                // Detect button press (not held)
+                if (isPressed && !wasPressed) {
+                    const isInSongSelection = elements.songSelectionScreen.style.display !== 'none';
+                    
+                    // Button 6 → sdf keyboard logic (left ka in selection, ka in game)
+                    if (index === 6) {
+                        console.log(`[Gamepad] Button ${index} pressed - SDF逻辑`);
+                        if (isInSongSelection) {
+                            playDrumSound('ka');
+                            navigateToLeftSong();
+                        } else {
+                            hitDrum('ka');
+                        }
+                    }
+                    // Button 7 → jkl keyboard logic (right ka in selection, ka in game)
+                    else if (index === 7) {
+                        console.log(`[Gamepad] Button ${index} pressed - JKL逻辑`);
+                        if (isInSongSelection) {
+                            playDrumSound('ka');
+                            navigateToRightSong();
+                        } else {
+                            hitDrum('ka');
+                        }
+                    }
+                    // Buttons 10, 11, 12 → space keyboard logic (don in selection/game)
+                    else if (index === 10 || index === 11 || index === 12) {
+                        console.log(`[Gamepad] Button ${index} pressed - SPACE逻辑`);
+                        if (isInSongSelection) {
+                            playDrumSound('don');
+                            
+                            // Check if navigation button is selected
+                            const selectedNavButton = document.querySelector('.nav-button.selected');
+                            if (selectedNavButton) {
+                                const buttonText = selectedNavButton.textContent.trim();
+                                if (buttonText.includes('最左侧') || buttonText.includes('左')) {
+                                    goToLeftmost();
+                                } else if (buttonText.includes('最右侧') || buttonText.includes('右')) {
+                                    goToRightmost();
+                                }
+                            } else if (gameState.selectedProject) {
+                                startPerformance();
+                            }
+                        } else {
+                            hitDrum('don');
+                        }
+                    }
+                }
+                
+                // Update previous state
+                gameState.gamepad.previousButtons[index] = isPressed;
+            });
         }
 
         // Load project images (background and character)
@@ -1419,8 +1585,43 @@
             });
         }
 
+        // Play drum sound effect
+        function playDrumSound(type) {
+            try {
+                const originalSound = gameState.drumSounds[type];
+                if (originalSound) {
+                    // Create a new audio instance for each play to allow overlapping
+                    const sound = originalSound.cloneNode();
+                    sound.volume = originalSound.volume;
+                    
+                    const playPromise = sound.play();
+                    
+                    // Handle play promise (required for some browsers)
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.warn(`[Audio] Failed to play ${type} sound:`, error);
+                        });
+                    }
+                    
+                    // Clean up the cloned audio after it finishes
+                    sound.addEventListener('ended', () => {
+                        sound.remove();
+                    });
+                    
+                    console.log(`[Audio] Playing ${type} sound effect (new instance)`);
+                } else {
+                    console.warn(`[Audio] ${type} sound not loaded`);
+                }
+            } catch (error) {
+                console.error(`[Audio] Error playing ${type} sound:`, error);
+            }
+        }
+
         // Handle drum hits
         function hitDrum(type) {
+            // Play drum sound effect first
+            playDrumSound(type);
+            
             // Update Don character display
             updateDonDisplay(type);
             
@@ -3019,6 +3220,101 @@
             }
         }
 
+        // Navigate to left song (sdf keys)
+        function navigateToLeftSong() {
+            const allItems = document.querySelectorAll('.song-item, .nav-button');
+            const currentSelected = document.querySelector('.song-item.center-focus, .nav-button.selected');
+            
+            if (allItems.length <= 1) return;
+            
+            let currentIndex = -1;
+            if (currentSelected) {
+                currentIndex = Array.from(allItems).indexOf(currentSelected);
+            } else {
+                // If nothing selected, find center-focus song
+                const centerFocus = document.querySelector('.song-item.center-focus');
+                if (centerFocus) {
+                    currentIndex = Array.from(allItems).indexOf(centerFocus);
+                }
+            }
+            
+            // Navigate to previous item (left)
+            if (currentIndex > 0) {
+                const leftItem = allItems[currentIndex - 1];
+                selectItem(leftItem);
+            }
+        }
+
+        // Navigate to right song (jkl keys)
+        function navigateToRightSong() {
+            const allItems = document.querySelectorAll('.song-item, .nav-button');
+            const currentSelected = document.querySelector('.song-item.center-focus, .nav-button.selected');
+            
+            if (allItems.length <= 1) return;
+            
+            let currentIndex = -1;
+            if (currentSelected) {
+                currentIndex = Array.from(allItems).indexOf(currentSelected);
+            } else {
+                // If nothing selected, find center-focus song
+                const centerFocus = document.querySelector('.song-item.center-focus');
+                if (centerFocus) {
+                    currentIndex = Array.from(allItems).indexOf(centerFocus);
+                }
+            }
+            
+            // Navigate to next item (right)
+            if (currentIndex < allItems.length - 1) {
+                const rightItem = allItems[currentIndex + 1];
+                selectItem(rightItem);
+            }
+        }
+
+        // Unified item selection function
+        function selectItem(item) {
+            // Clear all selections
+            document.querySelectorAll('.song-item, .nav-button').forEach(el => {
+                el.classList.remove('selected', 'center-focus');
+            });
+            
+            if (item.classList.contains('nav-button')) {
+                // Immediately execute navigation button function
+                const buttonText = item.textContent.trim();
+                if (buttonText.includes('最左侧') || buttonText.includes('左')) {
+                    goToLeftmost();
+                    console.log('[Navigation] Executed leftmost navigation');
+                } else if (buttonText.includes('最右侧') || buttonText.includes('右')) {
+                    goToRightmost();
+                    console.log('[Navigation] Executed rightmost navigation');
+                }
+            } else {
+                // Select song item
+                item.classList.add('selected', 'center-focus');
+                const project = {
+                    folder_name: item.dataset.projectName,
+                    display_name: item.dataset.displayName
+                };
+                
+                // Use existing selectSong logic but without duplicating selection
+                elements.selectedSongName.textContent = project.display_name;
+                updateSongGenreDisplay(project);
+                
+                if (item.dataset.isReal === 'true') {
+                    loadSelectedSongMetadata(project.folder_name);
+                    gameState.selectedProject = project.folder_name;
+                    loadSongStatsOptimized(project.folder_name, true);
+                } else {
+                    gameState.selectedProject = null;
+                    updateStatsDisplay(null);
+                }
+                
+                showStartButton();
+                centerSongItem(item);
+                
+                console.log('[Navigation] Selected song:', project.display_name);
+            }
+        }
+
         function showStartButton() {
             // Show floating start button if a real song is selected
             const shouldShow = gameState.selectedProject !== null;
@@ -3332,14 +3628,72 @@
                 
                 const key = e.key.toLowerCase();
                 
-                // Space bar for Don (咚)
-                if (key === ' ') {
-                    e.preventDefault();
-                    hitDrum('don');
-                    return;
+                // Check if we're in song selection screen
+                const isInSongSelection = elements.songSelectionScreen.style.display !== 'none';
+                
+                if (isInSongSelection) {
+                    // Song selection navigation keys - Left Ka logic (sdf)
+                    if (['s', 'd', 'f'].includes(key)) {
+                        e.preventDefault();
+                        playDrumSound('ka'); // Play ka sound for left navigation
+                        navigateToLeftSong();
+                        return;
+                    }
+                    
+                    // Song selection navigation keys - Right Ka logic (jkl)
+                    if (['j', 'k', 'l'].includes(key)) {
+                        e.preventDefault();
+                        playDrumSound('ka'); // Play ka sound for right navigation
+                        navigateToRightSong();
+                        return;
+                    }
+                    
+                    // Space bar for confirming song selection or triggering navigation - Don logic
+                    if (key === ' ') {
+                        e.preventDefault();
+                        playDrumSound('don'); // Play don sound for confirmation
+                        
+                        // Check if navigation button is selected
+                        const selectedNavButton = document.querySelector('.nav-button.selected');
+                        if (selectedNavButton) {
+                            // Execute navigation directly
+                            const buttonText = selectedNavButton.textContent.trim();
+                            if (buttonText.includes('最左侧') || buttonText.includes('左')) {
+                                goToLeftmost();
+                                console.log('[Navigation] Space triggered leftmost navigation');
+                            } else if (buttonText.includes('最右侧') || buttonText.includes('右')) {
+                                goToRightmost();
+                                console.log('[Navigation] Space triggered rightmost navigation');
+                            }
+                            return;
+                        }
+                        
+                        // Otherwise confirm song selection
+                        if (gameState.selectedProject) {
+                            startPerformance();
+                        }
+                        return;
+                    }
+                } else {
+                    // Game playing keys
+                    
+                    // Space bar for Don (咚)
+                    if (key === ' ') {
+                        e.preventDefault();
+                        hitDrum('don');
+                        return;
+                    }
+                    
+                    // Letter keys for Ka (咔) - include all ka keys in game
+                    const kaKeys = ['s', 'd', 'f', 'j', 'k', 'l', 'a', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
+                    if (kaKeys.includes(key)) {
+                        e.preventDefault();
+                        hitDrum('ka');
+                        return;
+                    }
                 }
                 
-                // Enter for pause menu
+                // Enter for pause menu (works in both modes)
                 if (key === 'enter') {
                     e.preventDefault();
                     if (gameState.isPlaying) {
@@ -3351,14 +3705,6 @@
                         // Show song selector if no game running
                         elements.songSelector.classList.add('show');
                     }
-                    return;
-                }
-                
-                // Letter keys for Ka (咔)
-                const kaKeys = ['s', 'd', 'f', 'j', 'k', 'l', 'a', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
-                if (kaKeys.includes(key)) {
-                    e.preventDefault();
-                    hitDrum('ka');
                     return;
                 }
                 

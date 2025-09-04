@@ -86,6 +86,10 @@ def custom_static(filename):
     if filename.endswith('.svg'):
         response.headers['Content-Type'] = 'image/svg+xml'
         response.headers['Cache-Control'] = 'no-cache'
+    elif filename.endswith('.mp3'):
+        response.headers['Content-Type'] = 'audio/mpeg'
+    elif filename.endswith('.wav'):
+        response.headers['Content-Type'] = 'audio/wav'
     return response
 
 def convert_beatnet_to_annotations_then_score(beatnet_notes, project_data):
@@ -153,6 +157,11 @@ def serve_daw_interface():
 def serve_game_interface():
     """Serves the rhythm game performance mode interface."""
     return send_from_directory(PROJECT_ROOT, 'game_interface.html')
+
+@app.route('/joystick-test')
+def serve_joystick_test():
+    """Serves the joystick test page."""
+    return send_from_directory(PROJECT_ROOT, 'joystick-test.html')
 
 @app.route('/test-beatnet')
 def serve_beatnet_test():
@@ -1517,4 +1526,4 @@ def get_song_stats(song_name):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5001)

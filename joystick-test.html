@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joystick Test - 轴0数据测试</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #FF006E, #8338EC, #3A86FF);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .axis-display {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 50px 0;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 4px solid white;
+            display: inline-block;
+            min-width: 300px;
+        }
+
+        .controller-info {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <h1>轴0数据测试</h1>
+    
+    <div class="controller-info" id="controllerInfo">
+        未检测到控制器
+    </div>
+    
+    <div class="axis-display" id="axisDisplay">
+        0.000
+    </div>
+
+    <script>
+        let previousAxis0 = null;
+
+        function detectController() {
+            const gamepads = navigator.getGamepads();
+            
+            for (let i = 0; i < gamepads.length; i++) {
+                if (gamepads[i]) {
+                    const gamepad = gamepads[i];
+                    const axis0Value = gamepad.axes[0];
+                    const timestamp = gamepad.timestamp;
+                    
+                    // Update controller info
+                    const mappingText = gamepad.mapping === "" ? "无映射" : gamepad.mapping;
+                    document.getElementById('controllerInfo').textContent = 
+                        `控制器: ${gamepad.id.substring(0, 30)}... | 映射: ${mappingText} | 时间戳: ${timestamp}`;
+                    
+                    // Always update display
+                    document.getElementById('axisDisplay').textContent = axis0Value.toFixed(6);
+                    
+                    // Log ALL changes immediately without any filtering
+                    if (previousAxis0 !== null && axis0Value !== previousAxis0) {
+                        console.log(`🎮 轴0: ${axis0Value.toFixed(6)} (变化: ${(axis0Value - previousAxis0).toFixed(6)})`);
+                    }
+                    
+                    previousAxis0 = axis0Value;
+                    break;
+                }
+            }
+            
+            // Use requestAnimationFrame for consistent timing
+            requestAnimationFrame(detectController);
+        }
+
+        // Start detection
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('开始轴0数据检测...');
+            detectController();
+        });
+    </script>
+</body>
+</html>
